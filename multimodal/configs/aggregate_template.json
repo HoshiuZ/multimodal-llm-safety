@@ -1,0 +1,40 @@
+{
+  "model_key": "qwen3vl8b",
+  "full_c": {
+    "manifest": "../../external/eval-assets/manifest_mm.csv",
+    "orig": "../../outputs/qwen3vl8b/full/manifest_mm.orig.judgments.jsonl",
+    "m1": "../../outputs/qwen3vl8b/full/manifest_mm.m1.judgments.jsonl",
+    "m1_m3_v8": "../../outputs/qwen3vl8b/full/manifest_mm.m1_m3_v8.judgments.jsonl"
+  },
+  "stability": {
+    "base": {
+      "manifest": "../../external/eval-assets/base_1008.jsonl",
+      "orig": "../../outputs/qwen3vl8b/base/base_1008.orig.judgments.jsonl",
+      "m1": "../../outputs/qwen3vl8b/base/base_1008.m1.judgments.jsonl",
+      "m1_m3_v8": "../../outputs/qwen3vl8b/base/base_1008.m1_m3_v8.judgments.jsonl"
+    },
+    "figstep": {
+      "manifest": "../../external/eval-assets/figstep/manifest.jsonl",
+      "orig": "../../outputs/qwen3vl8b/figstep/manifest.orig.judgments.jsonl",
+      "m1": "../../outputs/qwen3vl8b/figstep/manifest.m1.judgments.jsonl",
+      "m1_m3_v8": "../../outputs/qwen3vl8b/figstep/manifest.m1_m3_v8.judgments.jsonl"
+    },
+    "hades": {
+      "manifest": "../../external/eval-assets/hades_local_v1/manifest.jsonl",
+      "orig": "../../outputs/qwen3vl8b/hades/manifest.orig.judgments.jsonl",
+      "m1": "../../outputs/qwen3vl8b/hades/manifest.m1.judgments.jsonl",
+      "m1_m3_v8": "../../outputs/qwen3vl8b/hades/manifest.m1_m3_v8.judgments.jsonl"
+    }
+  },
+  "normal": {
+    "manifest": "../../external/eval-assets/normal_utility/manifest.jsonl",
+    "orig": "../../outputs/qwen3vl8b/normal/manifest.orig.jsonl",
+    "m1": "../../outputs/qwen3vl8b/normal/manifest.m1.jsonl",
+    "m1_m3_v8": "../../outputs/qwen3vl8b/normal/manifest.m1_m3_v8.jsonl"
+  },
+  "thresholds": {
+    "C_mm_percent_min": 75,
+    "S_mm_percent_min": 65,
+    "normal_relative_loss_percent_max": 10
+  }
+}

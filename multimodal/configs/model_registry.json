@@ -1,0 +1,67 @@
+{
+  "status": "frozen_component_bundle; not a final D acceptance claim",
+  "models": {
+    "qwen3vl8b": {
+      "name": "Qwen3-VL-8B-Instruct",
+      "hf_id": "Qwen/Qwen3-VL-8B-Instruct",
+      "base_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+      "base_tree_sha256": "d07a3b67a1ccf43611d024e02da8b9ce026ae81556b87a8f3098810827d64652",
+      "runtime": {
+        "python": "3.12.12",
+        "transformers": "5.16.1"
+      },
+      "model_class": "Qwen3VLForConditionalGeneration",
+      "trust_remote_code": false,
+      "adapter_repo": "boli-003/mm-safetybench-qwen3vl8b-m1-vlguard-v1",
+      "adapter_revision": "PENDING_UPLOAD",
+      "adapter_weight_sha256": "f512013c1df3ceec919b65b50a553867a9b0849f9b544a91e9987a2faada3584",
+      "adapter_config_sha256": "479227688646b1667549dee519522dae74a3cd547f96464f1b19605f481cc13b",
+      "adapter_target_submodule": "model"
+    },
+    "llavanext8b": {
+      "name": "LLaVA-NeXT-8B",
+      "hf_id": "llava-hf/llama3-llava-next-8b-hf",
+      "base_revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
+      "base_tree_sha256": "36e507b2bcff4e9fef8262c955d8a936bc78b578a76152fe4cbbce191666e142",
+      "runtime": {
+        "python": "3.12.12",
+        "transformers": "5.16.1"
+      },
+      "model_class": "LlavaNextForConditionalGeneration",
+      "trust_remote_code": false,
+      "adapter_repo": "boli-003/mm-safetybench-llavanext8b-m1-vlguard-v1",
+      "adapter_revision": "PENDING_UPLOAD",
+      "adapter_weight_sha256": "b8da66030ab8052354c5092d9336e694263ccbade566377656ef9fdc7bd4e313",
+      "adapter_config_sha256": "31b82a73f9e1671522007b01ac9f10aa3ef0fc7377487dd6cc3178c7677fe21c",
+      "adapter_target_submodule": "model"
+    },
+    "internvl3_8b": {
+      "name": "InternVL3-8B",
+      "hf_id": "OpenGVLab/InternVL3-8B",
+      "base_revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+      "base_tree_sha256": "3b5ce8f69654e92edeafa10eda71ba646df246376670e0fbf7ec2a1cc69cfdb4",
+      "runtime": {
+        "python": "3.12.12",
+        "transformers": "4.57.6"
+      },
+      "model_class": "InternVLChatModel",
+      "trust_remote_code": true,
+      "adapter_repo": "boli-003/mm-safetybench-internvl3-8b-m1-vlguard-v1",
+      "adapter_revision": "PENDING_UPLOAD",
+      "adapter_weight_sha256": "47974b7b6c49d465e77527278db642af2480045c25eb6199922c100fb04f2c53",
+      "adapter_config_sha256": "bf74750579098d5f5ad73cd5a34fd249cf87ff82805fb804e1b487f4b313cf81",
+      "adapter_target_submodule": "language_model"
+    }
+  },
+  "reviewer": {
+    "hf_id": "Qwen/Qwen3-VL-8B-Instruct",
+    "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+    "tree_sha256": "d07a3b67a1ccf43611d024e02da8b9ce026ae81556b87a8f3098810827d64652",
+    "version": "m3-qwen3vl-visual-review-refusal-attribution-v8-2026-10-26"
+  },
+  "judge": {
+    "hf_id": "Qwen/Qwen2.5-14B-Instruct",
+    "revision": "cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8",
+    "tree_sha256": "8d6b5e280e553e58f9d15934507241cca0eaddbc276fefd16e45845df79f4230"
+  }
+}
