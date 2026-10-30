@@ -37,7 +37,11 @@
   "models": {
     "base_revisions_and_tree_hashes": "configs/model_registry.json",
     "adapter_ids_and_weight_hashes": "configs/model_registry.json",
-    "adapter_revisions": "PENDING_UPLOAD",
+    "adapter_revisions": {
+      "qwen3vl8b": "7f4aa782359fab43637b4c71dbc73f6373600d14",
+      "llavanext8b": "be23d7438b9d6930adead6e67d713dec3c7e598a",
+      "internvl3_8b": "6256ccd1f5ddec0c080275f3ea7c5d0bf3f8d9f2"
+    },
     "reviewer": "Qwen/Qwen3-VL-8B-Instruct@0c351dd01ed87e9c1b53cbc748cba10e6187ff3b; m3-qwen3vl-visual-review-refusal-attribution-v8-2026-10-26",
     "judge": "Qwen/Qwen2.5-14B-Instruct@cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8; local project rubric v2; independent accuracy not established"
   },

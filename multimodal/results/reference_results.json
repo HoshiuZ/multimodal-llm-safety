@@ -58,7 +58,7 @@
       },
       "m1_adapter": {
         "hf_id": "boli-003/mm-safetybench-qwen3vl8b-m1-vlguard-v1",
-        "revision": "PENDING_UPLOAD",
+        "revision": "7f4aa782359fab43637b4c71dbc73f6373600d14",
         "weight_sha256": "f512013c1df3ceec919b65b50a553867a9b0849f9b544a91e9987a2faada3584",
         "published_config_sha256": "479227688646b1667549dee519522dae74a3cd547f96464f1b19605f481cc13b"
       },
@@ -94,7 +94,7 @@
       },
       "m1_adapter": {
         "hf_id": "boli-003/mm-safetybench-llavanext8b-m1-vlguard-v1",
-        "revision": "PENDING_UPLOAD",
+        "revision": "be23d7438b9d6930adead6e67d713dec3c7e598a",
         "weight_sha256": "b8da66030ab8052354c5092d9336e694263ccbade566377656ef9fdc7bd4e313",
         "published_config_sha256": "31b82a73f9e1671522007b01ac9f10aa3ef0fc7377487dd6cc3178c7677fe21c"
       },
@@ -131,7 +131,7 @@
       },
       "m1_adapter": {
         "hf_id": "boli-003/mm-safetybench-internvl3-8b-m1-vlguard-v1",
-        "revision": "PENDING_UPLOAD",
+        "revision": "6256ccd1f5ddec0c080275f3ea7c5d0bf3f8d9f2",
         "weight_sha256": "47974b7b6c49d465e77527278db642af2480045c25eb6199922c100fb04f2c53",
         "published_config_sha256": "bf74750579098d5f5ad73cd5a34fd249cf87ff82805fb804e1b487f4b313cf81"
       },

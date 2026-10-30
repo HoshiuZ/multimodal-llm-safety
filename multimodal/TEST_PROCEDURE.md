@@ -35,10 +35,10 @@ hf download Qwen/Qwen2.5-14B-Instruct --revision cf98f3b3bbb457ad9e2bb7baf9a0125
 Download the corresponding adapter repo from the model table and its immutable adapter revision. For example:
 
 ```bash
-hf download boli-003/mm-safetybench-qwen3vl8b-m1-vlguard-v1 --revision ADAPTER_COMMIT --local-dir "$MODEL_ROOT/adapters/qwen3vl8b-m1-vlguard-v1"
+hf download boli-003/mm-safetybench-qwen3vl8b-m1-vlguard-v1 --revision 7f4aa782359fab43637b4c71dbc73f6373600d14 --local-dir "$MODEL_ROOT/adapters/qwen3vl8b-m1-vlguard-v1"
 ```
 
-Use the LLaVA and InternVL adapter IDs shown in the same table for those models. The runner hashes each base tree, adapter weights, and adapter config and stops if they differ from the registry.
+Use the LLaVA adapter at `be23d7438b9d6930adead6e67d713dec3c7e598a` and InternVL adapter at `6256ccd1f5ddec0c080275f3ea7c5d0bf3f8d9f2`. The runner hashes each base tree, adapter weights, and adapter config and stops if they differ from the registry.
 
 ## 3. Get official and project evaluation data
 
