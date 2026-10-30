@@ -1,0 +1,31 @@
+{
+  "plan_id": "PKG1-text-evaluation-github-20261030",
+  "sources": {
+    "scripts/s3_text_s_e004.py": "a93f2b2a78aaf44f4884d438f45c3ff4cf4cfa38e6d9bc2d2c15ff4d62a222e9",
+    "scripts/s3_e004_cpu_worker_regression.py": "c57381c82dbd522623bf58c6d66142a27ba19c142e9b31201866707a0c3257f0",
+    "scripts/s3_verify_worker_e004.py": "9638f22c2d0e5ba3c65adfaa8f9f24015f7cffbd04a9f6b50d04fc84e7b0fbac",
+    "scripts/evaluate_llava_text_s_s2.py": "b793df819cf2a350b0244a436587ed2fa6871b5db738930103e21a4bbdf59024",
+    "scripts/evaluate_llava_text_s_e007_selected.py": "d7c031897ce3de60212d1e158c0dfb4d4ff5ca5f148dc151a825af83bbe757aa",
+    "scripts/s2_llava_overlay.py": "5870bc8098b3085ab636409ffd3d5ea26c4ad6777d92f54710583c6869335f6d",
+    "scripts/s2_llava_overlay_e007.py": "62684880f4404d5127549a5e008e81566775eb3d1e18e4fdfc9b0475bb6b38c6",
+    "scripts/run_model_rmu_closed_loop.py": "eb91139abdd32fb392ddd5ecd7f926eb391cd3ea8ac88816cae6158b2effbdce",
+    "scripts/evaluate_rmu_effect_hparam_batch.py": "5d023d888dd4990b2ffb803e9ddabcf1da26e662d6f0e873bd29a9a6771badbb",
+    "scripts/run_three_domain_graddiff_g1.py": "5f2be4a80180bb1b095fba524e823205461cb98cdd7f2f15f130fada4e2d6b4b",
+    "configs/llava_next8b_full_wmdp_c.json": "eaafdda93cae0cf50d46f7d2f84e5285a8040857bc47757eee63e0a8abbcd94f",
+    "reports/planning/s2_llava_e007_results.json": "99747d190066945eba8670670c4a081f5c6ef8a13fbec81c3866af3c0d66a648",
+    "reports/planning/s3_e004_results.json": "aefcc5515c1056f0fa241361c89e2564e093c8d3b2034dc895d60b8417ba49cf",
+    "reports/models/qwen3vl8b.json": "50d50b4820a4e3e2c1b264c80c83e75acd22653ae86469b04b4faa77f1b2f547",
+    "reports/models/internvl3_8b.json": "fcf27a1e782f70a5fe4136817c6e4940fd3f1a2bc5730a81f72f8012abeac95f",
+    "reports/models/llava_next8b.json": "599e40d39767c988985f72ace5b2302b76594150dd2a5df91912bc42adad7375",
+    "reports/environments/wmdp-internvl.json": "88b6684dd5f1589bdd447bdbafd26f1f760a5f5e50e48babf63258ba6aba76de",
+    "reports/environments/wmdp-llava.json": "74b1fab9e4e96bcb93933cf743f5b0715375515b50599b496a41de0825591d90",
+    "reports/evaluation/three_domain_rmu_gc1/recovery_20261027/qwen3vl/Q-SG5e5/full/step210.json": "cd80a27afb590271568daafe32eae91e45a212f368f966bb9cf2beba789dcce4",
+    "reports/evaluation/three_domain_rmu_graddiff_j3/internvl3_8b/J10/full_wmdp/step120.json": "e99a88e7597f18d409ba894983e7f58f3e42998c9755e9f9dcc0490626e09501",
+    "runs/bio_rmu_effect/dsh_llava_final_20261029/score.json": "6edd32b0f671e46caae3a449438a1c3b9895e79881578c09a289c02cac188403"
+  },
+  "note": "Only source hashes; source files and historical reports are not copied wholesale. No weights hashed for PKG1.",
+  "template_repository": "EleutherAI/lm-evaluation-harness",
+  "template_commit": "4600d6bf73ba2cf7037ae7feada03315839ef185",
+  "wmdp_source_commit": "c0b6c12bb0de3decf9c13bb13f9f1aa15754a132",
+  "wmdp_data_revision": "7125571f22f032c56415e7980f48d877dd830ff8"
+}

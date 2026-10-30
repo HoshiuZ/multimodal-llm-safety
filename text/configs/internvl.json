@@ -1,0 +1,27 @@
+{
+  "family": "internvl",
+  "repository": "OpenGVLab/InternVL3-8B",
+  "base_revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+  "model_class": "InternVLChatModel",
+  "loader": "AutoModel",
+  "attention": "eager",
+  "dtype": "bfloat16",
+  "trust_remote_code": true,
+  "environment": {
+    "python": "3.12.14",
+    "packages": {
+      "torch": "2.8.0",
+      "torchvision": "0.23.0",
+      "transformers": "4.57.1",
+      "accelerate": "1.15.0",
+      "safetensors": "0.8.0",
+      "huggingface-hub": "0.36.2",
+      "tokenizers": "0.22.2",
+      "Pillow": "13.0.0",
+      "sentencepiece": "0.2.2",
+      "protobuf": "7.36.2",
+      "einops": "0.8.2",
+      "timm": "1.0.30"
+    }
+  }
+}

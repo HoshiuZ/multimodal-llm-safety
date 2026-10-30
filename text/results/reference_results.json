@@ -1,0 +1,175 @@
+{
+  "plan_id": "PKG1-text-evaluation-github-20261030",
+  "scope": "Historical aggregate reference only, not reproduced with this package; text inputs only.",
+  "models": {
+    "qwen": {
+      "repository": "Qwen/Qwen3-VL-8B-Instruct",
+      "base_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+      "model_class": "Qwen3VLForConditionalGeneration",
+      "loader": "Qwen3VLForConditionalGeneration",
+      "environment": {
+        "python": "3.12.14",
+        "packages": {
+          "torch": "2.8.0",
+          "torchvision": "0.23.0",
+          "transformers": "4.57.1",
+          "accelerate": "1.15.0",
+          "safetensors": "0.8.0",
+          "huggingface-hub": "0.36.2",
+          "tokenizers": "0.22.2",
+          "Pillow": "13.0.0",
+          "sentencepiece": "0.2.2",
+          "protobuf": "7.36.2"
+        }
+      },
+      "historical_checkpoint": "Q-SG5e5 step210 GC1",
+      "historical_overlay_sha256": "375a608b79fea726e67d9742ab60e7442c33f15341e9fd1c404813e00445a6d4",
+      "full_C_reference": {
+        "rows": 3668,
+        "baseline_correct": 2272,
+        "correct": 1285,
+        "C_percent": 72.84132841328413,
+        "source": "reports/evaluation/three_domain_rmu_gc1/recovery_20261027/qwen3vl/Q-SG5e5/full/step210.json"
+      },
+      "S_counts": {
+        "original": {
+          "base": 421,
+          "cleared": 257,
+          "n": 734
+        },
+        "syntax": {
+          "base": 410,
+          "cleared": 261,
+          "n": 734
+        },
+        "paraphrase": {
+          "base": 422,
+          "cleared": 264,
+          "n": 734
+        }
+      },
+      "S_percent": 95.26597749421202,
+      "S_source": "reports/planning/s3_e004_results.json",
+      "other49_capability": {
+        "base_correct": 190,
+        "cleared_correct": 172,
+        "n": 245
+      }
+    },
+    "internvl": {
+      "repository": "OpenGVLab/InternVL3-8B",
+      "base_revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+      "model_class": "InternVLChatModel",
+      "loader": "AutoModel",
+      "environment": {
+        "python": "3.12.14",
+        "packages": {
+          "torch": "2.8.0",
+          "torchvision": "0.23.0",
+          "transformers": "4.57.1",
+          "accelerate": "1.15.0",
+          "safetensors": "0.8.0",
+          "huggingface-hub": "0.36.2",
+          "tokenizers": "0.22.2",
+          "Pillow": "13.0.0",
+          "sentencepiece": "0.2.2",
+          "protobuf": "7.36.2",
+          "einops": "0.8.2",
+          "timm": "1.0.30"
+        }
+      },
+      "historical_checkpoint": "J3 J10 step120, RMU/GradDiff method family; no inferred training-stage claim",
+      "historical_overlay_sha256": "e5aaea3ef8862e071c4a167b0243e51d612bd976ea84802b370d30be795e3d2b",
+      "full_C_reference": {
+        "rows": 3668,
+        "baseline_correct": 2173,
+        "correct": 1177,
+        "C_percent": 79.29936305732484,
+        "source": "reports/evaluation/three_domain_rmu_graddiff_j3/internvl3_8b/J10/full_wmdp/step120.json"
+      },
+      "S_counts": {
+        "original": {
+          "base": 405,
+          "cleared": 222,
+          "n": 734
+        },
+        "syntax": {
+          "base": 405,
+          "cleared": 241,
+          "n": 734
+        },
+        "paraphrase": {
+          "base": 403,
+          "cleared": 223,
+          "n": 734
+        }
+      },
+      "S_percent": 89.61748633879782,
+      "S_source": "reports/planning/s3_e004_results.json",
+      "other49_capability": {
+        "base_correct": 183,
+        "cleared_correct": 171,
+        "n": 245
+      }
+    },
+    "llava": {
+      "repository": "llava-hf/llama3-llava-next-8b-hf",
+      "base_revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
+      "model_class": "LlavaNextForConditionalGeneration",
+      "loader": "LlavaNextForConditionalGeneration",
+      "environment": {
+        "python": "3.12.14",
+        "packages": {
+          "torch": "2.8.0",
+          "torchvision": "0.23.0",
+          "transformers": "4.57.1",
+          "accelerate": "1.15.0",
+          "safetensors": "0.8.0",
+          "huggingface-hub": "0.36.2",
+          "tokenizers": "0.22.2",
+          "Pillow": "13.0.0",
+          "sentencepiece": "0.2.2",
+          "protobuf": "7.36.2"
+        }
+      },
+      "historical_checkpoint": "dsh_llava_final_20261029, seven materialized matrices",
+      "historical_overlay_sha256": "af19f95b7b76ef4e91fc8382f34bbb5be6a49d54fc2e743ca27d92e23114b3c6",
+      "full_C_reference": {
+        "C_percent": 70.0592885375494,
+        "scorer": "dsh historical scorer; not unified project full-C re-evaluation",
+        "source": "runs/bio_rmu_effect/dsh_llava_final_20261029/score.json"
+      },
+      "S_counts": {
+        "original": {
+          "base": 357,
+          "cleared": 232,
+          "n": 734
+        },
+        "paraphrase": {
+          "base": 350,
+          "cleared": 237,
+          "n": 734
+        },
+        "syntax": {
+          "base": 350,
+          "cleared": 233,
+          "n": 734
+        }
+      },
+      "S_percent": 94.2006006006006,
+      "S_source": "reports/planning/s2_llava_e007_results.json",
+      "other49_capability": {
+        "base_correct": 165,
+        "cleared_correct": 149,
+        "n": 245
+      }
+    }
+  },
+  "limitations": [
+    "AI rewrites and AI independent review; not blind or human/domain-expert reviewed.",
+    "Generation seed could not be set; some changes are synonym substitutions only.",
+    "Fixed 734-item text subset; no claim of broad robustness or complete multimodal qualification.",
+    "Qwen later GROM/NPO checkpoints cannot inherit this historical GC1 S.",
+    "LLaVA historical full C and project S use different scoring contracts."
+  ]
+}
