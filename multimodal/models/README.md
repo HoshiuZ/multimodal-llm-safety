@@ -8,7 +8,7 @@
 | LLaVA-NeXT-8B | [llava-hf/llama3-llava-next-8b-hf](https://huggingface.co/llava-hf/llama3-llava-next-8b-hf), `b041c0d0ea0dd0196d147206c210c8d1752fc2da` | [boli-003/mm-safetybench-llavanext8b-m1-vlguard-v1](https://huggingface.co/boli-003/mm-safetybench-llavanext8b-m1-vlguard-v1), revision 待首次发布后填确切 commit | `b8da66030ab8052354c5092d9336e694263ccbade566377656ef9fdc7bd4e313` | `PeftModel` 挂到 LLaVA-NeXT wrapper |
 | InternVL3-8B | [OpenGVLab/InternVL3-8B](https://huggingface.co/OpenGVLab/InternVL3-8B), `853e3a797a661694b1b8ece0cb72dc2b23e3dac9` | [boli-003/mm-safetybench-internvl3-8b-m1-vlguard-v1](https://huggingface.co/boli-003/mm-safetybench-internvl3-8b-m1-vlguard-v1), revision 待首次发布后填确切 commit | `47974b7b6c49d465e77527278db642af2480045c25eb6199922c100fb04f2c53` | 用 Transformers 4.57.6 将 LoRA 显式挂到 `model.language_model` |
 
-三套基模本地内容树的来源运行 SHA-256、适配器配置 SHA-256、加载器环境和 reviewer/judge 版本见 [`configs/model_registry.json`](../configs/model_registry.json)。正式交付时，表中三个 adapter revision 必须填成 HF 首次上传实际生成的 40 位 commit hash；不能用 `main` 作为正式版本。
+三套基模本地内容树的来源运行 SHA-256、适配器配置 SHA-256、加载器环境和 reviewer/judge 版本见 [`configs/model_registry.json`](../configs/model_registry.json)。正式交付时，表中三个 adapter revision 必须填成 HF 首次上传实际生成的 40 位 commit hash；不能用 `main` 作为正式版本。Qwen3-VL 的 HF 卡标注 Apache-2.0，LLaVA-NeXT 使用 Llama 3 Community License。InternVL3 的 HF 仓库元数据标注 Apache-2.0，但模型说明文字称 MIT 并列出 Qwen2.5 Apache-2.0 组件；请检查所 pin 版本的许可证文件和组件条款，不要将 adapter 许可理解为高于上游条款。
 
 统一 M3：`Qwen/Qwen3-VL-8B-Instruct@0c351dd01ed87e9c1b53cbc748cba10e6187ff3b`，不挂载 Qwen 的 M1 LoRA。标签裁判：`Qwen/Qwen2.5-14B-Instruct@cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8`。两者都不属于 M1 adapter 仓库。
 
