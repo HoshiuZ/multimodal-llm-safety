@@ -30,6 +30,8 @@ python -B scripts/prepare_eval_data.py \
 
 数据集仓库中的 `figstep/` 和 `hades_local_v1/` 都各有 1,008 张评测实际使用的成品图、相配 manifest 和 SHA-256。运行前分别校验：
 
+冻结 manifest SHA-256：FigStep `be0baea9b3159725345655ecbaec57a29f75235bcc3ef579ba07f8548e8a5c2f`；HADES-style `5e40269fe2bceafb92f915ebdbdaa8859e230fc46d39c8f82500980618c2c119`；normal utility `6f1d6d2008bd4d29ce154f02a38b479dfa6b9f218e269e6b948199dac7cb4c2b`。HF 数据集 commit 将在权限更新并成功上传后补齐。
+
 ```bash
 python -B scripts/verify_assets.py --manifest external/eval-assets/figstep/manifest.jsonl --data-root external/eval-assets/figstep
 python -B scripts/verify_assets.py --manifest external/eval-assets/hades_local_v1/manifest.jsonl --data-root external/eval-assets/hades_local_v1

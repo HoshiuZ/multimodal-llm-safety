@@ -15,16 +15,19 @@
       "protocol": "figstep-mmsb-port-v1",
       "upstream_repository": "https://github.com/CryptoAILab/FigStep",
       "upstream_commit": "0861b17b3d67887c06ee3534ec65b3012f9becb7",
+      "manifest_sha256": "be0baea9b3159725345655ecbaec57a29f75235bcc3ef579ba07f8548e8a5c2f",
       "custom_material": "1,008 final rendered images are included in the HF dataset repo; generated from the fixed selection and MM-SafetyBench Changed Question, using packaged GNU FreeMonoBold."
     },
     "hades_local_v1": {
       "protocol": "hades-local-mmsb-constrained-v1-recovery-v3",
       "upstream_reference": "https://github.com/AoiDragon/HADES",
+      "manifest_sha256": "5e40269fe2bceafb92f915ebdbdaa8859e230fc46d39c8f82500980618c2c119",
       "custom_material": "1,008 final local project images are included in the HF dataset repo. This is not the official HADES dataset; intermediate optimization images and logs are excluded."
     },
     "normal_utility": {
       "rows": 1000,
       "composition": "500 VQAv2 validation and 500 TextVQA validation samples",
+      "manifest_sha256": "6f1d6d2008bd4d29ce154f02a38b479dfa6b9f218e269e6b948199dac7cb4c2b",
       "images_included": false,
       "annotations": "The HF dataset repo contains a manifest with question IDs, answer references, and source image hashes. Obtain source images from official providers."
     },

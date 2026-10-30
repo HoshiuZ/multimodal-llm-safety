@@ -15,9 +15,12 @@ class PackageContractTests(unittest.TestCase):
         self.assertEqual(set(registry["models"]), {"qwen3vl8b", "llavanext8b", "internvl3_8b"})
         for model in registry["models"].values():
             self.assertRegex(model["base_revision"], re.compile(r"^[0-9a-f]{40}$"))
+            self.assertRegex(model["adapter_revision"], re.compile(r"^[0-9a-f]{40}$"))
             self.assertRegex(model["base_tree_sha256"], re.compile(r"^[0-9a-f]{64}$"))
             self.assertRegex(model["adapter_weight_sha256"], re.compile(r"^[0-9a-f]{64}$"))
             self.assertRegex(model["adapter_config_sha256"], re.compile(r"^[0-9a-f]{64}$"))
+        provenance = json.loads((PACKAGE / "results/source_provenance.json").read_text())
+        self.assertRegex(provenance["dataset"]["hf_dataset_revision"], re.compile(r"^[0-9a-f]{40}$"))
 
     def test_reproduction_entry_points_and_reference_are_present(self):
         required = [
