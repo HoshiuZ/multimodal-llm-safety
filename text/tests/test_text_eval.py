@@ -1,5 +1,6 @@
 """Benign synthetic CPU fixtures; never research/model evaluation results."""
 import copy
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -13,6 +14,8 @@ from eval.common import digest, canonical, read, write, loads
 from eval.data import validate_rows, load_bundle, COUNTS
 from eval.metrics import c_value, metrics
 from eval.scoring import option_sequences, score_one, token_preflight
+from eval.overlay import read_overlay, restore_overlay
+from eval.paired_audit import audit_pair
 from eval.worker import run_worker, records, aggregate
 from eval import models
 
@@ -181,6 +184,155 @@ class TestScoring(unittest.TestCase):
             def __call__(self,**kwargs):raise AssertionError('InternVL image wrapper forward called')
         score_one(Wrapper(),tok,'internvl',row(),8,'cpu')
         self.assertFalse(torch.cuda.is_initialized())
+
+
+class TestSparseOverlay(unittest.TestCase):
+    def test_cuda_selection_requires_one_unambiguous_visible_device(self):
+        import importlib.util
+        script=Path(__file__).resolve().parents[1]/'scripts/sparse_eval.py'
+        spec=importlib.util.spec_from_file_location('pkg2_sparse_cli_fixture',script)
+        cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
+        self.assertEqual(cli.resolve_cuda_selection(True,1,None),'cuda:0')
+        self.assertEqual(cli.resolve_cuda_selection(True,1,'GPU-unique'),'cuda:0')
+        for available,count,visible in [(False,0,None),(True,0,None),(True,2,None),(True,2,'GPU-0'),(True,1,'GPU-0,GPU-1')]:
+            with self.assertRaises(RuntimeError):cli.resolve_cuda_selection(available,count,visible)
+
+    def test_other49_uses_exact_eighty_percent_integer_rule(self):
+        rows = []
+        for i in range(10):
+            rows.append({'question_id': f'mmlu-{i}', 'source_row_sha256': digest(['mmlu', i]),
+                         'subject': f'subject-{i % 2}', 'description': 'official description',
+                         'question': 'synthetic question', 'choices': ['a', 'b', 'c', 'd'],
+                         'answer_index': 0})
+        b = {'kind': 'M', 'scenes': {'original': rows}}
+        contract = digest({'model': 'synthetic-mmlu', 'code': 'synthetic-code',
+                           'prompt': 'synthetic-prompt', 'data': digest(b)})
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = {}
+            for state in ('base', 'cleared'):
+                path = Path(tmp) / f'{state}.jsonl'; paths[state] = path
+                with path.open('w', encoding='utf-8') as stream:
+                    for i, row in enumerate(rows):
+                        prediction = 'B' if state == 'cleared' and i < 2 else 'A'
+                        scores = {'A': -1.0, 'B': -2.0, 'C': -3.0, 'D': -4.0}
+                        if prediction == 'B': scores['A'], scores['B'] = -2.0, -1.0
+                        stream.write(canonical({'state': state, 'scene': 'original',
+                            'contract': contract,
+                            'question_id': row['question_id'], 'row_digest': digest(row),
+                            'scores': scores, 'prediction': prediction, 'target': 'A',
+                            'correct': prediction == 'A', 'status': 'ok'}) + '\n')
+            got = audit_pair(b, paths['base'], paths['cleared'],
+                             base_contract=contract, cleared_contract=contract)
+            self.assertEqual(got['other49']['base_correct'], 10)
+            self.assertEqual(got['other49']['cleared_correct'], 8)
+            self.assertEqual(got['other49']['rule'], '5*n_cleared >= 4*n_base')
+            self.assertTrue(got['other49']['passes_20pct_loss'])
+            with paths['cleared'].open('w', encoding='utf-8') as stream:
+                for i, row in enumerate(rows):
+                    prediction = 'B' if i < 3 else 'A'
+                    scores = {'A': -1.0, 'B': -2.0, 'C': -3.0, 'D': -4.0}
+                    if prediction == 'B': scores['A'], scores['B'] = -2.0, -1.0
+                    stream.write(canonical({'state': 'cleared', 'scene': 'original',
+                        'contract': contract,
+                        'question_id': row['question_id'], 'row_digest': digest(row),
+                        'scores': scores, 'prediction': prediction, 'target': 'A',
+                        'correct': prediction == 'A', 'status': 'ok'}) + '\n')
+            got = audit_pair(b, paths['base'], paths['cleared'],
+                             base_contract=contract, cleared_contract=contract)
+            self.assertEqual(got['other49']['cleared_correct'], 7)
+            self.assertFalse(got['other49']['passes_20pct_loss'])
+
+    def test_pair_audit_requires_contract_on_every_record(self):
+        rows = [
+            {'question_id': f'mmlu-{i}', 'source_row_sha256': digest(['strict-contract', i]),
+             'subject': 'synthetic_subject', 'description': 'synthetic description',
+             'question': 'synthetic question', 'choices': ['a', 'b', 'c', 'd'],
+             'answer_index': 0}
+            for i in range(2)
+        ]
+        b = {'kind': 'M', 'scenes': {'original': rows}}
+        contract = digest({'model': 'synthetic-mmlu', 'data': digest(b)})
+        other_contract = digest({'model': 'different-synthetic-mmlu', 'data': digest(b)})
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = {state: Path(tmp) / f'{state}.jsonl' for state in ('base', 'cleared')}
+
+            def write_state(state, record_contract):
+                with paths[state].open('w', encoding='utf-8') as stream:
+                    for row in rows:
+                        stream.write(canonical({'state': state, 'scene': 'original',
+                            'contract': record_contract, 'question_id': row['question_id'],
+                            'row_digest': digest(row), 'scores': {'A': -1.0, 'B': -2.0, 'C': -3.0, 'D': -4.0},
+                            'prediction': 'A', 'target': 'A', 'correct': True, 'status': 'ok'}) + '\n')
+
+            write_state('base', contract)
+            write_state('cleared', contract)
+            good = audit_pair(b, paths['base'], paths['cleared'],
+                              base_contract=contract, cleared_contract=contract)
+            self.assertTrue(good['coverage']['paired_identity_match'])
+
+            write_state('cleared', other_contract)
+            with self.assertRaisesRegex(ValueError, 'expected contract'):
+                audit_pair(b, paths['base'], paths['cleared'],
+                           base_contract=contract, cleared_contract=contract)
+            with self.assertRaisesRegex(ValueError, 'contract identities differ'):
+                audit_pair(b, paths['base'], paths['cleared'])
+
+            write_state('cleared', contract)
+            lines = paths['base'].read_text(encoding='utf-8').splitlines()
+            missing = loads(lines[0]); missing.pop('contract')
+            lines[0] = canonical(missing)
+            paths['base'].write_text('\n'.join(lines) + '\n', encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'lacks a nonempty SHA256 contract'):
+                audit_pair(b, paths['base'], paths['cleared'])
+
+    def test_pair_audit_explicitly_rejects_S_bundle(self):
+        with self.assertRaisesRegex(ValueError, 'C/M only.*S aggregation'):
+            audit_pair(bundle(), 'unused-base.jsonl', 'unused-cleared.jsonl')
+
+    def test_safe_overlay_restore_then_real_worker_scoring(self):
+        import torch
+        torch.set_num_threads(1)
+
+        class Block(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.mlp = torch.nn.Module()
+                self.mlp.down_proj = torch.nn.Linear(2, 2, bias=False)
+
+        class Wrapper(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.model = torch.nn.Module()
+                self.model.language_model = torch.nn.Module()
+                self.model.language_model.layers = torch.nn.ModuleList([Block()])
+                self.calls = 0
+
+            def forward(self, input_ids, attention_mask, **kwargs):
+                self.calls += 1
+                logits = torch.zeros((*input_ids.shape, 12), dtype=torch.float32)
+                logits[..., 4] = 2.0
+                return SimpleNamespace(logits=logits)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'update.pt'
+            key = 'model.language_model.layers.0.mlp.down_proj.weight'
+            tensor = torch.tensor([[1.0, -2.0], [3.0, 4.0]], dtype=torch.float32)
+            torch.save({key: tensor}, path)
+            payload = path.read_bytes()
+            config = {'update': {'bytes': len(payload), 'sha256': hashlib.sha256(payload).hexdigest(),
+                                 'parameters': {key: {'shape': [2, 2], 'dtype': 'torch.float32'}}}}
+            state = read_overlay(path, config)
+            wrapper = Wrapper()
+            report = restore_overlay(wrapper, state, config)
+            self.assertTrue(report['all_bitwise_equal'])
+            self.assertTrue(torch.equal(dict(wrapper.named_parameters())[key].detach(), tensor))
+            b = bundle()
+            identity = {'fixture': 'safe-overlay-and-forward'}
+            run_worker(b, identity, 'base', Path(tmp) / 'scores',
+                       lambda r: score_one(wrapper, Tokenizer(), 'qwen', r, 8, 'cpu'))
+            self.assertEqual(wrapper.calls, 9)
+            self.assertEqual(len(records(Path(tmp) / 'scores/base.jsonl', b, digest(identity), 'base')), 9)
+            self.assertFalse(torch.cuda.is_initialized())
 
     def test_strict_full_load(self):
         import torch

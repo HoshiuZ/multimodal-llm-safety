@@ -21,5 +21,86 @@
       "sentencepiece": "0.2.2",
       "protobuf": "7.36.2"
     }
-  }
+  },
+  "base_small_files": {
+    "config.json": {
+      "bytes": 1318,
+      "sha256": "997c5b8dbd6c28b21f6e0cf4ad3aca8c0b2ee3899f6423c82bb0e7ae8887ffe5"
+    },
+    "special_tokens_map.json": {
+      "bytes": 434,
+      "sha256": "3bfecc94ec8988f1cadd0e761cbaf868019ad1fa6b4e10706e47ffd0b61b109b"
+    },
+    "tokenizer.json": {
+      "bytes": 9086064,
+      "sha256": "64e61f13441f4693892f4c085860f5f75f144ea58df50c5a33de7c79c07cce4c"
+    },
+    "tokenizer_config.json": {
+      "bytes": 51480,
+      "sha256": "862b052e1b020af9769627833863103d2c21bac5e1a716b0989b5d4b920c2cf0"
+    }
+  },
+  "update": {
+    "file_name": "updated_parameters.pt",
+    "bytes": 822087200,
+    "sha256": "627e161056ed640837eb007debe17ea225c23c781e5d154971b38a53822592f2",
+    "parameters": {
+      "model.language_model.layers.10.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.12.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.4.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.5.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.6.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.7.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.8.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          14336
+        ],
+        "dtype": "torch.bfloat16"
+      }
+    },
+    "method_summary": "GROM closed-form edits at layers 8, 10 and 12, followed by the recorded NPO update.",
+    "published_url": null
+  },
+  "full_checkpoint_manifest_status": "passed",
+  "base_checkpoint_file_hashes_previously_verified": true,
+  "base_checkpoint_revision_is_pinned": true,
+  "base_model_manifest_sha256": "599e40d39767c988985f72ace5b2302b76594150dd2a5df91912bc42adad7375",
+  "update_source_manifest_sha256": "b29dba1c25904930a6d96fa93a8353b189782e3ee92832ea55c1b9c214cd3e18"
 }

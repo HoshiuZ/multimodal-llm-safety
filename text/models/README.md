@@ -1,15 +1,19 @@
-# 用户自备完整 HF 模型
+# 完整基模与稀疏更新
 
-基模身份由三个 `configs/*.json` 记录，来源于实际模型 manifest：
+PKG2 的模型身份及本轮 sparse update 的键、shape、dtype、大小和 SHA256 见 `configs/*.json`。基模仓库与 revision 来自项目已通过的模型文件清单：
 
-| 模型 | 基模 repository | revision |
+| 模型 | 基模仓库 | revision |
 |---|---|---|
 | Qwen | Qwen/Qwen3-VL-8B-Instruct | 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b |
 | InternVL | OpenGVLab/InternVL3-8B | 853e3a797a661694b1b8ece0cb72dc2b23e3dac9 |
 | LLaVA | llava-hf/llama3-llava-next-8b-hf | b041c0d0ea0dd0196d147206c210c8d1752fc2da |
 
-运行时接受用户指定的本地完整 HF `save_pretrained` 目录，必须保留完整多模态 wrapper 权重、配置、tokenizer；InternVL 还需原始本地模型代码。清除模型应由模型提供方提前导出完整 HF 目录，本包不转换旧 overlay，不附控制向量、编辑方向或训练代码。权重缺失或键/shape不匹配严格失败，不能用忽略缺键的方式继续运行。
+评分时须提供对应 revision 的完整多模态 HF `save_pretrained` 目录，包含 wrapper 权重、config 与 tokenizer；InternVL 还依赖该 revision 的本地 remote code。禁止替换成语言祖先模型。加载要求完整键集合匹配、参数为 BF16、模型类及 attention 路径符合配置。
 
-配置中的 repository/revision 是历史基模来源记录；运行时以实际目录的内容 SHA 绑定模型，并不能凭 repository 字符串证明使用者自备文件确实来自对应远端 revision。正式复现须由提供方核验基模来源、导出过程和清除态对应关系，再运行完整模型复验。历史 overlay SHA 只用于区分旧参考检查点，不能当作完整 HF 导出的 SHA。
+overlay 文件不随公开包分发。运行前核验其大小与 SHA256；仅用 `weights_only=True` 读取张量，检查完整键集合、shape、dtype 和有限值，再复制到完整 wrapper 并逐键 bitwise 比较。恢复不会转换 dtype。`restore-check` 在 CPU 加载完整基模后执行相同恢复核验。
 
-最终清除模型的 Hugging Face 链接待后续提供。本包不含模型下载地址、权重、自动下载逻辑或凭据。原模型的许可与访问条件仍适用，详见 THIRD_PARTY_NOTICES。
+基模大型 shard 的 SHA256 已由原冻结模型清单与上游 LFS 信息记录；PKG2 运行逐文件核对小型 config/tokenizer 文件，但不重复哈希全部多 GB 权重。公开配置也不包含模型权重或 overlay 下载地址；目前没有已确认的公开发布链接。
+
+LLaVA 本轮实际加载的基模是 `llava-hf/llama3-llava-next-8b-hf`，revision 为 `b041c0d0ea0dd0196d147206c210c8d1752fc2da`，wrapper 为 `LlavaNextForConditionalGeneration`。现有材料将该 HF 来源记为工程候选；尚不明确的是它与测试方案所列正式 LLaVA 型号名称的对应关系。本轮实际加载身份明确如上。InternVL 的实际 overlay 有5个参数键，层为4、5、6、7、9；训练 manifest 记载的 NPO 阶段却指向层10–13。此来源差异未能从现有材料消解；结果仅能归属于 SHA 固定的实际 sparse update，不能断言 NPO 阶段对该文件的具体贡献。
+
+模型许可及访问限制继续适用。本包保留第三方许可与来源说明，未复制任何权重、tokenizer 数据集正文或凭据。

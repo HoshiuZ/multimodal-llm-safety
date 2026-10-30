@@ -23,5 +23,85 @@
       "einops": "0.8.2",
       "timm": "1.0.30"
     }
-  }
+  },
+  "base_small_files": {
+    "added_tokens.json": {
+      "bytes": 790,
+      "sha256": "e66b6bc948dec3421f01a8986f31632cf8d556aaa89f7b39c183b3dd4b5b2c83"
+    },
+    "config.json": {
+      "bytes": 6329,
+      "sha256": "cd0c54d0aa85fcd979cd2af524c0c08e26cdca278f05e96b635f298e34afae39"
+    },
+    "merges.txt": {
+      "bytes": 1671853,
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    "special_tokens_map.json": {
+      "bytes": 613,
+      "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+    },
+    "tokenizer.json": {
+      "bytes": 7033297,
+      "sha256": "ff61d7c33ad80987e37bcbeeeae7457c8e77d14a43a954fcde7be656fc26d6a9"
+    },
+    "tokenizer_config.json": {
+      "bytes": 7330,
+      "sha256": "705d8fbba57dae6bff1e6a1d695ba116fbf27761a4e8373bb68f5d4f0d88f19d"
+    },
+    "vocab.json": {
+      "bytes": 3383407,
+      "sha256": "87a257b04b17642a0688c98cd1df89c398bda4fee532d6f88b38a659ecb4ac8d"
+    }
+  },
+  "update": {
+    "file_name": "updated_parameters.pt",
+    "bytes": 678955986,
+    "sha256": "1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8",
+    "parameters": {
+      "language_model.model.layers.4.mlp.down_proj.weight": {
+        "shape": [
+          3584,
+          18944
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "language_model.model.layers.5.mlp.down_proj.weight": {
+        "shape": [
+          3584,
+          18944
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "language_model.model.layers.6.mlp.down_proj.weight": {
+        "shape": [
+          3584,
+          18944
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "language_model.model.layers.7.mlp.down_proj.weight": {
+        "shape": [
+          3584,
+          18944
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "language_model.model.layers.9.mlp.down_proj.weight": {
+        "shape": [
+          3584,
+          18944
+        ],
+        "dtype": "torch.bfloat16"
+      }
+    },
+    "method_summary": "GROM closed-form edits at layers 5, 7 and 9; the manifest also records a later NPO stage.",
+    "provenance_note": "The final manifest says NPO ran on layers 10-13, while this exact sparse overlay contains only layers 4, 5, 6, 7 and 9. This evaluation restores and scores only the hash-pinned overlay; the NPO stage's contribution to it is unresolved.",
+    "published_url": null
+  },
+  "full_checkpoint_manifest_status": "passed",
+  "base_checkpoint_file_hashes_previously_verified": true,
+  "base_checkpoint_revision_is_pinned": true,
+  "base_model_manifest_sha256": "fcf27a1e782f70a5fe4136817c6e4940fd3f1a2bc5730a81f72f8012abeac95f",
+  "update_source_manifest_sha256": "4922339a0d9b81a18d58dbc29d1a9605fb5cee5353af35235cfcd02dda21afd6"
 }

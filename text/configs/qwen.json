@@ -21,5 +21,69 @@
       "sentencepiece": "0.2.2",
       "protobuf": "7.36.2"
     }
-  }
+  },
+  "base_small_files": {
+    "config.json": {
+      "bytes": 1474,
+      "sha256": "5cd452860dc1e9c29dd71cc3cef7f39b338b7a40793f7a260655c2d3568f3661"
+    },
+    "merges.txt": {
+      "bytes": 1671839,
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    "tokenizer.json": {
+      "bytes": 7032403,
+      "sha256": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7"
+    },
+    "tokenizer_config.json": {
+      "bytes": 10868,
+      "sha256": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399"
+    },
+    "vocab.json": {
+      "bytes": 2776833,
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  },
+  "update": {
+    "file_name": "updated_parameters.pt",
+    "bytes": 402656007,
+    "sha256": "53b2ed3e8b9b3a21884d48ec9c784de67d6b6b9d4f6e0c912ff4326833f30d68",
+    "parameters": {
+      "model.language_model.layers.4.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.5.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.6.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "model.language_model.layers.7.mlp.down_proj.weight": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "dtype": "torch.bfloat16"
+      }
+    },
+    "method_summary": "GROM cyber-direction closed-form edit at layer 7 (c=50), followed by two NPO steps at layers 4–7.",
+    "published_url": null
+  },
+  "full_checkpoint_manifest_status": "passed",
+  "base_checkpoint_file_hashes_previously_verified": true,
+  "base_checkpoint_revision_is_pinned": true,
+  "base_model_manifest_sha256": "50d50b4820a4e3e2c1b264c80c83e75acd22653ae86469b04b4faa77f1b2f547",
+  "update_source_manifest_sha256": "e14410a1f8753e7f9ccfa1a559e970cbb71ed0ec7f16df2abf2a9058c423c166"
 }

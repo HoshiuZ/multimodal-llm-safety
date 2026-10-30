@@ -50,11 +50,12 @@ def records(path, bundle, contract, state, complete=False):
     return seen
 
 
-def run_worker(bundle, identity, state, output, scorer):
+def run_worker(bundle, identity, state, output, scorer, progress_every=250):
     if state not in ('base', 'cleared'):
         raise ValueError('unknown state')
     root = Path(output)
-    root.mkdir(parents=True, exist_ok=True)
+    root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(root, 0o700)
     # Cooperative lock prevents simultaneous runs from duplicating append records.
     import fcntl
     with (root / '.worker.lock').open('a') as lock:
@@ -68,11 +69,14 @@ def run_worker(bundle, identity, state, output, scorer):
             if any(root.glob('*.jsonl')):
                 raise ValueError('score records lack original contract')
             write(manifest, identity)
+        os.chmod(manifest, 0o600)
         expected = scopes(bundle)
         path = root / f'{state}.jsonl'
         seen = records(path, bundle, contract, state)
+        if path.exists():
+            os.chmod(path, 0o600)
         with path.open('a', encoding='utf-8') as stream:
-            for (scene, qid), row in expected.items():
+            for offset, ((scene, qid), row) in enumerate(expected.items(), start=1):
                 if (scene, qid) in seen:
                     continue
                 scores = scorer(row)
@@ -85,6 +89,10 @@ def run_worker(bundle, identity, state, output, scorer):
                 stream.write(canonical(rec) + '\n')
                 stream.flush()
                 os.fsync(stream.fileno())
+                if offset == 1:
+                    print(f'first_scorer_returned state={state} kind={bundle["kind"]}', flush=True)
+                if progress_every and (offset % progress_every == 0 or offset == len(expected)):
+                    print(f'progress state={state} kind={bundle["kind"]} rows={offset}/{len(expected)}', flush=True)
         return len(records(path, bundle, contract, state, complete=True))
 
 
@@ -96,12 +104,24 @@ def aggregate(bundle, identity, output, threshold=65):
     states = {s: records(root / f'{s}.jsonl', bundle, contract, s, complete=True) for s in ('base', 'cleared')}
     counts = {}
     by_domain = {}
+    by_subject = {}
     for scene, rows in bundle['scenes'].items():
         keys = [(scene, row['question_id']) for row in rows]
         counts[scene] = {'n': len(keys), **{s: sum(states[s][k]['correct'] for k in keys) for s in states}}
-        by_domain[scene] = {}
-        for domain in ('bio', 'cyber', 'chem'):
-            selected = [(scene, r['question_id']) for r in rows if r['domain'] == domain]
-            by_domain[scene][domain] = {'n': len(selected), **{s: sum(states[s][k]['correct'] for k in selected) for s in states}}
-    return {'contract': contract, 'kind': bundle['kind'], 'source': bundle['source'],
-            'counts': counts, 'by_domain': by_domain, 'metrics': metrics(counts, bundle['kind'], threshold)}
+        if bundle['kind'] == 'M':
+            by_subject[scene] = {}
+            for subject in sorted({r['subject'] for r in rows}):
+                selected = [(scene, r['question_id']) for r in rows if r['subject'] == subject]
+                by_subject[scene][subject] = {'n': len(selected), **{s: sum(states[s][k]['correct'] for k in selected) for s in states}}
+        else:
+            by_domain[scene] = {}
+            for domain in ('bio', 'cyber', 'chem'):
+                selected = [(scene, r['question_id']) for r in rows if r['domain'] == domain]
+                by_domain[scene][domain] = {'n': len(selected), **{s: sum(states[s][k]['correct'] for k in selected) for s in states}}
+    result = {'contract': contract, 'kind': bundle['kind'], 'source': bundle['source'],
+              'counts': counts, 'by_domain': by_domain}
+    if bundle['kind'] == 'M':
+        result['by_subject'] = by_subject
+    else:
+        result['metrics'] = metrics(counts, bundle['kind'], threshold)
+    return result

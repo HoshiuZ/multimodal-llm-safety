@@ -28,6 +28,7 @@ text/models/*
 !text/models/README.md
 text/results/*
 !text/results/reference_results.json
+!text/results/pkg2_c_and_other49.json
 !text/results/source_provenance.json
 text/outputs/*
 !text/outputs/.gitkeep
