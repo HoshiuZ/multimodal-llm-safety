@@ -61,7 +61,7 @@ Download the frozen derived-asset dataset at the exact revision in [`data/README
 
 ```bash
 hf download boli-003/mm-safetybench-vl-eval-assets --repo-type dataset \
-  --revision DATASET_COMMIT --local-dir external/eval-assets
+  --revision fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3 --local-dir external/eval-assets
 ```
 
 The dataset includes `figstep/`, `hades_local_v1/`, and `normal_utility/`. Check each manifest against its image hashes using the commands in [`data/README.md`](data/README.md). Build the fixed base subset from the upstream manifest and the checked-in ID-only selection file:

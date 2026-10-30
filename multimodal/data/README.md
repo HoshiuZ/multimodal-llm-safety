@@ -1,6 +1,12 @@
 # 多模态数据获取
 
-GitHub 不包含题库原件、图像、模型缓存或评测输出。冻结攻击图像和正常能力清单单独发布在 Hugging Face 数据集仓库，按固定 revision 下载：**[boli-003/mm-safetybench-vl-eval-assets](https://huggingface.co/datasets/boli-003/mm-safetybench-vl-eval-assets)**（revision 将在仓库发布后更新到确切 commit）。下载后的目录含 `figstep/`、`hades_local_v1/`、`normal_utility/` 三个子目录。
+GitHub 不包含题库原件、图像、模型缓存或评测输出。冻结攻击图像和正常能力清单单独发布在 Hugging Face 数据集仓库，固定 revision 为 **`fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3`**：[该 commit 的文件树](https://huggingface.co/datasets/boli-003/mm-safetybench-vl-eval-assets/tree/fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3)。下载后的目录含 `figstep/`、`hades_local_v1/`、`normal_utility/` 三个子目录。
+
+```bash
+hf download boli-003/mm-safetybench-vl-eval-assets --repo-type dataset \
+  --revision fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3 \
+  --local-dir external/eval-assets
+```
 
 ## MM-SafetyBench 官方输入
 
@@ -63,4 +69,4 @@ VQA 标注按官方 CC BY 4.0 条款署名；COCO/OpenImages 图像仍受各自�
 | HADES 风格图像 | `hades_local_v1` manifest + 1,008 成品图；协议 `hades-local-mmsb-constrained-v1-recovery-v3` | 项目自建素材；不声称为官方 HADES；CC BY-NC 派生限制 |
 | 正常能力 manifest | 1,000 行；VQAv2 500 + TextVQA 500 | 标注 CC BY 4.0；图像由测试方从官方来源取得并遵循图像许可 |
 
-HF 数据集 repo 的精确 commit、文件 hash 和直接下载命令会记录到本页及 [`../results/source_provenance.json`](../results/source_provenance.json)。发布完成前不要用浮动 `main` revision 复现。
+HF 数据集 repo commit、三份 manifest hash 和直接下载命令记录在本页及 [`../results/source_provenance.json`](../results/source_provenance.json)。请使用固定 commit，不要使用浮动 `main` revision。

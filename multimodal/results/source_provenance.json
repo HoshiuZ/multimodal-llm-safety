@@ -32,7 +32,7 @@
       "annotations": "The HF dataset repo contains a manifest with question IDs, answer references, and source image hashes. Obtain source images from official providers."
     },
     "hf_dataset_repo": "boli-003/mm-safetybench-vl-eval-assets",
-    "hf_dataset_revision": "PENDING_UPLOAD"
+    "hf_dataset_revision": "fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3"
   },
   "models": {
     "base_revisions_and_tree_hashes": "configs/model_registry.json",

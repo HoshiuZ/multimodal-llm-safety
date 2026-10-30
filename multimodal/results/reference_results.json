@@ -10,7 +10,16 @@
     "stability_subset_file": "data/sample_1008_seed42.txt",
     "stability_subset_file_sha256": "9b657d1f8b741bc0d20cbf30071ce1d5c93f34175c02f94945699030f60c285e",
     "figstep_protocol": "figstep-mmsb-port-v1",
-    "hades_protocol": "hades-local-mmsb-constrained-v1-recovery-v3; local project variant, not official HADES"
+    "hades_protocol": "hades-local-mmsb-constrained-v1-recovery-v3; local project variant, not official HADES",
+    "asset_release": {
+      "hf_repo": "boli-003/mm-safetybench-vl-eval-assets",
+      "hf_revision": "fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3",
+      "manifest_sha256": {
+        "figstep": "be0baea9b3159725345655ecbaec57a29f75235bcc3ef579ba07f8548e8a5c2f",
+        "hades_local_v1": "5e40269fe2bceafb92f915ebdbdaa8859e230fc46d39c8f82500980618c2c119",
+        "normal_utility": "6f1d6d2008bd4d29ce154f02a38b479dfa6b9f218e269e6b948199dac7cb4c2b"
+      }
+    }
   },
   "method": {
     "id": "unified-M1-M3-v8-MM-SafetyBench-project-proposed-2026-10-30",
