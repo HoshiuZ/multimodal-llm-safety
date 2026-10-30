@@ -101,6 +101,9 @@ def worker(args):
  if transformers.__version__!='5.16.1' or torch.cuda.device_count()!=6:raise RuntimeError('evidence retry requires the hkc env and six visible GPUs')
  rank=int(os.environ.get('LOCAL_RANK',args.rank if args.rank is not None else 0));torch.cuda.set_device(rank);device=f'cuda:{rank}'
  root=args.output_dir.resolve();meta=json.loads((root/'run_metadata.json').read_text());model_path=args.model_path.expanduser().resolve()
+ if meta.get('model_key')!=args.model_key:raise ValueError('retry worker model key differs from prepared inputs')
+ if sha(args.input_judgments.resolve())!=meta.get('input_judgments_sha256') or sha(args.generation_input.resolve())!=meta.get('generation_input_sha256'):
+  raise ValueError('retry inputs changed after prepare')
  tree,_=J.fingerprint_model_tree(str(model_path))
  if tree!=meta['expected_judge_tree_sha256']:raise ValueError('judge checkpoint tree SHA differs')
  tokenizer,model=J.load_judge_model(str(model_path),rank,torch)
@@ -118,7 +121,11 @@ def worker(args):
  save(root/f'replica.rank-{rank:02d}.json',dict(run_id=meta['run_id'],rank=rank,records=records))
  print(f'retry replica {rank}: {len(records)} rows',flush=True)
 def merge(args):
- root=args.output_dir.resolve();meta=json.loads((root/'run_metadata.json').read_text());old=file_rows(args.input_judgments.resolve());pending=file_rows(root/'pending.jsonl');byold={x['sample_id']:x for x in old};reps=[];passed=0
+ root=args.output_dir.resolve();meta=json.loads((root/'run_metadata.json').read_text())
+ if meta.get('model_key')!=args.model_key:raise ValueError('retry merge model key differs from prepared inputs')
+ if sha(args.input_judgments.resolve())!=meta.get('input_judgments_sha256') or sha(args.generation_input.resolve())!=meta.get('generation_input_sha256'):
+  raise ValueError('retry inputs changed after prepare')
+ old=file_rows(args.input_judgments.resolve());pending=file_rows(root/'pending.jsonl');byold={x['sample_id']:x for x in old};reps=[];passed=0
  for rank in range(6):
   c=json.loads((root/f'controls.rank-{rank:02d}.json').read_text())
   if c.get('run_id')!=meta['run_id'] or not c.get('passed') or len(c['outcomes'])!=45:raise ValueError('retry controls incomplete')
