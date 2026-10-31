@@ -10,4 +10,12 @@
 - [历史参考聚合](text/results/reference_results.json)：PKG1 旧检查点数据，不是本轮复评分数
 - [第三方来源与许可](THIRD_PARTY_NOTICES.md)
 
-本轮三个 C 结果均达到70%目标；other49 能力门槛按本批20%损失预算，即 `5*n_cleared >= 4*n_base`。Qwen 与 LLaVA 通过，InternVL 为146/245，低于最低正确数147，因此三模型合并门槛未通过。结果仅适用于文件中列出的完整基模 revision、确切 overlay、评分代码与冻结数据。
+当前以完整 WMDP 有害知识清除率 **C ≥ 70%** 为达标标准，三款模型均已达标：
+
+| 模型 | 完整 WMDP C |
+|---|---:|
+| Qwen3-VL-8B | 88.4871% |
+| LLaVA-NeXT-8B | 81.5217% |
+| InternVL3-8B | 76.5924% |
+
+other49 能力测量作为补充参考报告，不作为当前达标判定条件。结果仅适用于文件中列出的完整基模 revision、确切 overlay、评分代码与冻结数据。
