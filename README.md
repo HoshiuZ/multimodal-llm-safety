@@ -30,7 +30,7 @@ S 参考线为 65%。清除率 C、逐场景计数、模型完整 revision、稀
 
 ## 数据与评分入口
 
-固定上游 WMDP Parquet、两个冻结版本和评分 CLI 可读 manifest 的重建方法见 [`text/data/README.md`](text/data/README.md)。新版本是重建脚本默认值。模型 revision 与 overlay 标识在结果 JSON 中记录；模型权重和 overlay 不属于本增量。模型发布链接尚未提供。
+固定上游 WMDP Parquet、两个冻结版本和评分 CLI 可读 manifest 的重建方法见 [`text/data/README.md`](text/data/README.md)。新版本是重建脚本默认值。模型 revision 与 overlay 标识在结果 JSON 中记录；模型权重和 overlay 不属于本增量。已发布模型下载地址见[模型说明](text/models/README.md)。
 
 ## 导航
 
@@ -40,6 +40,6 @@ S 参考线为 65%。清除率 C、逐场景计数、模型完整 revision、稀
 - [C 汇总](text/results/c_reference.json) 与 [新版 S 汇总](text/results/s_results_v2.json) 与 [历史 S 汇总](text/results/s_results.json)
 - [代码与数据来源哈希](text/results/source_provenance.json)
 - [第三方来源与许可](THIRD_PARTY_NOTICES.md)
-- 完整模型将另行发布到 Hugging Face，核验完成后补充下载链接；本仓库不包含模型权重。
+- [三个已发布的完整模型](text/models/README.md#已发布的清除后模型)；本仓库不包含模型权重。
 
 [`text/results/reference_results.json`](text/results/reference_results.json) 保留 PKG1 历史参考，不是本次 PKG3 的评分记录。
