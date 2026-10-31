@@ -11,6 +11,9 @@ import shutil
 
 REPOSITORY = "cais/wmdp"
 REVISION = "7125571f22f032c56415e7980f48d877dd830ff8"
+SREV1_PACKAGE_MANIFEST_SHA256 = "b89785624ffbaf9e427851704715e481508f8a2e1d3cec42cc7c3a9c9a77788c"
+DEFAULT_DATASET_VERSION = "srev1_partial147_20261031_v1"
+HISTORICAL_DATASET_VERSION = "pkg3_s2_v1"
 SPLIT = "test"
 DOMAINS = (
     ("bio", "wmdp-bio", 1273, 255),
@@ -79,22 +82,22 @@ def rows_sha256(rows: list[dict]) -> str:
 
 
 def verify_source_manifest(path: Path, source_files: dict[str, Path], c_rows: list[dict],
-                           scenes: dict[str, list[dict]], freeze_dir: Path) -> str:
+                           scenes: dict[str, list[dict]], selection_path: Path,
+                           syntax_path: Path, paraphrase_path: Path, frozen_meta_path: Path,
+                           revision_selection_path: Path | None) -> str:
     """Bind a minimal release's source files and reconstructed JSONL to its pinned hashes."""
     expected = json.loads(path.read_text(encoding="utf-8"))
     if (expected.get("repository") != REPOSITORY or expected.get("revision") != REVISION
             or expected.get("license") != "MIT"):
         raise ValueError("expected source manifest repository/revision/license mismatch")
+    if expected.get("dataset_version") not in (None, DEFAULT_DATASET_VERSION, HISTORICAL_DATASET_VERSION):
+        raise ValueError("expected source manifest dataset version mismatch")
     actual_sources = {
         name: {"sha256": sha256_file(source_files[name]), "bytes": source_files[name].stat().st_size}
         for name in EXPECTED_SHA256
     }
     if expected.get("source_files") != actual_sources:
         raise ValueError("downloaded/local source files differ from the pinned source manifest")
-    selection_path = freeze_dir / "s2_selection_734.jsonl"
-    syntax_path = freeze_dir / "s2_syntax_questions.jsonl"
-    paraphrase_path = freeze_dir / "s2_paraphrase_questions.jsonl"
-    frozen_meta_path = freeze_dir / "s2_frozen_manifest.json"
     actual = {
         "C_rows": len(c_rows),
         "S_rows_per_scene": 734,
@@ -105,6 +108,8 @@ def verify_source_manifest(path: Path, source_files: dict[str, Path], c_rows: li
         "S_paraphrase_patch_sha256": sha256_file(paraphrase_path),
         "S_frozen_manifest_sha256": sha256_file(frozen_meta_path),
     }
+    if revision_selection_path is not None:
+        actual["S_revision_selection_sha256"] = sha256_file(revision_selection_path)
     expected_reconstruction = expected.get("reconstruction", {})
     for key, value in actual.items():
         if expected_reconstruction.get(key) != value:
@@ -236,6 +241,61 @@ def assemble_s(c_rows: list[dict], selection_path: Path, syntax_path: Path,
     return scenes
 
 
+def validate_partial147_inputs(freeze_root: Path, freeze_dir: Path, frozen_meta: dict,
+                               base_selection_path: Path, revision_selection_path: Path,
+                               syntax_path: Path, paraphrase_path: Path) -> None:
+    if frozen_meta.get("schema") != "pkg3-srev1-partial147-frozen-inputs-v1":
+        raise ValueError("unsupported partial147 frozen manifest schema")
+    if frozen_meta.get("dataset_version") != DEFAULT_DATASET_VERSION:
+        raise ValueError("partial147 dataset version mismatch")
+    if frozen_meta.get("base_selection", {}).get("sha256") != sha256_file(base_selection_path):
+        raise ValueError("partial147 parent selection hash mismatch")
+    if frozen_meta.get("revision_selection", {}).get("sha256") != sha256_file(revision_selection_path):
+        raise ValueError("partial147 selection hash mismatch")
+    if frozen_meta.get("patches", {}).get("syntax", {}).get("sha256") != sha256_file(syntax_path):
+        raise ValueError("partial147 syntax patch hash mismatch")
+    if frozen_meta.get("patches", {}).get("paraphrase", {}).get("sha256") != sha256_file(paraphrase_path):
+        raise ValueError("partial147 paraphrase patch hash mismatch")
+    base_rows = read_jsonl(base_selection_path)
+    selected_rows = read_jsonl(revision_selection_path)
+    if len(base_rows) != 734 or len(selected_rows) != 147:
+        raise ValueError("partial147 parent/revision selection row count mismatch")
+    base_by_id = {row.get("question_id"): row for row in base_rows}
+    selected_by_id = {row.get("question_id"): row for row in selected_rows}
+    if (None in base_by_id or None in selected_by_id or len(base_by_id) != 734
+            or len(selected_by_id) != 147 or not set(selected_by_id) <= set(base_by_id)):
+        raise ValueError("partial147 selection has duplicate or unknown IDs")
+    for qid, row in selected_by_id.items():
+        parent = base_by_id[qid]
+        if any(row.get(field) != parent.get(field) for field in ("domain", "source_row_sha256")):
+            raise ValueError("partial147 selection changed parent source binding")
+    domains = {domain: sum(row.get("domain") == domain for row in selected_rows)
+               for domain in ("bio", "cyber", "chem")}
+    if domains != {"bio": 51, "cyber": 80, "chem": 16}:
+        raise ValueError("partial147 selection domain counts mismatch")
+
+    old_and_new = (
+        (freeze_root / "s2_syntax_questions.jsonl", syntax_path),
+        (freeze_root / "s2_paraphrase_questions.jsonl", paraphrase_path),
+    )
+    for old_path, new_path in old_and_new:
+        old_lines = old_path.read_bytes().splitlines(keepends=True)
+        new_lines = new_path.read_bytes().splitlines(keepends=True)
+        if len(old_lines) != 734 or len(new_lines) != 734:
+            raise ValueError("partial147 variant patches must each contain 734 JSONL rows")
+        old_by = {json.loads(line)["question_id"]: line for line in old_lines}
+        new_by = {json.loads(line)["question_id"]: line for line in new_lines}
+        if set(old_by) != set(new_by) or len(new_by) != 734:
+            raise ValueError("partial147 variant IDs/order coverage differ from historical patch")
+        changed = {qid for qid in old_by if old_by[qid] != new_by[qid]}
+        unchanged = set(old_by) - changed
+        if changed != set(selected_by_id) or len(unchanged) != 587:
+            raise ValueError("partial147 patches must replace exactly selected 147 rows")
+        for qid in unchanged:
+            if old_by[qid] != new_by[qid]:
+                raise ValueError("an unselected historical variant line changed")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     source = parser.add_mutually_exclusive_group(required=True)
@@ -244,7 +304,13 @@ def main() -> None:
     source.add_argument("--download", action="store_true",
                         help="download those exact files from cais/wmdp at the pinned revision")
     parser.add_argument("--hub-cache", type=Path, default=Path.home() / ".cache/huggingface/hub")
-    parser.add_argument("--freeze-dir", type=Path, default=Path(__file__).resolve().parent / "frozen")
+    parser.add_argument("--dataset-version", choices=(DEFAULT_DATASET_VERSION, HISTORICAL_DATASET_VERSION),
+                        default=DEFAULT_DATASET_VERSION,
+                        help="S dataset; defaults to the revised 147-item variant set")
+    parser.add_argument("--freeze-root", type=Path, default=Path(__file__).resolve().parent / "frozen",
+                        help="root holding the historical PKG3 selection and versioned S freezes")
+    parser.add_argument("--freeze-dir", type=Path,
+                        help="optional direct override for the chosen version's frozen input directory")
     parser.add_argument("--output-dir", type=Path, required=True,
                         help="new directory for the rebuilt C and S bundles; it must not already exist")
     parser.add_argument("--expected-c-jsonl", type=Path,
@@ -258,21 +324,36 @@ def main() -> None:
     if args.output_dir.exists():
         raise FileExistsError(f"refusing to overwrite existing output directory: {args.output_dir}")
     source_files = fetch_source_files(args.hub_cache) if args.download else local_source_files(args.source_cache)
-    selection_path = args.freeze_dir / "s2_selection_734.jsonl"
-    syntax_path = args.freeze_dir / "s2_syntax_questions.jsonl"
-    paraphrase_path = args.freeze_dir / "s2_paraphrase_questions.jsonl"
-    frozen_meta_path = args.freeze_dir / "s2_frozen_manifest.json"
+    base_selection_path = args.freeze_root / "s2_selection_734.jsonl"
+    if args.dataset_version == DEFAULT_DATASET_VERSION:
+        freeze_dir = args.freeze_dir or args.freeze_root / "srev1_partial147_v1"
+        selection_path = base_selection_path
+        revision_selection_path = freeze_dir / "selection_147.jsonl"
+        syntax_path = freeze_dir / "syntax_v2_questions_734.jsonl"
+        paraphrase_path = freeze_dir / "paraphrase_v2_questions_734.jsonl"
+        frozen_meta_path = freeze_dir / "manifest.json"
+    else:
+        freeze_dir = args.freeze_dir or args.freeze_root
+        selection_path = base_selection_path
+        revision_selection_path = None
+        syntax_path = freeze_dir / "s2_syntax_questions.jsonl"
+        paraphrase_path = freeze_dir / "s2_paraphrase_questions.jsonl"
+        frozen_meta_path = freeze_dir / "s2_frozen_manifest.json"
     frozen_meta = json.loads(frozen_meta_path.read_text(encoding="utf-8"))
-    if (frozen_meta.get("schema") != "pkg3-s2-frozen-inputs-v1"
-            or frozen_meta.get("selection_sha256") != sha256_file(selection_path)
-            or frozen_meta.get("variant_patch_sha256", {}).get(syntax_path.name) != sha256_file(syntax_path)
-            or frozen_meta.get("variant_patch_sha256", {}).get(paraphrase_path.name) != sha256_file(paraphrase_path)):
-        raise ValueError("frozen S selection/patch identity differs from its manifest")
+    if args.dataset_version == DEFAULT_DATASET_VERSION:
+        validate_partial147_inputs(args.freeze_root, freeze_dir, frozen_meta, base_selection_path,
+                                   revision_selection_path, syntax_path, paraphrase_path)
+    elif (frozen_meta.get("schema") != "pkg3-s2-frozen-inputs-v1"
+          or frozen_meta.get("selection_sha256") != sha256_file(selection_path)
+          or frozen_meta.get("variant_patch_sha256", {}).get(syntax_path.name) != sha256_file(syntax_path)
+          or frozen_meta.get("variant_patch_sha256", {}).get(paraphrase_path.name) != sha256_file(paraphrase_path)):
+        raise ValueError("historical S selection/patch identity differs from its manifest")
     c_rows = read_upstream_rows(source_files)
     scenes = assemble_s(c_rows, selection_path, syntax_path, paraphrase_path)
     expected_manifest = args.expected_source_manifest
     if expected_manifest is None:
-        candidate = args.freeze_dir / "prepared" / "source_manifest.json"
+        candidate = (freeze_dir / "source_manifest.json" if args.dataset_version == DEFAULT_DATASET_VERSION
+                     else freeze_dir / "prepared" / "source_manifest.json")
         if candidate.is_file():
             expected_manifest = candidate
     expected_manifest_sha = None
@@ -280,7 +361,8 @@ def main() -> None:
         if not expected_manifest.is_file():
             raise FileNotFoundError(f"expected source manifest missing: {expected_manifest}")
         expected_manifest_sha = verify_source_manifest(
-            expected_manifest, source_files, c_rows, scenes, args.freeze_dir)
+            expected_manifest, source_files, c_rows, scenes, selection_path,
+            syntax_path, paraphrase_path, frozen_meta_path, revision_selection_path)
     if args.expected_c_jsonl:
         expected_c = read_jsonl(args.expected_c_jsonl)
         fields = ("question_id", "source_row_sha256", "domain", "question", "choices", "answer_index")
@@ -305,6 +387,7 @@ def main() -> None:
     write_json(out / "C" / "manifest.json", {
         "schema": "text-eval-v1", "kind": "C",
         "source": f"{REPOSITORY}@{REVISION}; official Parquet SHA256 pinned in source_manifest.json",
+        "dataset_version": args.dataset_version,
         "scenes": {"original": "original.jsonl"},
         "source_manifest": "../source_manifest.json",
     })
@@ -316,13 +399,26 @@ def main() -> None:
         s_files[scene] = filename
     write_json(out / "S" / "manifest.json", {
         "schema": "text-eval-v1", "kind": "S",
-        "source": f"{REPOSITORY}@{REVISION}; frozen S2 selection and variants listed in the package data README",
+        "source": (f"{REPOSITORY}@{REVISION}; dataset_version={DEFAULT_DATASET_VERSION}; "
+                   f"srev1_package_manifest_sha256={SREV1_PACKAGE_MANIFEST_SHA256}"
+                   if args.dataset_version == DEFAULT_DATASET_VERSION else
+                   f"{REPOSITORY}@{REVISION}; frozen S2 selection and variants listed in the package data README"),
+        "dataset_version": args.dataset_version,
         "scenes": s_files,
         "frozen_identity": {
-            "sample_selection_sha256": frozen_meta["selection_sha256"],
-            "syntax_patch_sha256": frozen_meta["variant_patch_sha256"][syntax_path.name],
-            "paraphrase_patch_sha256": frozen_meta["variant_patch_sha256"][paraphrase_path.name],
-            "scene_input_sha256": frozen_meta["scene_input_sha256"],
+            "sample_selection_sha256": (frozen_meta["base_selection"]["sha256"]
+                                         if revision_selection_path is not None else
+                                         frozen_meta["selection_sha256"]),
+            "revision_selection_sha256": (None if revision_selection_path is None
+                                           else sha256_file(revision_selection_path)),
+            "syntax_patch_sha256": (frozen_meta["patches"]["syntax"]["sha256"]
+                                     if revision_selection_path is not None else
+                                     frozen_meta["variant_patch_sha256"][syntax_path.name]),
+            "paraphrase_patch_sha256": (frozen_meta["patches"]["paraphrase"]["sha256"]
+                                         if revision_selection_path is not None else
+                                         frozen_meta["variant_patch_sha256"][paraphrase_path.name]),
+            "frozen_manifest_sha256": sha256_file(frozen_meta_path),
+            "scene_input_sha256": {scene: rows_sha256(rows) for scene, rows in scenes.items()},
         },
     })
     comparison = "not requested"
@@ -337,9 +433,11 @@ def main() -> None:
         "reconstruction": {
             "C_rows": len(c_rows), "S_rows_per_scene": 734,
             "C_jsonl_sha256": c_digest, "S_jsonl_sha256": s_digests,
-            "S_selection_sha256": sha256_file(args.freeze_dir / "s2_selection_734.jsonl"),
-            "S_syntax_patch_sha256": sha256_file(args.freeze_dir / "s2_syntax_questions.jsonl"),
-            "S_paraphrase_patch_sha256": sha256_file(args.freeze_dir / "s2_paraphrase_questions.jsonl"),
+            "S_selection_sha256": sha256_file(selection_path),
+            "S_revision_selection_sha256": (None if revision_selection_path is None
+                                             else sha256_file(revision_selection_path)),
+            "S_syntax_patch_sha256": sha256_file(syntax_path),
+            "S_paraphrase_patch_sha256": sha256_file(paraphrase_path),
             "S_frozen_manifest_sha256": sha256_file(frozen_meta_path),
             "field_and_order_comparison": comparison,
             "expected_source_manifest_sha256": expected_manifest_sha,

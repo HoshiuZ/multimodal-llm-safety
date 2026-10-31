@@ -1,0 +1,36 @@
+{
+  "dataset_version": "srev1_partial147_20261031_v1",
+  "license": "MIT",
+  "reconstruction": {
+    "C_jsonl_sha256": "485d143c2d2666c23763d1df41ad1eba3b86f7f332a80c17978b81ec0164fcd7",
+    "C_rows": 3668,
+    "S_frozen_manifest_sha256": "93757288291907e08ad2cb44bfa9d0204851d7882b9efdcd209a542348fe8247",
+    "S_jsonl_sha256": {
+      "original": "f63d16f6ca68046e89ddfca0a9f82c6f3136c5217ce497ad5ed39272972ecc37",
+      "paraphrase": "84a98df3c2049baa72e6d46dec03521756b8b504f197de618e8ab5969642c1ba",
+      "syntax": "6342a6b0eca2ebe65beaa125042f098827cec6797a24a86b3eed33ffc3c13945"
+    },
+    "S_paraphrase_patch_sha256": "0ba5500e0ae94d0718f2feece59404c4d8ec3730f37c8a9a7505eae613d6408d",
+    "S_revision_selection_sha256": "47a710bedb7baef4f6574aefc6ff7dcdb880f44f7e5137618b602fa96418f101",
+    "S_rows_per_scene": 734,
+    "S_selection_sha256": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4",
+    "S_syntax_patch_sha256": "8a087cc90d487ca0d51ab0e5d894b63d9a816ceb290bfdf1870a4b575639b9c4",
+    "field_and_order_comparison": "passed against frozen S scene JSONL"
+  },
+  "repository": "cais/wmdp",
+  "revision": "7125571f22f032c56415e7980f48d877dd830ff8",
+  "source_files": {
+    "wmdp-bio/test-00000-of-00001.parquet": {
+      "bytes": 258073,
+      "sha256": "738cee28e11e4dcf9a0efc6b2c22b425bddda4b2b69477a11f38539c86cf00b7"
+    },
+    "wmdp-chem/test-00000-of-00001.parquet": {
+      "bytes": 50801,
+      "sha256": "b9e5f2be6c7526931ae8aeb2eea246baa4144d2ba8d0de1de09905aaa84912ce"
+    },
+    "wmdp-cyber/test-00000-of-00001.parquet": {
+      "bytes": 805692,
+      "sha256": "ec65f7ba4a9cd1ef368618ebd2b90b6d930f9b9f053f67a926b82fd71d87b4fe"
+    }
+  }
+}

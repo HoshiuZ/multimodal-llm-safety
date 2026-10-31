@@ -76,6 +76,25 @@ class TestMetrics(unittest.TestCase):
         counts['syntax']['cleared']=430
         self.assertLess(metrics(counts,'S')['S_percent'],0)
 
+    def test_raw_and_capped_s_are_exact_and_keep_negative_values(self):
+        counts={'original':{'base':357,'cleared':218,'n':734},
+                'syntax':{'base':346,'cleared':212,'n':734},
+                'paraphrase':{'base':346,'cleared':212,'n':734}}
+        out=metrics(counts,'S')
+        self.assertEqual(out['S']['raw_S']['exact'],[185992,1807])
+        self.assertEqual(out['S']['capped_S']['exact'],[100,1])
+        self.assertEqual(out['S_percent'],out['S']['raw_S']['percent'])
+        self.assertEqual(out['S']['cap_formula'],'capped_S=min(raw_S,100)')
+
+        counts['syntax']={'base':8,'cleared':9,'n':20}
+        counts['original']={'base':8,'cleared':7,'n':20}
+        counts['paraphrase']={'base':8,'cleared':0,'n':20}
+        negative_out=metrics(counts,'S')
+        negative=negative_out['S']
+        self.assertLess(negative_out['C']['syntax']['percent'],0)
+        self.assertLess(negative['raw_S']['percent'],0)
+        self.assertEqual(negative['raw_S'],negative['capped_S'])
+
 
 class TestSchema(unittest.TestCase):
     def test_duplicate_keys_roundtrip(self):
@@ -372,6 +391,8 @@ class TestCli(unittest.TestCase):
                     with patch.object(sys,'argv',[str(script)]+args):cli.main()
                 result=read(root/'out/aggregate.json')
                 self.assertEqual(result['counts']['original']['n'],3)
+                self.assertIn('raw_S',result['metrics']['S'])
+                self.assertIn('capped_S',result['metrics']['S'])
                 self.assertEqual(len((root/'out/base.jsonl').read_text().splitlines()),9)
                 self.assertFalse(torch.cuda.is_initialized())
 
@@ -466,7 +487,12 @@ class TestSTextAudit(unittest.TestCase):
                        '--cleared-contract', str(root / 'cleared/contract.json'), '--output', str(output)]
             run = subprocess.run(command, check=True, capture_output=True, text=True)
             self.assertIn('"expected_per_state": 2202', run.stdout)
-            self.assertEqual(read(output)['coverage']['paired_identity_match'], True)
+            self.assertIn('"raw_S"', run.stdout)
+            self.assertIn('"capped_S"', run.stdout)
+            result=read(output)
+            self.assertEqual(result['coverage']['paired_identity_match'], True)
+            self.assertEqual(result['raw_S'],result['S']['raw_S'])
+            self.assertEqual(result['capped_S'],result['S']['capped_S'])
 
             original = paths['base'].read_text(encoding='utf-8').splitlines(True)
             paths['base'].write_text(''.join(original[:-1]), encoding='utf-8')

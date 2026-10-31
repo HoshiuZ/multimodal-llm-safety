@@ -43,7 +43,7 @@ def main():
     inv.add_argument('--output', required=True, type=Path)
     pre = sub.add_parser('preflight', help='CPU paired data/model/token/code identity; no model forward')
     run = sub.add_parser('run', help='score one state; resume only exact identity')
-    agg = sub.add_parser('aggregate', help='strict complete-pair CPU C or S aggregation')
+    agg = sub.add_parser('aggregate', help='strict complete-pair CPU C or raw/capped S aggregation')
     for parser in (pre, run, agg):
         parser.add_argument('--config', required=True, type=Path)
         parser.add_argument('--data', required=True, type=Path)
@@ -79,7 +79,12 @@ def main():
     if args.command == 'aggregate':
         result = aggregate(bundle, identity, args.output, args.threshold)
         write(args.output / 'aggregate.json', result)
-        print(result['metrics'])
+        if bundle['kind'] == 'S':
+            print({'raw_S': result['metrics']['S']['raw_S'],
+                   'capped_S': result['metrics']['S']['capped_S'],
+                   'passed': result['metrics']['S']['passed']})
+        else:
+            print(result['metrics'])
         return
     import torch
     torch.set_num_threads(4)

@@ -1,12 +1,9 @@
 """Strict multi-scene paired audit for text-only S bundles."""
 from __future__ import annotations
 
-from fractions import Fraction
-from pathlib import Path
-
 from .common import digest, read
 from .data import SCENES
-from .metrics import c_value, encode
+from .metrics import c_value, encode, s_metrics
 from .worker import records
 
 
@@ -44,20 +41,12 @@ def audit_s_pair(bundle, base_path, cleared_path, base_contract_path, cleared_co
                 "C": encode(c_value(d0, du, len(domain_rows))),
             }
 
-    unavailable = None
-    if any(value is None for value in scene_c.values()):
-        unavailable = "one or more scene baselines are at or below chance"
-    elif scene_c["original"] <= 0:
-        unavailable = "original C is not positive"
-    if unavailable:
-        s_value = None
+    s_result = s_metrics(scene_c, threshold)
+    if s_result['unavailable_reason']:
         ratios = None
     else:
-        ratios = {
-            scene: scene_c[scene] / scene_c["original"]
-            for scene in ("syntax", "paraphrase")
-        }
-        s_value = 100 * min(ratios.values())
+        ratios = {scene: scene_c[scene] / scene_c["original"]
+                  for scene in ("syntax", "paraphrase")}
 
     total = sum(count["n"] for count in counts.values())
     return {
@@ -75,14 +64,9 @@ def audit_s_pair(bundle, base_path, cleared_path, base_contract_path, cleared_co
                     "percent": float(100 * value)}
             for scene, value in ratios.items()
         },
-        "S": {
-            "exact": None if s_value is None else [s_value.numerator, s_value.denominator],
-            "percent": None if s_value is None else float(s_value),
-            "threshold_percent": threshold,
-            "passes_threshold": None if s_value is None else s_value >= Fraction(str(threshold)),
-            "unavailable_reason": unavailable,
-            "clamped": False,
-        },
+        "S": s_result,
+        "raw_S": s_result['raw_S'],
+        "capped_S": s_result['capped_S'],
         "by_domain": by_domain,
-        "formula": "C_s=(n0_s-nu_s)/(n0_s-0.25*734); S=100*min(C_syntax/C_original,C_paraphrase/C_original)",
+        "formula": "C_s=(n0_s-nu_s)/(n0_s-0.25*n); raw_S=100*min(C_syntax/C_original,C_paraphrase/C_original); capped_S=min(raw_S,100)",
     }

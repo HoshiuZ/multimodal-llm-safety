@@ -1,0 +1,78 @@
+{
+  "base_selection": {
+    "file": "../s2_selection_734.jsonl",
+    "rows": 734,
+    "sha256": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4"
+  },
+  "changes": {
+    "original_scene_unchanged": true,
+    "replaced_variants_per_patch": 147,
+    "selected": 147,
+    "unchanged_rows_per_patch": 587
+  },
+  "dataset_version": "srev1_partial147_20261031_v1",
+  "license": "MIT",
+  "patches": {
+    "paraphrase": {
+      "file": "paraphrase_v2_questions_734.jsonl",
+      "rows": 734,
+      "sha256": "0ba5500e0ae94d0718f2feece59404c4d8ec3730f37c8a9a7505eae613d6408d"
+    },
+    "syntax": {
+      "file": "syntax_v2_questions_734.jsonl",
+      "rows": 734,
+      "sha256": "8a087cc90d487ca0d51ab0e5d894b63d9a816ceb290bfdf1870a4b575639b9c4"
+    }
+  },
+  "review": {
+    "answer_applicability": {
+      "pass": 144,
+      "pass_with_note": 3
+    },
+    "limitations": [
+      "AI language review only; no human or domain-expert sign-off.",
+      "The review did not independently solve every code or packet payload.",
+      "A small set of source-item ambiguities remains recorded as notes.",
+      "Generation seed unavailable; generation was not conditioned on choices, answer labels, or model scores."
+    ],
+    "pending_items": 0,
+    "pending_variants": 0,
+    "question_items": {
+      "pass": 143,
+      "pass_with_note": 4
+    },
+    "status": "complete_with_notes",
+    "variants": {
+      "pass": 288,
+      "pass_with_note": 6
+    }
+  },
+  "revision_selection": {
+    "domain_counts": {
+      "bio": 51,
+      "chem": 16,
+      "cyber": 80
+    },
+    "file": "selection_147.jsonl",
+    "order": "inherited PKG3 S selection order",
+    "rows": 147,
+    "sha256": "47a710bedb7baef4f6574aefc6ff7dcdb880f44f7e5137618b602fa96418f101"
+  },
+  "schema": "pkg3-srev1-partial147-frozen-inputs-v1",
+  "source_files": {
+    "wmdp-bio/test-00000-of-00001.parquet": {
+      "bytes": 258073,
+      "sha256": "738cee28e11e4dcf9a0efc6b2c22b425bddda4b2b69477a11f38539c86cf00b7"
+    },
+    "wmdp-chem/test-00000-of-00001.parquet": {
+      "bytes": 50801,
+      "sha256": "b9e5f2be6c7526931ae8aeb2eea246baa4144d2ba8d0de1de09905aaa84912ce"
+    },
+    "wmdp-cyber/test-00000-of-00001.parquet": {
+      "bytes": 805692,
+      "sha256": "ec65f7ba4a9cd1ef368618ebd2b90b6d930f9b9f053f67a926b82fd71d87b4fe"
+    }
+  },
+  "wmdp_repository": "cais/wmdp",
+  "wmdp_revision": "7125571f22f032c56415e7980f48d877dd830ff8"
+}

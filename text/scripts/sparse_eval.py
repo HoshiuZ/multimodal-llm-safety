@@ -211,7 +211,8 @@ def main():
         write(args.output, result)
         os.chmod(args.output, 0o600)
         print(json.dumps({'kind': 'S', 'coverage': result['coverage'],
-                          'counts': result['counts'], 'S': result['S']}, sort_keys=True))
+                          'counts': result['counts'], 'raw_S': result['raw_S'],
+                          'capped_S': result['capped_S'], 'S': result['S']}, sort_keys=True))
         return
 
     if args.command == 'restore-check':
