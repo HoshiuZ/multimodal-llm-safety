@@ -16,6 +16,7 @@ from eval.metrics import c_value, metrics
 from eval.scoring import option_sequences, score_one, token_preflight
 from eval.overlay import read_overlay, restore_overlay
 from eval.paired_audit import audit_pair
+from eval.s_audit import audit_s_pair
 from eval.worker import run_worker, records, aggregate
 from eval import models
 
@@ -373,6 +374,226 @@ class TestCli(unittest.TestCase):
                 self.assertEqual(result['counts']['original']['n'],3)
                 self.assertEqual(len((root/'out/base.jsonl').read_text().splitlines()),9)
                 self.assertFalse(torch.cuda.is_initialized())
+
+
+class TestSTextAudit(unittest.TestCase):
+    scene_counts = {'original': (500, 300), 'syntax': (490, 310), 'paraphrase': (480, 290)}
+
+    def _fixture(self, root):
+        scenes = {}
+        domains = [('bio', 255), ('cyber', 397), ('chem', 82)]
+        for scene in ('original', 'syntax', 'paraphrase'):
+            rows = []
+            index = 0
+            for domain, count in domains:
+                for _ in range(count):
+                    item = row(index, domain)
+                    item['question_id'] = f'synthetic-{index}'
+                    item['question'] = f'{scene}: benign color question {index}'
+                    rows.append(item)
+                    index += 1
+            scenes[scene] = rows
+            (root / f'{scene}.jsonl').write_text(
+                ''.join(canonical(item) + '\n' for item in rows), encoding='utf-8')
+        manifest = {'schema': 'text-eval-v1', 'kind': 'S', 'source': 'synthetic-only',
+                    'scenes': {scene: f'{scene}.jsonl' for scene in scenes}}
+        write(root / 'manifest.json', manifest)
+        loaded = load_bundle(root / 'manifest.json')
+        identity = {'model': 'synthetic-s-model', 'prompt': 'synthetic-only',
+                    'data': loaded['digest']}
+        base_contract = digest(identity)
+        paths = {}
+        for state in ('base', 'cleared'):
+            state_dir = root / state
+            state_dir.mkdir()
+            write(state_dir / 'contract.json', identity)
+            path = state_dir / f'{state}.jsonl'
+            paths[state] = path
+            with path.open('w', encoding='utf-8') as stream:
+                for scene, rows in loaded['scenes'].items():
+                    target_count = self.scene_counts[scene][0 if state == 'base' else 1]
+                    for index, item in enumerate(rows):
+                        correct = index < target_count
+                        scores = {'A': -0.1, 'B': -1.0, 'C': -2.0, 'D': -3.0} if correct else {
+                            'A': -1.0, 'B': -0.1, 'C': -2.0, 'D': -3.0}
+                        prediction = 'A' if correct else 'B'
+                        record = {'contract': base_contract, 'state': state, 'scene': scene,
+                                  'question_id': item['question_id'], 'row_digest': digest(item),
+                                  'scores': scores, 'prediction': prediction, 'target': 'A',
+                                  'correct': correct, 'status': 'ok'}
+                        stream.write(canonical(record) + '\n')
+        return loaded, paths
+
+    def test_734_denominator_exact_s_and_strict_pairing(self):
+        from fractions import Fraction
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            b, paths = self._fixture(root)
+            result = audit_s_pair(b, paths['base'], paths['cleared'],
+                                  root / 'base/contract.json', root / 'cleared/contract.json')
+            self.assertEqual(result['coverage']['expected_per_state'], 2202)
+            self.assertEqual(result['coverage']['base'], 2202)
+            self.assertEqual(result['coverage']['cleared'], 2202)
+            self.assertEqual(result['coverage']['failed'], 0)
+            self.assertEqual(result['coverage']['missing'], 0)
+            self.assertEqual(result['coverage']['duplicate'], 0)
+            self.assertEqual(result['coverage']['extra'], 0)
+            expected_c = {
+                'original': Fraction(400, 633),
+                'syntax': Fraction(360, 613),
+                'paraphrase': Fraction(380, 593),
+            }
+            for scene, exact in expected_c.items():
+                self.assertEqual(result['C'][scene]['exact'], [exact.numerator, exact.denominator])
+            expected_s = 100 * min(expected_c['syntax'] / expected_c['original'],
+                                   expected_c['paraphrase'] / expected_c['original'])
+            self.assertEqual(result['S']['exact'], [expected_s.numerator, expected_s.denominator])
+            self.assertEqual(result['S']['threshold_percent'], 65)
+            self.assertFalse(result['S']['clamped'])
+            with self.assertRaisesRegex(ValueError, 'C/M only.*S aggregation'):
+                audit_pair(b, paths['base'], paths['cleared'])
+
+    def test_real_audit_s_cli_and_bad_record_rejection(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            b, paths = self._fixture(root)
+            script = Path(__file__).resolve().parents[1] / 'scripts/sparse_eval.py'
+            output = root / 'cli-audit.json'
+            command = [sys.executable, str(script), 'audit-s', '--data', str(root / 'manifest.json'),
+                       '--base-scores', str(paths['base']), '--cleared-scores', str(paths['cleared']),
+                       '--base-contract', str(root / 'base/contract.json'),
+                       '--cleared-contract', str(root / 'cleared/contract.json'), '--output', str(output)]
+            run = subprocess.run(command, check=True, capture_output=True, text=True)
+            self.assertIn('"expected_per_state": 2202', run.stdout)
+            self.assertEqual(read(output)['coverage']['paired_identity_match'], True)
+
+            original = paths['base'].read_text(encoding='utf-8').splitlines(True)
+            paths['base'].write_text(''.join(original[:-1]), encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'incomplete coverage'):
+                audit_s_pair(b, paths['base'], paths['cleared'],
+                             root / 'base/contract.json', root / 'cleared/contract.json')
+
+            paths['base'].write_text(''.join(original + [original[0]]), encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'duplicate record scope'):
+                audit_s_pair(b, paths['base'], paths['cleared'],
+                             root / 'base/contract.json', root / 'cleared/contract.json')
+
+            paths['base'].write_text(''.join(original), encoding='utf-8')
+            with paths['base'].open('a', encoding='utf-8') as stream:
+                stream.write(canonical({'contract': digest({'extra': True}), 'state': 'base',
+                                        'scene': 'original', 'question_id': 'synthetic-extra'}) + '\n')
+            with self.assertRaisesRegex(ValueError, 'extra record scope'):
+                audit_s_pair(b, paths['base'], paths['cleared'],
+                             root / 'base/contract.json', root / 'cleared/contract.json')
+
+    def test_multi_token_llsum_accumulates_each_continuation(self):
+        import torch
+        class MultiTokenizer:
+            pad_token_id, eos_token_id = 0, 1
+            def encode(self, text, add_special_tokens=False):
+                if text.endswith('Answer:'):
+                    return [10, 11, 12]
+                for index, letter in enumerate('ABCD'):
+                    if text.endswith(' ' + letter):
+                        return [10, 11, 12, 100 + index, 150 + index]
+                raise AssertionError('unexpected tokenizer input')
+        class MultiTokenModel:
+            def __call__(self, input_ids, attention_mask, **kwargs):
+                logits = torch.zeros((*input_ids.shape, 256), dtype=torch.float32)
+                for index in range(4):
+                    first = int(input_ids[index, 3])
+                    second = int(input_ids[index, 4])
+                    logits[index, 2, first] = 1.0
+                    logits[index, 3, second] = 2.0
+                return SimpleNamespace(logits=logits)
+        scores = score_one(MultiTokenModel(), MultiTokenizer(), 'qwen', row(), 8, 'cpu')
+        expected = (1.0 - math.log(math.exp(1.0) + 255.0)) + (2.0 - math.log(math.exp(2.0) + 255.0))
+        self.assertEqual(set(scores), set('ABCD'))
+        for score in scores.values():
+            self.assertAlmostEqual(score, expected, places=6)
+
+
+class TestSparseEvalCli(unittest.TestCase):
+    def test_cpu_cli_restore_base_resume_cleared_and_s_aggregate(self):
+        import importlib.util
+        import torch
+        script = Path(__file__).resolve().parents[1] / 'scripts/sparse_eval.py'
+        spec = importlib.util.spec_from_file_location('pkg3_sparse_eval_fixture', script)
+        cli = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cli)
+
+        class FixtureModel:
+            pass
+
+        synthetic = bundle()
+        identity = {'schema': 'fixture-contract', 'model': 'synthetic-full-wrapper',
+                    'config': {'family': 'qwen', 'base_revision': 'fixture-revision',
+                               'model_class': 'FixtureModel',
+                               'update': {'sha256': 'fixture-overlay-sha256'}}, 'data': digest(synthetic),
+                    'tokens': {'token_stream_sha256': 'synthetic-token-stream'}}
+        tokenizer = Tokenizer()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = root / 'config.json'
+            write(config, identity['config'])
+            base_scores = root / 'base'
+            cleared_scores = root / 'cleared'
+            common = ['--config', str(config), '--data', 'synthetic-data',
+                      '--base-model', 'synthetic-base', '--overlay', 'synthetic-overlay']
+
+            with patch.object(cli, 'prepare', return_value=(identity, synthetic, tokenizer, 8)):
+                with patch.object(sys, 'argv', [str(script), 'preflight'] + common + ['--output', str(root / 'preflight.json')]):
+                    cli.main()
+            self.assertEqual(read(root / 'preflight.json'), identity)
+
+            def runtime(_contract, _config, _data, _base, _overlay, _state):
+                update = {'synthetic': True}
+                return identity, synthetic, tokenizer, 8, update
+
+            score_calls = []
+            def synthetic_score(_model, _tokenizer, _family, _row, _limit, _device):
+                score_calls.append(1)
+                return {'A': -0.1, 'B': -1.0, 'C': -2.0, 'D': -3.0}
+
+            with patch.object(cli, 'validate_runtime_contract', side_effect=runtime), \
+                 patch.object(cli.models, 'load_full', return_value=FixtureModel()), \
+                 patch.object(cli, 'restore_overlay', return_value={'all_bitwise_equal': True}), \
+                 patch.object(cli, 'score_one', side_effect=synthetic_score):
+                for state, output in (('base', base_scores), ('base', base_scores), ('cleared', cleared_scores)):
+                    argv = [str(script), 'run'] + common + ['--contract', str(root / 'preflight.json'),
+                        '--state', state, '--device', 'cpu', '--output', str(output)]
+                    with patch.object(sys, 'argv', argv):
+                        cli.main()
+                self.assertEqual(len(score_calls), 18)
+
+            restore_path = root / 'restore.json'
+            with patch.object(cli, 'base_identity', return_value={'revision': 'fixture'}), \
+                 patch.object(cli.models, 'check_environment', return_value={'fixture': True}), \
+                 patch.object(cli, 'read_overlay', return_value={'synthetic': True}), \
+                 patch.object(cli.models, 'load_full', return_value=FixtureModel()), \
+                 patch.object(cli, 'restore_overlay', return_value={'status': 'passed', 'all_bitwise_equal': True,
+                                                                     'keys': ['synthetic']}):
+                argv = [str(script), 'restore-check', '--config', str(config), '--base-model', 'synthetic-base',
+                        '--overlay', 'synthetic-overlay', '--output', str(restore_path)]
+                with patch.object(sys, 'argv', argv):
+                    cli.main()
+            self.assertTrue(read(restore_path)['all_bitwise_equal'])
+
+            audit_path = root / 'aggregate.json'
+            with patch.object(cli, 'load_bundle', return_value=synthetic):
+                argv = [str(script), 'audit-s', '--data', 'synthetic-manifest',
+                        '--base-scores', str(base_scores / 'base.jsonl'),
+                        '--cleared-scores', str(cleared_scores / 'cleared.jsonl'),
+                        '--base-contract', str(base_scores / 'contract.json'),
+                        '--cleared-contract', str(cleared_scores / 'contract.json'),
+                        '--output', str(audit_path)]
+                with patch.object(sys, 'argv', argv):
+                    cli.main()
+            result = read(audit_path)
+            self.assertEqual(result['coverage']['expected_per_state'], 9)
+            self.assertTrue(result['coverage']['paired_identity_match'])
+            self.assertFalse(torch.cuda.is_initialized())
 
 
 def read_json_roundtrip(value):

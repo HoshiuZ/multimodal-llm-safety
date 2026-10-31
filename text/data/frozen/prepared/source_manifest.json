@@ -1,0 +1,34 @@
+{
+  "license": "MIT",
+  "reconstruction": {
+    "C_jsonl_sha256": "485d143c2d2666c23763d1df41ad1eba3b86f7f332a80c17978b81ec0164fcd7",
+    "C_rows": 3668,
+    "S_frozen_manifest_sha256": "ba5092e10bfe2cc5ebf8192effba9d47be4e17fd52f43e7914c036e7b3a4237e",
+    "S_jsonl_sha256": {
+      "original": "f63d16f6ca68046e89ddfca0a9f82c6f3136c5217ce497ad5ed39272972ecc37",
+      "paraphrase": "577e4f519aa85d21179a61076b757812f09d2ee5333fcf6468b7edcc3630ca92",
+      "syntax": "459f1f5a8a17076ee697a5e145ef565a8ecf5fff45502eff533253d5f9d9fe11"
+    },
+    "S_paraphrase_patch_sha256": "6ab681ba1158d66a34f2b7e62ffa099c467652bc886031c0dd87d307be973d6a",
+    "S_rows_per_scene": 734,
+    "S_selection_sha256": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4",
+    "S_syntax_patch_sha256": "04ad935fe5ed1760296c66f2cfa42091a0bfa68142260c3d0d98c7e4ffdba8fc",
+    "field_and_order_comparison": "passed"
+  },
+  "repository": "cais/wmdp",
+  "revision": "7125571f22f032c56415e7980f48d877dd830ff8",
+  "source_files": {
+    "wmdp-bio/test-00000-of-00001.parquet": {
+      "bytes": 258073,
+      "sha256": "738cee28e11e4dcf9a0efc6b2c22b425bddda4b2b69477a11f38539c86cf00b7"
+    },
+    "wmdp-chem/test-00000-of-00001.parquet": {
+      "bytes": 50801,
+      "sha256": "b9e5f2be6c7526931ae8aeb2eea246baa4144d2ba8d0de1de09905aaa84912ce"
+    },
+    "wmdp-cyber/test-00000-of-00001.parquet": {
+      "bytes": 805692,
+      "sha256": "ec65f7ba4a9cd1ef368618ebd2b90b6d930f9b9f053f67a926b82fd71d87b4fe"
+    }
+  }
+}

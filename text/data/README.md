@@ -1,36 +1,39 @@
-# 外部数据接口
+# 固定数据取得与重建
 
-本轮只提供 schema 和良性合成测试，不提供真实题目、逐题 ID、答案、token IDs 或逐题分数。外部文件须由使用者从项目冻结材料或数据提供方准备；本包没有自动下载脚本。
+最小公开映射提供固定 S 选择清单、两套冻结改写补丁、manifest、重建脚本及许可说明；不包含预制 C/S 题目 JSONL。原题、选项和答案从固定 revision 的官方 WMDP Parquet 重建。数据源为 [CAIS WMDP](https://huggingface.co/datasets/cais/wmdp/tree/7125571f22f032c56415e7980f48d877dd830ff8)，revision `7125571f22f032c56415e7980f48d877dd830ff8`，许可副本见 [`../../licenses/WMDP-MIT.txt`](../../licenses/WMDP-MIT.txt)。
 
-清单 JSON 的字段如下；其中相对路径相对清单所在目录解析：
+随包的 [`frozen/prepared/source_manifest.json`](frozen/prepared/source_manifest.json) 是紧凑的预期输出哈希清单，不是题目文件。它记录三个上游 Parquet 的 SHA256/大小、生成的 C/S JSONL SHA256、固定选择/改写哈希及此前通过的字段顺序核验。`frozen/prepared/C/manifest.json` 和 `S/manifest.json` 记录输出 schema；生成题目清单前请先运行以下重建命令。
 
-```json
-{"schema":"text-eval-v1","kind":"C","source":"provider/frozen-version","scenes":{"original":"original.jsonl"}}
+## 下载并生成评分清单
+
+在包根目录执行，输出目录必须尚不存在：
+
+```bash
+python -B text/data/prepare_eval_data.py \
+  --download \
+  --freeze-dir text/data/frozen \
+  --expected-source-manifest text/data/frozen/prepared/source_manifest.json \
+  --output-dir /tmp/pkg3-data
 ```
 
-S 清单将 `kind` 改为 `S`，scenes 必须且只能包含 `original`、`syntax`、`paraphrase` 三个键，各自指向外部 JSONL。C 必须完整覆盖3668题（bio 1273、cyber 1987、chem 408）；S 每个场景必须734题（bio 255、cyber 397、chem 82）。缺失、额外、重复或场景不齐一律报错。
+若使用本地缓存，将 `--download` 换为 `--source-cache /path/to/wmdp-cache`。缓存中需有 `wmdp-bio/test-00000-of-00001.parquet`、`wmdp-cyber/test-00000-of-00001.parquet` 和 `wmdp-chem/test-00000-of-00001.parquet`。`--expected-source-manifest` 在固定目录存在时会由脚本自动选用，也可像示例一样明确提供。
 
-每行 JSON 必须含以下 C/S 字段：
+脚本需要 `huggingface_hub` 与 `pyarrow==26.0.0`；三个模型环境的完整依赖列在 `text/requirements-*.txt`。下载或离线读取前会验证固定上游文件 SHA256/大小/行数、选择和补丁哈希、冻结 manifest、ID/来源行绑定及 255/397/82 领域分层。随后会用参考 source manifest 校验重建 C 与三个 S JSONL 的精确哈希。若你另有完整预制清单，可额外提供 `--expected-c-jsonl` 和 `--expected-s-dir` 做逐字段、逐行比较。
 
-| 字段 | 类型与约束 |
-|---|---|
-| question_id | 非空字符串；场景内唯一，S 三场景相同 ID 集 |
-| source_row_sha256 | 原始冻结来源行的64位小写 SHA256；三场景同题一致 |
-| domain | bio / cyber / chem |
-| question | 非空字符串；评分前只去首尾空白 |
-| choices | 四个非空字符串，顺序固定 |
-| answer_index | 整数0至3，不接受布尔值 |
+成功后，评分清单位于 `/tmp/pkg3-data/C/manifest.json` 和 `/tmp/pkg3-data/S/manifest.json`。使用评分 CLI 前先验证生成包：
 
-S 的题干允许变化，同题的来源 SHA、域、选项顺序及答案必须一致。实际评分输入字段全部纳入数据身份；其他历史元数据不参与评分。`source` 填实际来源与冻结版本，不能拿任意内容冒充历史数据。SHA 是来源绑定信息，并不证明内容经过专家审定。
+```bash
+python -B text/scripts/text_eval.py validate --data /tmp/pkg3-data/C/manifest.json
+python -B text/scripts/text_eval.py validate --data /tmp/pkg3-data/S/manifest.json
+```
 
-项目原冻结 original 文件已含这些字段；装配改写文件按 `variant_type=syntax_adjustment` 与 `question_restatement` 分成 syntax/paraphrase，再保留表中字段即可。旧 `answer` 字段应由提供方明确转换成 `answer_index`，不能猜答案编号从0还是1开始。完整 C 来源同样须由提供方按冻结清单转换，保证域总数、source、ID和来源行 SHA。不要把训练题混入评测清单。
+## 冻结内容与审核范围
 
-本包不附真实数据示例；测试中的颜色问题和 `synthetic-*` 标识仅供 CPU 工程测试，不可用于报告指标。输出 `base.jsonl`、`cleared.jsonl` 同样不得入库。
+- `frozen/s2_selection_734.jsonl` 固定了 734 个 ID、来源行哈希和顺序；报告的抽样 seed 为 42。
+- `frozen/s2_syntax_questions.jsonl` 与 `frozen/s2_paraphrase_questions.jsonl` 保存同一批 ID 的已接受改写，不会在重建时重新采样或生成。
+- `frozen/s2_frozen_manifest.json` 绑定源版本、选择和两份补丁哈希。历史改写生成 seed 未保留。
+- 改写曾经 AI 独立审核，但审核者能看到选项和答案；审核非盲审，也没有人工或领域专家签核。
 
-## other49 能力复核数据
+冻结文本的 CPU 字符串比较确认：syntax 和 paraphrase 各有 734/734 题在词语 token 序列层面发生变化，选项及答案索引均逐题保持相同。syntax 改写的平均词序列编辑比约 34.91%，平均题干长度为原题的 96.51%；paraphrase 分别约 43.78% 和 96.33%。样本检查显示部分 syntax 改写较浅。词语变化和长度比不能证明语义保持、答案正确或改写质量；这些统计也不是人工领域审查结论。
 
-`kind` 为 `M` 时，`scenes` 必须只有 `original`，文件必须正好含245行：固定49个非相关 MMLU subject，每科5题。排除 subject 为 `college_biology`、`high_school_biology`、`virology`、`college_chemistry`、`high_school_chemistry`、`computer_security`、`college_computer_science`、`high_school_computer_science`。manifest 的 `subjects` 必须列出且只列出文件中的49科。
-
-M 行必需字段为 `question_id`、`source_row_sha256`、`subject`、`description`、`question`、`choices`、`answer_index`。`description` 使用冻结 MMLU 模板的官方 subject 描述。评分合同与 C 相同，选择题上下文按 `description + question + options + Answer:` 构造。
-
-真实 MMLU 行、题目 ID 与逐题分数不得放进公开包。输出记录与 C 一样只留本地；公开结果只报告汇总正确数及整数门槛。
+完整 WMDP C 重建含 3,668 行：bio 1,273、cyber 1,987、chem 408。S 三场景各 734 行，固定分层分别为 bio 255、cyber 397、chem 82。每行由源问题、四个选项和 answer index 组成；三场景同 ID 的选项和答案相同。

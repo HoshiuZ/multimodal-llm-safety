@@ -1,31 +1,54 @@
 {
-  "plan_id": "PKG1-text-evaluation-github-20261030",
-  "sources": {
-    "scripts/s3_text_s_e004.py": "a93f2b2a78aaf44f4884d438f45c3ff4cf4cfa38e6d9bc2d2c15ff4d62a222e9",
-    "scripts/s3_e004_cpu_worker_regression.py": "c57381c82dbd522623bf58c6d66142a27ba19c142e9b31201866707a0c3257f0",
-    "scripts/s3_verify_worker_e004.py": "9638f22c2d0e5ba3c65adfaa8f9f24015f7cffbd04a9f6b50d04fc84e7b0fbac",
-    "scripts/evaluate_llava_text_s_s2.py": "b793df819cf2a350b0244a436587ed2fa6871b5db738930103e21a4bbdf59024",
-    "scripts/evaluate_llava_text_s_e007_selected.py": "d7c031897ce3de60212d1e158c0dfb4d4ff5ca5f148dc151a825af83bbe757aa",
-    "scripts/s2_llava_overlay.py": "5870bc8098b3085ab636409ffd3d5ea26c4ad6777d92f54710583c6869335f6d",
-    "scripts/s2_llava_overlay_e007.py": "62684880f4404d5127549a5e008e81566775eb3d1e18e4fdfc9b0475bb6b38c6",
-    "scripts/run_model_rmu_closed_loop.py": "eb91139abdd32fb392ddd5ecd7f926eb391cd3ea8ac88816cae6158b2effbdce",
-    "scripts/evaluate_rmu_effect_hparam_batch.py": "5d023d888dd4990b2ffb803e9ddabcf1da26e662d6f0e873bd29a9a6771badbb",
-    "scripts/run_three_domain_graddiff_g1.py": "5f2be4a80180bb1b095fba524e823205461cb98cdd7f2f15f130fada4e2d6b4b",
-    "configs/llava_next8b_full_wmdp_c.json": "eaafdda93cae0cf50d46f7d2f84e5285a8040857bc47757eee63e0a8abbcd94f",
-    "reports/planning/s2_llava_e007_results.json": "99747d190066945eba8670670c4a081f5c6ef8a13fbec81c3866af3c0d66a648",
-    "reports/planning/s3_e004_results.json": "aefcc5515c1056f0fa241361c89e2564e093c8d3b2034dc895d60b8417ba49cf",
-    "reports/models/qwen3vl8b.json": "50d50b4820a4e3e2c1b264c80c83e75acd22653ae86469b04b4faa77f1b2f547",
-    "reports/models/internvl3_8b.json": "fcf27a1e782f70a5fe4136817c6e4940fd3f1a2bc5730a81f72f8012abeac95f",
-    "reports/models/llava_next8b.json": "599e40d39767c988985f72ace5b2302b76594150dd2a5df91912bc42adad7375",
-    "reports/environments/wmdp-internvl.json": "88b6684dd5f1589bdd447bdbafd26f1f760a5f5e50e48babf63258ba6aba76de",
-    "reports/environments/wmdp-llava.json": "74b1fab9e4e96bcb93933cf743f5b0715375515b50599b496a41de0825591d90",
-    "reports/evaluation/three_domain_rmu_gc1/recovery_20261027/qwen3vl/Q-SG5e5/full/step210.json": "cd80a27afb590271568daafe32eae91e45a212f368f966bb9cf2beba789dcce4",
-    "reports/evaluation/three_domain_rmu_graddiff_j3/internvl3_8b/J10/full_wmdp/step120.json": "e99a88e7597f18d409ba894983e7f58f3e42998c9755e9f9dcc0490626e09501",
-    "runs/bio_rmu_effect/dsh_llava_final_20261029/score.json": "6edd32b0f671e46caae3a449438a1c3b9895e79881578c09a289c02cac188403"
+  "plan_id": "PKG3-three-new-model-S-and-data-release-20261031",
+  "scoring_code_identity_sha256": "0d911fedbe166b8408375e7f7628152ffdaba351745e75e2dc0cae8d2b99adca",
+  "scoring_code_files_sha256": {
+    "eval/__init__.py": "a83a814060c9a27448c0ddd3ee139a2c3b81fce749068eb1f7674193c7f58e70",
+    "eval/common.py": "0af038cdc4afa989408ec48b0125cec6202ca4414477027ba241615599103cc5",
+    "eval/data.py": "43a5614ac7d95aab322d5ddd3cffd15112346ba32035d4340f0368925723e57d",
+    "eval/metrics.py": "fc96f3f1fe6e184a001c94b6c2dd78040d1cc711f3acd11f5342e951f8181f0c",
+    "eval/models.py": "2b2bc305e2e09c7edcfc949670ce03715221540eaa000ac3c1899c0ed22bfb81",
+    "eval/overlay.py": "0d52ac993029b08c2ef7f6ec3e4372e64ca21c05c55b107bd4574a3346487217",
+    "eval/paired_audit.py": "bb5cc9b0298f43dfed504e10b658cb4dc04c0a5d185ee8fb9783980142f760c2",
+    "eval/s_audit.py": "d93554ca276303ad9b929f1892de6061156b06e3bc052871f4fa4655046c0b84",
+    "eval/scoring.py": "12e2414f6a1a9bf1d991c21f8e845c5c95fca458b2ec8b6ca77a4372de170c23",
+    "eval/worker.py": "1b31d51cd5b9ece6b500668aecfd06c22b0a5fbb668975e4776fd29e8da9ebc9",
+    "scripts/sparse_eval.py": "998771b6e47feaf124db6880489b97c3955af3221fc3b57f0d6965d02570795a",
+    "scripts/text_eval.py": "63377f059541b6ceb17a95a9d55e34c0ddb9d86833a6702d4949ed40220005cc",
+    "configs/internvl.json": "245162f216000fb1cdbb34b99ebfe5ba15b852bb1b03b5bd23c6ce7f5a408467",
+    "configs/llava.json": "27d3938bea6fb8616720b3f3fcb6263e66a8dedcfc540587aca07f57699eb8ff",
+    "configs/qwen.json": "59151e01b157426e8297bcf2bfc10e564027b16ed7897bdaa5132b5e763d626f"
   },
-  "note": "Only source hashes; source files and historical reports are not copied wholesale. No weights hashed for PKG1.",
-  "template_repository": "EleutherAI/lm-evaluation-harness",
-  "template_commit": "4600d6bf73ba2cf7037ae7feada03315839ef185",
-  "wmdp_source_commit": "c0b6c12bb0de3decf9c13bb13f9f1aa15754a132",
-  "wmdp_data_revision": "7125571f22f032c56415e7980f48d877dd830ff8"
+  "minimal_public_frozen_files_sha256": {
+    "data/prepare_eval_data.py": "8a0ce4081b17478d9571b22f4261539c07363e8d659066866f11278652680972",
+    "data/frozen/s2_frozen_manifest.json": "ba5092e10bfe2cc5ebf8192effba9d47be4e17fd52f43e7914c036e7b3a4237e",
+    "data/frozen/s2_selection_734.jsonl": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4",
+    "data/frozen/s2_syntax_questions.jsonl": "04ad935fe5ed1760296c66f2cfa42091a0bfa68142260c3d0d98c7e4ffdba8fc",
+    "data/frozen/s2_paraphrase_questions.jsonl": "6ab681ba1158d66a34f2b7e62ffa099c467652bc886031c0dd87d307be973d6a",
+    "data/frozen/prepared/C/manifest.json": "e3bac592342e01d3f538360df81b46485dd2ac0a808737fe0dd01e99cc54a3f9",
+    "data/frozen/prepared/S/manifest.json": "b2abadfddf9bfec703624e26e38fcf17e5c05c29dd0a72c5992a56b657de16d7",
+    "data/frozen/prepared/source_manifest.json": "51b39e9088f56d6fa98041820a962ef9d590f2067e4781823875fd1f58c6f048"
+  },
+  "expected_reconstructed_question_jsonl_sha256": {
+    "C/original.jsonl": "485d143c2d2666c23763d1df41ad1eba3b86f7f332a80c17978b81ec0164fcd7",
+    "S/original.jsonl": "f63d16f6ca68046e89ddfca0a9f82c6f3136c5217ce497ad5ed39272972ecc37",
+    "S/paraphrase.jsonl": "577e4f519aa85d21179a61076b757812f09d2ee5333fcf6468b7edcc3630ca92",
+    "S/syntax.jsonl": "459f1f5a8a17076ee697a5e145ef565a8ecf5fff45502eff533253d5f9d9fe11"
+  },
+  "aggregate_results_sha256": {
+    "results/c_reference.json": "a47975629f532436b7ecec3739ac9061683d507296b6218e991d9ed686c57657",
+    "results/s_results.json": "e6eab9f990fef755286fabc483db8f1793ff76c1adedee6b072f537ae8982f2a"
+  },
+  "data_preparation_dependency": "pyarrow==26.0.0; huggingface_hub from the selected model environment",
+  "derived_from": {
+    "PKG2_source_provenance_sha256": "f12e5e4e7f474babd2f92c2b14c79beb2459598489532353dae921b4ddbc93e0",
+    "selected_project_source_file_sha256": {
+      "scripts/s3_text_s_e004.py": "a93f2b2a78aaf44f4884d438f45c3ff4cf4cfa38e6d9bc2d2c15ff4d62a222e9",
+      "scripts/s3_verify_worker_e004.py": "9638f22c2d0e5ba3c65adfaa8f9f24015f7cffbd04a9f6b50d04fc84e7b0fbac",
+      "scripts/evaluate_llava_text_s_e007_selected.py": "d7c031897ce3de60212d1e158c0dfb4d4ff5ca5f148dc151a825af83bbe757aa"
+    },
+    "WMDP_repository_commit": "c0b6c12bb0de3decf9c13bb13f9f1aa15754a132",
+    "WMDP_data_revision": "7125571f22f032c56415e7980f48d877dd830ff8",
+    "lm_evaluation_harness_commit": "4600d6bf73ba2cf7037ae7feada03315839ef185"
+  },
+  "note": "The minimal public mapping excludes the reconstructed C/S question JSONL files. Their expected hashes are included so the fixed source, frozen selection and exact patches can rebuild and verify them."
 }

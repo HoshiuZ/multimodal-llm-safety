@@ -11,3 +11,4 @@ sentencepiece==0.2.2
 protobuf==7.36.2
 einops==0.8.2
 timm==1.0.30
+pyarrow==26.0.0

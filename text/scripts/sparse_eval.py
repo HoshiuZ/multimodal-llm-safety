@@ -12,6 +12,7 @@ from eval.common import code_identity, digest, read, sha, write
 from eval.data import load_bundle
 from eval.overlay import read_overlay, restore_overlay
 from eval.paired_audit import audit_pair
+from eval.s_audit import audit_s_pair
 from eval.scoring import PROMPT_CONTRACT, token_preflight, score_one
 from eval import models
 from eval.worker import run_worker
@@ -172,6 +173,15 @@ def main():
                        help='preflight contract JSON used to verify every cleared score row')
     audit.add_argument('--output', required=True, type=Path)
 
+    audit_s = sub.add_parser('audit-s', help='independent CPU audit and exact aggregation for a three-scene S bundle')
+    audit_s.add_argument('--data', required=True, type=Path)
+    audit_s.add_argument('--base-scores', required=True, type=Path)
+    audit_s.add_argument('--cleared-scores', required=True, type=Path)
+    audit_s.add_argument('--base-contract', required=True, type=Path)
+    audit_s.add_argument('--cleared-contract', required=True, type=Path)
+    audit_s.add_argument('--threshold', type=int, default=65)
+    audit_s.add_argument('--output', required=True, type=Path)
+
     args = parser.parse_args()
     if args.command == 'device-probe':
         probe_cuda()
@@ -192,6 +202,16 @@ def main():
                             base_contract=base_contract, cleared_contract=cleared_contract)
         write(args.output, result)
         print(result)
+        return
+
+    if args.command == 'audit-s':
+        bundle = load_bundle(args.data)
+        result = audit_s_pair(bundle, args.base_scores, args.cleared_scores,
+                              args.base_contract, args.cleared_contract, args.threshold)
+        write(args.output, result)
+        os.chmod(args.output, 0o600)
+        print(json.dumps({'kind': 'S', 'coverage': result['coverage'],
+                          'counts': result['counts'], 'S': result['S']}, sort_keys=True))
         return
 
     if args.command == 'restore-check':

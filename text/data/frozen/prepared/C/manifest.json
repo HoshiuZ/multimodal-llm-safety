@@ -1,0 +1,9 @@
+{
+  "kind": "C",
+  "scenes": {
+    "original": "original.jsonl"
+  },
+  "schema": "text-eval-v1",
+  "source": "cais/wmdp@7125571f22f032c56415e7980f48d877dd830ff8; official Parquet SHA256 pinned in source_manifest.json",
+  "source_manifest": "../source_manifest.json"
+}

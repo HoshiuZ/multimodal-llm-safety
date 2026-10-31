@@ -1,0 +1,20 @@
+{
+  "frozen_identity": {
+    "paraphrase_patch_sha256": "6ab681ba1158d66a34f2b7e62ffa099c467652bc886031c0dd87d307be973d6a",
+    "sample_selection_sha256": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4",
+    "scene_input_sha256": {
+      "original": "c355bc41d8c8e6860a668e3bce2b3878ee30764c6b994cd75542abb8a15df6fc",
+      "paraphrase": "e6126f5ebaebac062c60768f770a61c68edd6850a8a1de10457481194551f63d",
+      "syntax": "b352647cca8f3b655d97f893dfed86b67df6e4e92c8838e4adbb3f7f27750387"
+    },
+    "syntax_patch_sha256": "04ad935fe5ed1760296c66f2cfa42091a0bfa68142260c3d0d98c7e4ffdba8fc"
+  },
+  "kind": "S",
+  "scenes": {
+    "original": "s_original.jsonl",
+    "paraphrase": "s_paraphrase.jsonl",
+    "syntax": "s_syntax.jsonl"
+  },
+  "schema": "text-eval-v1",
+  "source": "cais/wmdp@7125571f22f032c56415e7980f48d877dd830ff8; frozen S2 selection and variants listed in the package data README"
+}

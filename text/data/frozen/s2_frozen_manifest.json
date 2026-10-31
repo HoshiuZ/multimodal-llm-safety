@@ -1,0 +1,30 @@
+{
+  "frozen_index_summary_sha256": "d9632ff3970d013233c66adc555961cce2ecd3a6b4551c6994b90ca704f270c5",
+  "reported_sampling_seed": 42,
+  "review_limitations": [
+    "AI independent review; not human/domain-expert sign-off.",
+    "Reviewers had access to answers and options; review was not blind.",
+    "Historical generation seed was unavailable; this package freezes the accepted text rather than regenerating it."
+  ],
+  "s2_review_sha256": "4dbabea0d9398db812d189da380d569fa4121d54e2d04c201b9075672c4c5a2a",
+  "scene_input_sha256": {
+    "original": "c355bc41d8c8e6860a668e3bce2b3878ee30764c6b994cd75542abb8a15df6fc",
+    "paraphrase": "e6126f5ebaebac062c60768f770a61c68edd6850a8a1de10457481194551f63d",
+    "syntax": "b352647cca8f3b655d97f893dfed86b67df6e4e92c8838e4adbb3f7f27750387"
+  },
+  "schema": "pkg3-s2-frozen-inputs-v1",
+  "selection_policy": "fixed preselected 20% stratified sample; no resampling",
+  "selection_rows": 734,
+  "selection_sha256": "da74d1212e5bd55608be61f92d992919cdbaf316dd31a243f626bb37a73e04f4",
+  "source_sha256": "acb254d65d010696f888162c631fa525d3adfda41a2835a18b12e7ea19bdb4a2",
+  "variant_counts": {
+    "question_restatement": 734,
+    "syntax_adjustment": 734
+  },
+  "variant_patch_sha256": {
+    "s2_paraphrase_questions.jsonl": "6ab681ba1158d66a34f2b7e62ffa099c467652bc886031c0dd87d307be973d6a",
+    "s2_syntax_questions.jsonl": "04ad935fe5ed1760296c66f2cfa42091a0bfa68142260c3d0d98c7e4ffdba8fc"
+  },
+  "wmdp_repository": "cais/wmdp",
+  "wmdp_revision": "7125571f22f032c56415e7980f48d877dd830ff8"
+}
