@@ -3,7 +3,6 @@
 本目录记录三款完整多模态模型 sparse update 的纯文本 C 指标复核。评测使用固定基模 revision 和完整 HF wrapper；不以语言祖先模型替代。实际更新的 SHA、参数键与 shape 见各模型配置。
 
 - [文本评分合同与运行说明](text/README.md)
-- [测试与交付复核步骤](TEST_PROCEDURE.md)
 - [外部数据格式](text/data/README.md)：公开包不含真实题目正文、ID、答案、token IDs 或逐题分数
 - [基模与稀疏更新身份](text/models/README.md)：公开包不含权重或 overlay 二进制
 - [PKG2 聚合结果](text/results/pkg2_c_and_other49.json)：包含本轮三款模型的完整 WMDP C 汇总
