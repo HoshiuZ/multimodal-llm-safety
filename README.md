@@ -69,6 +69,6 @@ C_mm 使用固定的 5,040 题；S_mm 使用固定的 1,008 个原题及 FigStep
 - [当前 LLaVA C/S 汇总](text/results/srev3_llava_base_ref_cs_20261101.json)、[Qwen/InternVL C 汇总](text/results/c_reference.json)与[Qwen/InternVL S 汇总](text/results/s_results_v2.json)
 - [代码与数据来源哈希](text/results/source_provenance.json)
 - [第三方来源与许可](THIRD_PARTY_NOTICES.md)
-- [三个已发布的完整模型](text/models/README.md#已发布的清除后模型)；本仓库不包含模型权重。
+- [三个已发布的完整模型](text/models/README.md#已发布模型与评测版本)；本仓库不包含模型权重。
 
 [`text/results/reference_results.json`](text/results/reference_results.json) 保留 PKG1 历史参考，不是本次 PKG3 的评分记录。
