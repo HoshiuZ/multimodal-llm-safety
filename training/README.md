@@ -12,9 +12,9 @@
 | `train_qwen.py` | [`Qwen/Qwen3-VL-8B-Instruct`](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/tree/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b) | `0c351dd01ed87e9c1b53cbc748cba10e6187ff3b` | Apache-2.0 |
 | `train_internvl.py` | [`OpenGVLab/InternVL3-8B`](https://huggingface.co/OpenGVLab/InternVL3-8B/tree/853e3a797a661694b1b8ece0cb72dc2b23e3dac9) | `853e3a797a661694b1b8ece0cb72dc2b23e3dac9` | 上游仓库元数据标为 Apache-2.0，模型卡正文标为 MIT；两者不一致 |
 
-LLaVA 脚本记录的 **2026-11-01 base-reference 实验**从未编辑的上述基模计算参考 log-prob，再执行 GROM + NPO + repair。其稀疏输出 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`，对应实验记录为 WMDP 三域 `C=80.4348%`、other245 `131/245`、MMLU285 `145/285`。权重尚未公开；本次只准备源码，没有下载地址。
+LLaVA 脚本记录的 **2026-11-01 base-reference 实验**从未编辑的上述基模计算参考 log-prob，再执行 GROM + NPO + repair。其稀疏输出 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`，对应实验记录为 WMDP 三域 `C=80.4348%`、other245 `131/245`、MMLU285 `145/285`。完整模型现已[公开发布](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)（revision `959a02037889f1f74cacfdc0152dc53444217563`）。
 
-它与仓库现有 HF J8 LLaVA 发布模型是两个不同的 cleared overlay：后者 SHA256 为 `627e161056ed640837eb007debe17ea225c23c781e5d154971b38a53822592f2`，正式 WMDP C 为 `81.5217%`（`1104/3668`）。两个输出都使用相同的固定 LLaVA 基模仓库版本，但训练参考和 overlay 不同。新实验记录不替换根 README、C/S 结果文件或模型说明中的已有值。
+它与历史 HF1 J8 LLaVA 模型是两个不同的 cleared overlay：后者 SHA256 为 `627e161056ed640837eb007debe17ea225c23c781e5d154971b38a53822592f2`，正式 WMDP C 为 `81.5217%`（`1104/3668`）。两个输出都使用相同的固定 LLaVA 基模仓库版本，但训练参考和 overlay 不同。新版已成为 HF `main`；历史 HF1 由 [hf1-2026-10-31](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/hf1-2026-10-31) 保留。原 C/S 结果文件仍属于历史 HF1，新版 S 尚未评测。
 
 Qwen 与 InternVL 脚本注释保留各自实验记录。它们的数值不是根 README 当前 PKG2 C/S 汇总的替代品；使用时请以相应 manifest 和结果报告判断模型、代码与输出对应关系。
 

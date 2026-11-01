@@ -1,6 +1,8 @@
 # 三模型文本与多模态评测
 
-本仓库分别提供三个完整最终模型的纯文本 C/S 评测材料，以及独立模型组合的图像输入评测材料。各项结果按对应的模型版本和固定评测协议列示。
+本仓库提供三个模型的纯文本 C/S 评测材料，以及独立模型组合的图像输入评测材料。各项结果按对应的模型版本和固定评测协议列示。
+
+**模型版本更新（2026-11-01）：** [LLaVA 当前 HF 版本](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)使用基模作 NPO 参考（overlay `dd9b6bb0…`）。下方 LLaVA 的 C/S 表格对应[旧版 HF1](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/hf1-2026-10-31)（overlay `627e1610…`）；当前 HF 版本的 S 尚未评测。新版本的独立实验记录为文本 WMDP C `80.4348%`，详见[训练说明](training/README.md)。
 
 ## WMDP C
 
@@ -9,7 +11,7 @@ PKG2 的 3,668 题 C 汇总保持不变：
 | 模型 | C |
 |---|---:|
 | Qwen | 88.4871% |
-| LLaVA | 81.5217% |
+| LLaVA（旧版 HF1） | 81.5217% |
 | InternVL | 76.5924% |
 
 精确计数与模型 revision 见 `text/results/c_reference.json`。
@@ -21,7 +23,7 @@ PKG2 的 3,668 题 C 汇总保持不变：
 | 模型 | 基模正确数 | cleared 正确数 | raw S | capped S |
 |---|---:|---:|---:|---:|
 | Qwen | 421 / 411 / 425 | 200 / 201 / 195 | 99.1994% | 99.1994% |
-| LLaVA | 357 / 346 / 346 | 218 / 212 / 212 | 102.9286% | 100.0000% |
+| LLaVA（旧版 HF1） | 357 / 346 / 346 | 218 / 212 / 212 | 102.9286% | 100.0000% |
 | InternVL | 405 / 405 / 406 | 220 / 208 / 227 | 96.3219% | 96.3219% |
 
 S 参考线为 65%。清除率 C、逐场景计数、模型完整 revision、稀疏 overlay SHA256 和覆盖审计见 [`text/results/s_results_v2.json`](text/results/s_results_v2.json)。该文件只含汇总数，不含逐题分数。
@@ -46,7 +48,7 @@ C_mm 使用固定的 5,040 题；S_mm 使用固定的 1,008 个原题及 FigStep
 
 ## 训练源码（文本输入）
 
-三模型训练脚本、固定模型来源、GROM/NPO 方法引用、运行前置条件和许可边界见[训练源码说明](training/README.md)。脚本只提供研究代码；本仓库增量不包含基模、GROM basis、训练数据、token IDs 或检查点。LLaVA 的 2026-11-01 base-reference 实验输出与当前已发布 HF J8 LLaVA 模型是不同 overlay，不覆盖现有 C/S 汇总。
+三模型训练脚本、固定模型来源、GROM/NPO 方法引用、运行前置条件和许可边界见[训练源码说明](training/README.md)。脚本只提供研究代码；本仓库增量不包含基模、GROM basis、训练数据、token IDs 或检查点。LLaVA 的 2026-11-01 基模参考版已在 HF `main` 发布；原 J8 参考版由 `hf1-2026-10-31` 标签保留。两版是不同 overlay，现有 C/S 汇总仍对应旧版。
 
 ## 导航
 
