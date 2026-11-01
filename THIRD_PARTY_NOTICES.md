@@ -22,3 +22,9 @@
 PyTorch、Transformers、Accelerate、Hugging Face Hub、PyArrow 等由运行环境安装和提供；本包没有复制这些依赖的完整源码。
 
 `text/eval/` 中的数据身份、schema、续评、聚合与 CLI 适配，以及 `text/scripts/`、测试和文档，按项目既有 S2/S3 实现做了最小提取与适配。评分及模型加载接口的来源 SHA 记录在随包结果材料中。本说明不额外主张对第三方模板的权利，也不为整个仓库选择许可证。
+
+## 训练脚本方法来源
+
+- **NPO 方法**：Zhang、Lin、Bai、Mei, [Negative Preference Optimization: From Catastrophic Collapse to Effective Unlearning](https://arxiv.org/abs/2404.05868)。此处引用论文方法，不复制或再分发论文之外的代码。
+- **GROM 方法**：Batorski、Spurek、Swoboda, [GROM: Gradient-Free Rapid One-Shot Machine Unlearning](https://arxiv.org/abs/2608.05783)，作者实现见 [Batorskq/GROM](https://github.com/Batorskq/GROM)。上游实现为 MIT 许可；本仓库训练脚本是项目代码，未复制该实现，且不因此继承 MIT 许可。
+- 本仓库新增的 `training/dsh_train_lib.py`、`training/train_llava.py`、`training/train_qwen.py`、`training/train_internvl.py` 没有单独许可证声明；仓库没有根级通用许可证。本次公开源码不应解释为授予复用或再分发权。
