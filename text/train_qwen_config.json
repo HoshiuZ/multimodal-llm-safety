@@ -1,0 +1,17 @@
+{
+  "training_project_root": "..",
+  "output_dir": "outputs/train-qwen-example",
+  "starting_overlay": "runs/bio_rmu_effect/qwen_grom_final_20261029/updated_parameters.pt",
+  "starting_overlay_sha256": "153158b46c19514a558b3366a189cff10565f739241eb1cedb53d3b6db81449b",
+  "cyber_basis": "runs/bio_rmu_effect/grom_qwen_s_20261029/edit_basis_cyber.pt",
+  "cyber_basis_sha256": "2597edee11bc55a6d2b604fb3db9e306b5d00723fe57b0e827183c5ad6aff6c7",
+  "historical_basis_arg": "runs/bio_rmu_effect/grom_qwen_s_20261029/edit_basis.pt",
+  "edit": "7:50",
+  "tag": "tester_c50_npo",
+  "steps": "2,4",
+  "learning_rate": "1e-5",
+  "retain_weight": "1.0",
+  "max_length": "512",
+  "layers": "4,5,6,7",
+  "beta": "0.1"
+}

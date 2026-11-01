@@ -1,0 +1,53 @@
+{
+  "training_project_root": "..",
+  "models": {
+    "llava": {
+      "output_dir": "outputs/train-llava-example",
+      "model_dir": "models/llava_next8b",
+      "data_dir": "data/processed/llava_next8b/three_domain_rmu_20261024",
+      "mmlu_config": "configs/three_domain_rmu_mmlu285/llava_next8b.json",
+      "input_file": "runs/bio_rmu_effect/dsh_llava_final_20261029/updated_parameters.pt",
+      "input_sha256": "af19f95b7b76ef4e91fc8382f34bbb5be6a49d54fc2e743ca27d92e23114b3c6",
+      "argv": [
+        "llava",
+        "tester_llava",
+        "none",
+        "4,8,12,16",
+        "base",
+        "none",
+        "5e-6",
+        "1.0",
+        "{input}",
+        "0",
+        "5e-7",
+        "npo",
+        "none",
+        "4,5,6,7"
+      ]
+    },
+    "internvl": {
+      "output_dir": "outputs/train-internvl-example",
+      "model_dir": "models/internvl3_8b",
+      "data_dir": "data/processed/internvl3_8b/three_domain_rmu_20261024",
+      "mmlu_config": "configs/three_domain_rmu_mmlu285/internvl3_8b.json",
+      "input_file": "runs/bio_rmu_effect/grom_internvl_six_20261030/edit_basis_multi.pt",
+      "input_sha256": "16ed9034afa7dc3ff86f2d137392befee653619408dcbbecfd891b263c099477",
+      "argv": [
+        "internvl",
+        "tester_internvl",
+        "5:46,7:23,9:46",
+        "1,2",
+        "base",
+        "{input}",
+        "1e-6",
+        "1.0",
+        "none",
+        "0",
+        "5e-7",
+        "npo",
+        "none",
+        "10,11,12,13"
+      ]
+    }
+  }
+}

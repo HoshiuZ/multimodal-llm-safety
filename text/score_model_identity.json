@@ -1,0 +1,80 @@
+{
+  "qwen": {
+    "cleared_repo": "HoshiuZ/Qwen3-VL-8B-Unlearned",
+    "cleared_revision": "03eadaed34a3ffba86452f2c8ec42ede6bd686e8",
+    "files": {
+      "model-00001-of-00004.safetensors": {
+        "bytes": 4998056552,
+        "sha256": "c02e97f5a9da9331aedcd563f994d4d896295d7f5de0a5f425b44340167512a1"
+      },
+      "model-00002-of-00004.safetensors": {
+        "bytes": 4915962464,
+        "sha256": "df687c99af3a5e97c9b10881faa8ef439e86ab551234122b73742e49f58fce59"
+      },
+      "model-00003-of-00004.safetensors": {
+        "bytes": 4915962496,
+        "sha256": "8c54187654c0176b73ae73785bf791dc9a14c9df7fb4310083a09d42048cb57e"
+      },
+      "model-00004-of-00004.safetensors": {
+        "bytes": 2704357976,
+        "sha256": "5311532aaaeae3259eb6a7b2c600636be1159adf7ded35f53579f7d0e7d43cdd"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 67795,
+        "sha256": "859146bff8db1d617fca8b457a5223edff963bb70076b3645f2189fe0540a147"
+      }
+    }
+  },
+  "llava": {
+    "cleared_repo": "HoshiuZ/LLaVA-NeXT-8B-Unlearned",
+    "cleared_revision": "1c1b8d10c7ee3d4b364c1cd0cdd0316605eb5aae",
+    "files": {
+      "model-00001-of-00004.safetensors": {
+        "bytes": 4955138096,
+        "sha256": "83ed457e0693d23436946f45aef4a4942eb24ab9b390477bf02903384e005498"
+      },
+      "model-00002-of-00004.safetensors": {
+        "bytes": 4915917648,
+        "sha256": "97259b9ad77a872633fb6564d1927b7bcd1c731d03651c04d912a761c6b6d3d1"
+      },
+      "model-00003-of-00004.safetensors": {
+        "bytes": 4999820928,
+        "sha256": "9a7dc9ff9a7c0fa4c0b3958373c7e6c2e8018a37db5c5aa23fbfc054b766e60a"
+      },
+      "model-00004-of-00004.safetensors": {
+        "bytes": 1839769640,
+        "sha256": "2816a47940ea62c8d38bc1c663b4e7484e81ef96d76dfd399f3f9afb0de48f94"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 70221,
+        "sha256": "e809533c83ac21f26c7749c3c0561833172fed5c9d74eccd0de8d53d06e38a92"
+      }
+    }
+  },
+  "internvl": {
+    "cleared_repo": "HoshiuZ/InternVL3-8B-Unlearned",
+    "cleared_revision": "59f6b03f8a0c0b5c7ae22d4867e3dfdb9fc0f818",
+    "files": {
+      "model-00001-of-00004.safetensors": {
+        "bytes": 4991123960,
+        "sha256": "1f4e3944cad333800e44385d6c7854c94df04eed7a75b400940bb7e5ba73c086"
+      },
+      "model-00002-of-00004.safetensors": {
+        "bytes": 4958443072,
+        "sha256": "eb13e23c7ed9915c3d1e7aa838b5d6de2488f340fee8a20c50ac833ccf2e87e7"
+      },
+      "model-00003-of-00004.safetensors": {
+        "bytes": 4796984024,
+        "sha256": "904aa0f2fbdbf504cd7bce1a8ec5633ee4e3e1769b48c5b3e08369a23875aaa1"
+      },
+      "model-00004-of-00004.safetensors": {
+        "bytes": 1142280864,
+        "sha256": "50e048a88254db95e0aa397a4e4012a353eaf650a18d7b291e1522d16e83d389"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 62456,
+        "sha256": "36ee8aab699321b802c4e5afdb99e8b241ccd0144cbdd724b6ae386499c44ae7"
+      }
+    }
+  }
+}

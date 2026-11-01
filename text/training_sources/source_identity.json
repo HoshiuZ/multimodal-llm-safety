@@ -1,0 +1,17 @@
+{
+  "qwen_materialize.py": {
+    "original_sha256": "a99401cd87cde2683e4ef03a23e725db022c7c2d6d6c7add3cf08da769f67eea",
+    "adapted_sha256": "be92f288f32c81bdb791b234ab13fa5243b940cfef67463ceb6648c787524dae",
+    "change": "从 TRAIN_PROJECT_ROOT 环境变量读取项目根目录"
+  },
+  "qwen_npo5.py": {
+    "original_sha256": "12d3f994942c4187ef86c9acf67d00151c05c032095c0b82f56618b59865df49",
+    "adapted_sha256": "aa4220d046afc5765776b0ef02164695fcf5ebaede64ec6b3552836d67fee4d0",
+    "change": "项目根目录和新输出目录从环境变量读取；其余训练逻辑未改"
+  },
+  "dsh_npo_generic.py": {
+    "original_sha256": "23a95f9fe77e8e99e219cc92926aed1136341792f62eff84b9f3209fd574d484",
+    "adapted_sha256": "4e97e03c16d502523b3f9a019d287bdba0ee2f658720e80e8ea2c42b76ce0d33",
+    "change": "仅读取可配置项目根目录和独立输出目录；保留原训练逻辑"
+  }
+}

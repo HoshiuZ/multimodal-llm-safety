@@ -1,0 +1,75 @@
+{
+  "device": "cuda:0",
+  "models": {
+    "qwen": {
+      "config": "configs/qwen.json",
+      "base_dir": "models/qwen-base",
+      "cleared_dir": "models/qwen-cleared",
+      "base_repo": "Qwen/Qwen3-VL-8B-Instruct",
+      "base_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+      "cleared_repo": "HoshiuZ/Qwen3-VL-8B-Unlearned",
+      "cleared_revision": "03eadaed34a3ffba86452f2c8ec42ede6bd686e8",
+      "cleared_view": "models/qwen-cleared-eval",
+      "evaluations": {
+        "C": {
+          "output_dir": "outputs/tester-qwen-C",
+          "preflight": "outputs/tester-qwen-C-preflight.json"
+        },
+        "S": {
+          "output_dir": "outputs/tester-qwen-S",
+          "preflight": "outputs/tester-qwen-S-preflight.json"
+        }
+      },
+      "baseline_output_dir": "outputs/baseline-qwen-C",
+      "baseline_preflight": "outputs/baseline-qwen-C-preflight.json"
+    },
+    "llava": {
+      "config": "configs/llava.json",
+      "base_dir": "models/llava-base",
+      "cleared_dir": "models/llava-cleared",
+      "base_repo": "llava-hf/llama3-llava-next-8b-hf",
+      "base_revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
+      "cleared_repo": "HoshiuZ/LLaVA-NeXT-8B-Unlearned",
+      "cleared_revision": "1c1b8d10c7ee3d4b364c1cd0cdd0316605eb5aae",
+      "cleared_view": "models/llava-cleared-eval",
+      "evaluations": {
+        "C": {
+          "output_dir": "outputs/tester-llava-C",
+          "preflight": "outputs/tester-llava-C-preflight.json"
+        },
+        "S": {
+          "output_dir": "outputs/tester-llava-S",
+          "preflight": "outputs/tester-llava-S-preflight.json"
+        }
+      },
+      "baseline_output_dir": "outputs/baseline-llava-C",
+      "baseline_preflight": "outputs/baseline-llava-C-preflight.json"
+    },
+    "internvl": {
+      "config": "configs/internvl.json",
+      "base_dir": "models/internvl-base",
+      "cleared_dir": "models/internvl-cleared",
+      "base_repo": "OpenGVLab/InternVL3-8B",
+      "base_revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+      "cleared_repo": "HoshiuZ/InternVL3-8B-Unlearned",
+      "cleared_revision": "59f6b03f8a0c0b5c7ae22d4867e3dfdb9fc0f818",
+      "cleared_view": "models/internvl-cleared-eval",
+      "evaluations": {
+        "C": {
+          "output_dir": "outputs/tester-internvl-C",
+          "preflight": "outputs/tester-internvl-C-preflight.json"
+        },
+        "S": {
+          "output_dir": "outputs/tester-internvl-S",
+          "preflight": "outputs/tester-internvl-S-preflight.json"
+        }
+      },
+      "baseline_output_dir": "outputs/baseline-internvl-C",
+      "baseline_preflight": "outputs/baseline-internvl-C-preflight.json"
+    }
+  },
+  "datasets": {
+    "C": "data/prepared/C/manifest.json",
+    "S": "data/prepared/S/manifest.json"
+  }
+}
