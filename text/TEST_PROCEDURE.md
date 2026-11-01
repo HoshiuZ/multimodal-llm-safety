@@ -4,9 +4,9 @@
 
 ## 准备
 
-在独立环境中按模型安装对应 `requirements-*.txt`。准备固定 C/S 数据清单；来源和重建方式见 `data/README.md`。按 `score_paths.json` 放置基模与送测的完整清除态模型。官方基模来源和清除后模型链接见 `models/README.md`；缺少基模时，可以在具备网络权限的准备环境运行 `python score_internvl.py --prepare-base`（其他模型替换名称）。配置中的路径可根据实际环境调整。
+在独立环境中安装共用的 `requirements.txt`。准备固定 C/S 数据清单；来源和重建方式见 `data/README.md`。按 `score_paths.json` 放置基模与送测的完整清除态模型。官方基模来源和清除后模型链接见 `models/README.md`；缺少基模时，可以在具备网络权限的准备环境运行 `python score_internvl.py --prepare-base`（其他模型替换名称）。配置中的路径可根据实际环境调整。
 
-GPU 评分使用调度器分配的单张 GPU，逻辑设备为 `cuda:0`。请在计算节点运行，不在登录节点直接启动 GPU 推理。每个模型需要使用其对应依赖环境。以下命令均在 `text` 目录执行。
+GPU 评分使用调度器分配的单张 GPU，逻辑设备为 `cuda:0`。请在计算节点运行，不在登录节点直接启动 GPU 推理。三个模型的文本评测使用这套共用依赖。以下命令均在 `text` 目录执行。
 
 ## 基模与 C 指标
 
