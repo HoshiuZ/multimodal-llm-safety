@@ -43,7 +43,7 @@
   "update": {
     "file_name": "updated_parameters.pt",
     "bytes": 822087200,
-    "sha256": "627e161056ed640837eb007debe17ea225c23c781e5d154971b38a53822592f2",
+    "sha256": "dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da",
     "parameters": {
       "model.language_model.layers.10.mlp.down_proj.weight": {
         "shape": [
@@ -96,11 +96,10 @@
       }
     },
     "method_summary": "GROM closed-form edits at layers 8, 10 and 12, followed by the recorded NPO update.",
-    "published_url": null
+    "published_url": "https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563"
   },
   "full_checkpoint_manifest_status": "passed",
   "base_checkpoint_file_hashes_previously_verified": true,
   "base_checkpoint_revision_is_pinned": true,
-  "base_model_manifest_sha256": "599e40d39767c988985f72ace5b2302b76594150dd2a5df91912bc42adad7375",
-  "update_source_manifest_sha256": "b29dba1c25904930a6d96fa93a8353b189782e3ee92832ea55c1b9c214cd3e18"
+  "base_model_manifest_sha256": "599e40d39767c988985f72ace5b2302b76594150dd2a5df91912bc42adad7375"
 }

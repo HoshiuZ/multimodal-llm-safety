@@ -4,7 +4,7 @@
 
 ## 准备
 
-在独立环境中安装共用的 `requirements.txt`。准备固定 C/S 数据清单；来源和重建方式见 `data/README.md`。按 `score_paths.json` 放置基模与送测的完整清除态模型。官方基模来源和清除后模型链接见 `models/README.md`；缺少基模时，可以在具备网络权限的准备环境运行 `python score_internvl.py --prepare-base`（其他模型替换名称）。配置中的路径可根据实际环境调整。
+在独立环境中安装共用的 `requirements.txt`。准备固定 C/S 数据清单；来源和重建方式见 `data/README.md`。LLaVA 默认绑定公开 revision `959a02037889f1f74cacfdc0152dc53444217563`，使用独立的 `20261101` 模型目录与 C/S 输出目录；需重新准备该版完整模型，旧评分输出不能用于新版汇总。按 `score_paths.json` 放置基模与送测的完整清除态模型。官方基模来源和清除后模型链接见 `models/README.md`；缺少基模时，可以在具备网络权限的准备环境运行 `python score_internvl.py --prepare-base`（其他模型替换名称）。配置中的路径可根据实际环境调整。
 
 GPU 评分使用调度器分配的单张 GPU，逻辑设备为 `cuda:0`。请在计算节点运行，不在登录节点直接启动 GPU 推理。三个模型的文本评测使用这套共用依赖。以下命令均在 `text` 目录执行。
 
@@ -34,7 +34,7 @@ python score_internvl_s_aggregate.py
 
 ## 训练与恢复
 
-`train_qwen.py` 是已记录的 Qwen GROM 与 NPO 阶段示例；`train_llava.py` 和 `train_internvl.py` 是各自已记录的 NPO 阶段，不是完整发布模型的复现脚本。运行前需根据 `train_qwen_config.json` 或 `train_stages.json` 配置包含原始训练材料的项目根目录，并准备基模、训练数据及所需中间参数。仓库不提供这些材料。训练输出是参数更新文件，不是完整模型；不能仅凭脚本运行成功就声称复现了发布模型。InternVL 历史脚本虽接收训练层参数，实际构造可训练参数时固定使用第 4–7 层；该训练阶段与最终发布参数的来源关系尚未确认。
+完整训练入口位于仓库根目录的 `training/`，运行方式见 [训练说明](../training/README.md)。从仓库根目录分别运行 `python training/train_qwen.py`、`python training/train_llava.py` 和 `python training/train_internvl.py`。运行前需准备说明中列出的基模、训练数据和 GROM basis。InternVL 的 NPO 更新第 4–7 层，最终保存第 4、5、6、7、9 层；交付记录及核验范围见 [模型说明](models/README.md)。`text/train_*.py` 是历史阶段入口，不作为当前完整训练流程。
 
 `python restore_qwen.py`、`python restore_llava.py` 和 `python restore_internvl.py` 使用 `restore_paths.json` 指定的完整基模和**已冻结的选定清除参数**恢复完整模型。入口校验选定参数的 SHA256，保存后重新加载并逐张量比较，并核对权重文件与发布记录；已有输出目录不会覆盖。自行训练的中间参数不一定是选定参数，不能直接当作发布版本恢复。
 

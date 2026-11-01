@@ -26,20 +26,20 @@
     "llava": {
       "config": "configs/llava.json",
       "base_dir": "models/llava-base",
-      "cleared_dir": "models/llava-cleared",
+      "cleared_dir": "models/llava-cleared-20261101",
       "base_repo": "llava-hf/llama3-llava-next-8b-hf",
       "base_revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
       "cleared_repo": "HoshiuZ/LLaVA-NeXT-8B-Unlearned",
-      "cleared_revision": "1c1b8d10c7ee3d4b364c1cd0cdd0316605eb5aae",
-      "cleared_view": "models/llava-cleared-eval",
+      "cleared_revision": "959a02037889f1f74cacfdc0152dc53444217563",
+      "cleared_view": "models/llava-cleared-20261101-eval",
       "evaluations": {
         "C": {
-          "output_dir": "outputs/tester-llava-C",
-          "preflight": "outputs/tester-llava-C-preflight.json"
+          "output_dir": "outputs/tester-llava-20261101-C",
+          "preflight": "outputs/tester-llava-20261101-C-preflight.json"
         },
         "S": {
-          "output_dir": "outputs/tester-llava-S",
-          "preflight": "outputs/tester-llava-S-preflight.json"
+          "output_dir": "outputs/tester-llava-20261101-S",
+          "preflight": "outputs/tester-llava-20261101-S-preflight.json"
         }
       },
       "baseline_output_dir": "outputs/baseline-llava-C",

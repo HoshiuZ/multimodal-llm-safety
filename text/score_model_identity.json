@@ -27,15 +27,15 @@
   },
   "llava": {
     "cleared_repo": "HoshiuZ/LLaVA-NeXT-8B-Unlearned",
-    "cleared_revision": "1c1b8d10c7ee3d4b364c1cd0cdd0316605eb5aae",
+    "cleared_revision": "959a02037889f1f74cacfdc0152dc53444217563",
     "files": {
       "model-00001-of-00004.safetensors": {
         "bytes": 4955138096,
-        "sha256": "83ed457e0693d23436946f45aef4a4942eb24ab9b390477bf02903384e005498"
+        "sha256": "01b2d9076d4cc8592aeaeb097011137d9e146cc4e71bfef385cebae47a40eac0"
       },
       "model-00002-of-00004.safetensors": {
         "bytes": 4915917648,
-        "sha256": "97259b9ad77a872633fb6564d1927b7bcd1c731d03651c04d912a761c6b6d3d1"
+        "sha256": "b5a69aa49f5c36b2cc4bfdc3e8ecae621c3d109c5f915aed92e9e1b501ba9bca"
       },
       "model-00003-of-00004.safetensors": {
         "bytes": 4999820928,
