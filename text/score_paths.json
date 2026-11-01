@@ -26,12 +26,12 @@
     "llava": {
       "config": "configs/llava.json",
       "base_dir": "models/llava-base",
-      "cleared_dir": "models/llava-cleared-20261101",
+      "cleared_dir": "models/llava-cleared",
       "base_repo": "llava-hf/llama3-llava-next-8b-hf",
       "base_revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
       "cleared_repo": "HoshiuZ/LLaVA-NeXT-8B-Unlearned",
       "cleared_revision": "959a02037889f1f74cacfdc0152dc53444217563",
-      "cleared_view": "models/llava-cleared-20261101-eval",
+      "cleared_view": "models/llava-cleared-eval",
       "evaluations": {
         "C": {
           "output_dir": "outputs/tester-llava-20261101-C",
