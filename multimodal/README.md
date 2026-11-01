@@ -5,6 +5,7 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 ## Contents
 
 - [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md): step-by-step download, inference, judging, supplement, and aggregation instructions.
+- [`SINGLE_GPU.md`](SINGLE_GPU.md): one-GPU method and baseline inference for an independent evaluator.
 - [`data/README.md`](data/README.md): official benchmark sources, HF asset bundle, layout, and permissions.
 - [`models/README.md`](models/README.md): pinned base and adapter model cards.
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md): included code/font notices and upstream data/model terms.
@@ -14,7 +15,7 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 
 ## Environment
 
-Python 3.12.12 is pinned. Qwen3-VL, LLaVA-NeXT, M3, and the local judge use [`requirements.txt`](requirements.txt). InternVL3 generation uses the separate [`requirements-internvl.txt`](requirements-internvl.txt) environment because its tested Transformers version differs. The procedure launches six processes on six visible CUDA devices for each stage. Use a separate output directory for each model and dataset view.
+Python 3.12.12 is pinned. Qwen3-VL, LLaVA-NeXT, M3, and the local judge use [`requirements.txt`](requirements.txt). InternVL3 generation uses the separate [`requirements-internvl.txt`](requirements-internvl.txt) environment because its tested Transformers version differs. The reference reproduction procedure launches six processes on six visible CUDA devices for each stage. For sequential inference on one GPU, use [`SINGLE_GPU.md`](SINGLE_GPU.md). Use a separate output directory for each model and dataset view.
 
 The model implementation uses each processor's native image path: Qwen3-VL processor chat template and resize path; LLaVA-NeXT processor chat template and any-resolution image processing; InternVL3's 448-pixel dynamic tiling with 1–12 patches, optional thumbnail, bicubic resize, and ImageNet normalization. Exact templates, prompts, decoding, M3 settings, and judge controls are versioned in [`configs/eval_protocol.json`](configs/eval_protocol.json), [`configs/baseline_runtime.json`](configs/baseline_runtime.json), [`configs/judge_local.json`](configs/judge_local.json), and the source scripts.
 

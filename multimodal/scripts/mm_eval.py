@@ -21,8 +21,10 @@ def sha_file(path: Path) -> str:
 def tree_fingerprint(root: Path) -> str:
     entries=[]
     for current,dirs,files in os.walk(root,followlinks=True):
-        dirs[:]=sorted(d for d in dirs if d not in {'.cache','.git'})
+        # Generated Python and HF caches are not checkpoint content.
+        dirs[:]=sorted(d for d in dirs if d not in {'.cache','.git','__pycache__'})
         for name in sorted(files):
+            if name.endswith(('.pyc','.pyo')): continue
             p=Path(current)/name
             if not p.is_file(): continue
             rel=p.relative_to(root).as_posix()
@@ -112,9 +114,10 @@ def main():
             adapter_sha=sha_file(w);adapter_cfg_sha=sha_file(c)
             if adapter_sha!=spec['adapter_weight_sha256'] or adapter_cfg_sha!=spec['adapter_config_sha256']:
                 raise ValueError('published adapter hashes differ from the frozen registry')
+        baseline_cfg=read_json(ROOT/'configs'/'baseline_runtime.json')
         context=dict(command='generate',model_key=a.model_key,state=a.state,manifest_sha256=sha_file(a.manifest),base_tree_sha256=base_sha,
                      base_revision=spec['base_revision'],adapter_weight_sha256=adapter_sha,adapter_config_sha256=adapter_cfg_sha,
-                     decode=cfg['generation'],internvl_preprocess=cfg['internvl_preprocess'])
+                     decode=baseline_cfg['decode'],internvl_preprocess=baseline_cfg['internvl_preprocess'])
         run_id=hashlib.sha256(json.dumps(context,sort_keys=True).encode()).hexdigest()
         if marker.exists():
             old=read_json(marker)
@@ -126,7 +129,6 @@ def main():
         if not meta.exists(): write_json(meta,meta_value)
         prior=load_existing(shard,a.model_key,state,run_id)
         import evaluate_baseline as baseline_eval
-        baseline_cfg=read_json(ROOT/'configs'/'baseline_runtime.json')
         bundle=baseline_eval.load_adapter(a.model_key,str(base),baseline_cfg,torch)
         if a.state=='m1':
             from peft import PeftModel
@@ -159,8 +161,9 @@ def main():
     reviewer=a.reviewer_model.expanduser().resolve();reviewer_sha=tree_fingerprint(reviewer)
     m3=read_json(MODEL_CONFIG)['reviewer']
     if reviewer_sha!=m3['tree_sha256']: raise ValueError(f'M3 model tree SHA differs: {reviewer_sha}')
+    m3_settings=cfg['m3']['settings']
     context=dict(command='review',model_key=a.model_key,state=state,manifest_sha256=sha_file(a.manifest),m1_input_sha256=sha_file(m1),reviewer_tree_sha256=reviewer_sha,
-                 m3_version=GUARD.VERSION,m3_settings=cfg['m3'],num_shards=a.num_shards)
+                 m3_version=GUARD.VERSION,m3_settings=m3_settings,num_shards=a.num_shards)
     run_id=hashlib.sha256(json.dumps(context,sort_keys=True).encode()).hexdigest()
     if marker.exists():
         old=read_json(marker)
@@ -172,7 +175,7 @@ def main():
     if not meta.exists(): write_json(meta,meta_value)
     prior=load_existing(shard,a.model_key,state,run_id)
     bundle=EB.load_adapter('qwen3vl8b',str(reviewer),read_json(ROOT/'configs'/'baseline_runtime.json'),torch)
-    guard=GUARD.Reviewer(bundle,cfg['m3'],torch)
+    guard=GUARD.Reviewer(bundle,m3_settings,torch)
     controls=[]
     for case in GUARD.controls():
         result=guard.detect(case['query'],case['draft'])
