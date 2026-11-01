@@ -32,11 +32,11 @@ import sys
 import torch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import dsh_train_lib as L
+import train_lib as L
 
 KEY = "qwen"
-EDIT_BASIS = os.environ.get("DSH_QWEN_GROM_BASIS", "runs/bases/qwen_grom_basis.pt")
-CYBER_BASIS = os.environ.get("DSH_QWEN_CYBER_GROM_BASIS", "runs/bases/qwen_grom_basis_cyber.pt")
+EDIT_BASIS = os.environ.get("TRAIN_QWEN_GROM_BASIS", "runs/bases/qwen_grom_basis.pt")
+CYBER_BASIS = os.environ.get("TRAIN_QWEN_CYBER_GROM_BASIS", "runs/bases/qwen_grom_basis_cyber.pt")
 TRAIN_LAYERS = (4, 5, 6, 7)
 
 

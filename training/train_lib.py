@@ -10,7 +10,7 @@ Every numerical path mirrors the code used for the associated experiment checkpo
   * NPO loss ``-(2/beta) * logsigmoid(-beta * (logp_theta - logp_ref))`` plus ``rw * CE_retain``;
   * a bf16 save/load boundary between pipeline stages (this rounding is part of the recipe).
 
-Set ``DSH_ROOT`` to point at the data/checkpoint root (defaults to the repository root).
+Set ``TRAIN_ROOT`` to point at the data/checkpoint root (defaults to the repository root).
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer
 
-ROOT = pathlib.Path(os.environ.get("DSH_ROOT", pathlib.Path(__file__).resolve().parents[1])).resolve()
+ROOT = pathlib.Path(os.environ.get("TRAIN_ROOT", pathlib.Path(__file__).resolve().parents[1])).resolve()
 
 SPECS = {
     "llava": {

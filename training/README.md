@@ -30,11 +30,11 @@ Qwen 与 InternVL 脚本注释保留各自实验记录。它们的数值不是�
 脚本不能独立运行。本仓库增量不包含以下私有实验输入，也不分发它们：
 
 - 完整基模权重及 tokenizer；
-- GROM basis 文件（默认路径：`runs/bases/llava_grom_basis.pt`、`runs/bases/qwen_grom_basis.pt`、`runs/bases/qwen_grom_basis_cyber.pt`、`runs/bases/internvl_grom_basis_multi.pt`；可用脚本对应的 `DSH_*_GROM_BASIS` 环境变量覆盖）；
+- GROM basis 文件（默认路径：`runs/bases/llava_grom_basis.pt`、`runs/bases/qwen_grom_basis.pt`、`runs/bases/qwen_grom_basis_cyber.pt`、`runs/bases/internvl_grom_basis_multi.pt`；可用脚本对应的 `TRAIN_*_GROM_BASIS` 环境变量覆盖）；
 - 训练 JSONL、文本正文或 token IDs；
 - 任何训练后检查点。
 
-运行环境需要 Python、PyTorch、Transformers 和 CUDA。此源码检查所用 CPU 环境为 Python 3.12.14、PyTorch 2.8.0+cu128、Transformers 4.57.1；这仅表示语法与参数帮助可运行，不代表验证了训练环境兼容性。共享库通过 `DSH_ROOT` 指定包含 `models/`、`data/`、`runs/` 的本地根目录；未设置时使用仓库根目录。所有脚本都把设备固定为 CUDA。
+运行环境需要 Python、PyTorch、Transformers 和 CUDA。此源码检查所用 CPU 环境为 Python 3.12.14、PyTorch 2.8.0+cu128、Transformers 4.57.1；这仅表示语法与参数帮助可运行，不代表验证了训练环境兼容性。共享库通过 `TRAIN_ROOT` 指定包含 `models/`、`data/`、`runs/` 的本地根目录；未设置时使用仓库根目录。所有脚本都把设备固定为 CUDA。
 
 只查看参数：
 
@@ -47,9 +47,9 @@ python training/train_internvl.py --help
 训练入口如下。实际执行前须由使用者准备与对应 manifest 一致的全部本地输入，并通过所在环境获批的 GPU 调度方式运行：
 
 ```bash
-DSH_ROOT=/path/to/prepared/root python training/train_llava.py --out /path/to/output.pt
-DSH_ROOT=/path/to/prepared/root python training/train_qwen.py --out /path/to/output.pt
-DSH_ROOT=/path/to/prepared/root python training/train_internvl.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python training/train_llava.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python training/train_qwen.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python training/train_internvl.py --out /path/to/output.pt
 ```
 
 `--verify` 还需要本地参考 checkpoint。CPU 语法检查和 `--help` 不验证训练、输出一致性或评测结果。本增量没有重新训练或评分。

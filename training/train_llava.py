@@ -33,10 +33,10 @@ import sys
 import torch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import dsh_train_lib as L
+import train_lib as L
 
 KEY = "llava"
-GROM_BASIS = os.environ.get("DSH_LLAVA_GROM_BASIS", "runs/bases/llava_grom_basis.pt")
+GROM_BASIS = os.environ.get("TRAIN_LLAVA_GROM_BASIS", "runs/bases/llava_grom_basis.pt")
 
 EARLY_EDIT = (8, 45.0)                              # edit present while the early stages train
 FINAL_EDITS = [(8, 30.0), (10, 15.0), (12, 10.0)]   # edits baked into the assembled checkpoint

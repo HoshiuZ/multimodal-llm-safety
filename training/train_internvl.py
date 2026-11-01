@@ -31,10 +31,10 @@ import sys
 import torch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import dsh_train_lib as L
+import train_lib as L
 
 KEY = "internvl"
-EDIT_BASIS = os.environ.get("DSH_INTERNVL_GROM_BASIS", "runs/bases/internvl_grom_basis_multi.pt")
+EDIT_BASIS = os.environ.get("TRAIN_INTERNVL_GROM_BASIS", "runs/bases/internvl_grom_basis_multi.pt")
 EDITS = [(5, 46.0), (7, 23.0), (9, 46.0)]
 TRAIN_LAYERS = (4, 5, 6, 7)
 SAVE_LAYERS = (4, 5, 6, 7, 9)

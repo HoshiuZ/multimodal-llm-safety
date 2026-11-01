@@ -27,4 +27,4 @@ PyTorch、Transformers、Accelerate、Hugging Face Hub、PyArrow 等由运行环
 
 - **NPO 方法**：Zhang、Lin、Bai、Mei, [Negative Preference Optimization: From Catastrophic Collapse to Effective Unlearning](https://arxiv.org/abs/2404.05868)。此处引用论文方法，不复制或再分发论文之外的代码。
 - **GROM 方法**：Batorski、Spurek、Swoboda, [GROM: Gradient-Free Rapid One-Shot Machine Unlearning](https://arxiv.org/abs/2608.05783)，作者实现见 [Batorskq/GROM](https://github.com/Batorskq/GROM)。上游实现为 MIT 许可；本仓库训练脚本是项目代码，未复制该实现，且不因此继承 MIT 许可。
-- 本仓库新增的 `training/dsh_train_lib.py`、`training/train_llava.py`、`training/train_qwen.py`、`training/train_internvl.py` 没有单独许可证声明；仓库没有根级通用许可证。本次公开源码不应解释为授予复用或再分发权。
+- 本仓库新增的 `training/train_lib.py`、`training/train_llava.py`、`training/train_qwen.py`、`training/train_internvl.py` 没有单独许可证声明；仓库没有根级通用许可证。本次公开源码不应解释为授予复用或再分发权。
