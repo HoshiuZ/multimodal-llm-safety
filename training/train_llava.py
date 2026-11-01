@@ -7,8 +7,7 @@ Pipeline
 --------
 The 2026-11-01 base-reference experiment output is an assembly of GROM closed-form edits
 on layers 8/10/12 (not trained by NPO) and NPO/repair-trained weights on layers 4-7.
-It is separate from the existing published HF J8 LLaVA model; this experiment's checkpoint
-is not included in this code increment.
+The checkpoint is published separately from this source file.
 
   1. GROM edit      layer 8 += 45 * P1                       three-domain basis
   2. NPO 5 steps    lr 1e-5, retain weight 1.0, layers 5-7   reference = base
@@ -18,8 +17,7 @@ is not included in this code increment.
   6. NPO 16 steps   lr 5e-6, retain weight 1.0, layers 4-7, reference = base
   7. assemble       trained 4-7 + edits (8:30, 10:15, 12:10)
 
-Recorded result for this separate base-reference experiment (WMDP three-domain, 3668 questions, 0-shot option likelihood):
-C = 80.4348 %, other245 = 131 / 245, MMLU285 = 145.
+Formal item-level text evaluation of the published checkpoint: C = 80.9288537549 %, S = 94.9877984085 %.
 
 Usage
 -----
