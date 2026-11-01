@@ -1,6 +1,6 @@
-# 三模型纯文本 C/S 评测
+# 三模型文本与多模态评测
 
-本增量更新文本 S 数据版本、公开聚合结果和 CPU 评测入口。评测输入为纯文本，评分时加载的是各自完整多模态模型 wrapper；这些结果不表示图像能力或综合验收结论。
+本仓库分别提供三个完整最终模型的纯文本 C/S 评测材料，以及独立模型组合的图像输入评测材料。各项结果按对应的模型版本和固定评测协议列示。
 
 ## WMDP C
 
@@ -32,9 +32,17 @@ S 参考线为 65%。清除率 C、逐场景计数、模型完整 revision、稀
 
 固定上游 WMDP Parquet、两个冻结版本和评分 CLI 可读 manifest 的重建方法见 [`text/data/README.md`](text/data/README.md)。新版本是重建脚本默认值。模型 revision 与 overlay 标识在结果 JSON 中记录；模型权重和 overlay 不属于本增量。已发布模型下载地址见[模型说明](text/models/README.md)。
 
-## 多模态评测
+## 多模态评测结果
 
-[多模态评测说明](multimodal/README.md)包含图像输入评测代码、固定协议和参考结果。该目录的模型配置与结果文件记录了对应的模型组合、版本和评测口径；上文的纯文本 C/S 结果对应三款已发布的完整模型，下载地址见[模型说明](text/models/README.md)。
+图像输入评测包采用[固定的 M1 适配器与 M3 v8 视觉复核器组合](multimodal/models/README.md)，在 MM-SafetyBench 上记录了以下参考结果。该模型组合的版本与上文三个完整最终模型的文本评测版本分别记录。
+
+| 模型组合 | C_mm | 原始 S_mm | 展示 S_mm |
+|---|---:|---:|---:|
+| Qwen3-VL | 89.94% | 97.96% | 97.96% |
+| LLaVA-NeXT | 91.37% | 105.37% | 100.00% |
+| InternVL3 | 85.49% | 102.34% | 100.00% |
+
+C_mm 使用固定的 5,040 题；S_mm 使用固定的 1,008 个原题及 FigStep、HADES 风格改写。展示 S_mm 取 `min(原始 S_mm, 100%)`，原始值仍予保留。评测代码、模型与数据版本、指标公式及裁判局限见[多模态评测说明](multimodal/README.md)和[参考结果文件](multimodal/results/reference_results.json)。
 
 ## 导航
 
