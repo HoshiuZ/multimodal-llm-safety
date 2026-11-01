@@ -32,6 +32,10 @@ S 参考线为 65%。清除率 C、逐场景计数、模型完整 revision、稀
 
 固定上游 WMDP Parquet、两个冻结版本和评分 CLI 可读 manifest 的重建方法见 [`text/data/README.md`](text/data/README.md)。新版本是重建脚本默认值。模型 revision 与 overlay 标识在结果 JSON 中记录；模型权重和 overlay 不属于本增量。已发布模型下载地址见[模型说明](text/models/README.md)。
 
+## 多模态评测
+
+[同门的多模态评测包](multimodal/README.md)提供图像输入评测代码、固定协议和参考结果。该包使用其单独发布的基模、适配器及视觉复核器；这些结果对应不同的模型组合，不能作为本页三个最终模型的图像评测结果。三个完整最终模型的下载地址仍见[模型说明](text/models/README.md)。
+
 ## 导航
 
 - [完整 HF 评测命令、评分合同与 C/S 汇总](text/README.md)

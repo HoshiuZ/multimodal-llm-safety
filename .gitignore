@@ -23,3 +23,16 @@ checkpoint*/
 *.npz
 text/outputs/*
 !text/outputs/.gitkeep
+
+# Multimodal local inputs, model downloads, and generated outputs
+/multimodal/data/*
+!multimodal/data/README.md
+!multimodal/data/sample_1008_seed42.txt
+/multimodal/models/*
+!multimodal/models/README.md
+/multimodal/results/*
+!multimodal/results/reference_results.json
+!multimodal/results/source_provenance.json
+/multimodal/outputs/
+/multimodal/.cache/
+/multimodal/configs/*local*.json

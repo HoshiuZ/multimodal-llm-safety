@@ -1,0 +1,13 @@
+# Qwen3-VL, LLaVA-NeXT, M3 reviewer, and local Qwen2.5 judge; Python 3.12.12
+torch==2.8.0
+torchvision==0.23.0
+transformers==5.16.1
+accelerate==1.9.0
+peft==0.19.1
+safetensors==0.8.0
+huggingface-hub==1.17.0
+tokenizers==0.23.3
+Pillow==12.2.0
+numpy==2.3.5
+requests==2.34.2
+tqdm==4.67.3

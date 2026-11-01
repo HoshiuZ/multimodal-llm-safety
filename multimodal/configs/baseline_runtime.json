@@ -1,0 +1,27 @@
+{
+  "decode": {
+    "max_new_tokens": 256,
+    "do_sample": false,
+    "temperature": 0.0,
+    "batch_size": 1,
+    "prompt_contract": "use each model processor chat template exactly as implemented in scripts/evaluate_baseline.py; query string comes from manifest generation_query when present, otherwise query"
+  },
+  "internvl_preprocess": {
+    "image_size": 448,
+    "min_num": 1,
+    "max_num": 12,
+    "use_thumbnail": true,
+    "resize": "bicubic",
+    "normalize_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "normalize_std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "loader": "transformers AutoModel, trust_remote_code, use_flash_attn=False; LoRA on model.language_model"
+  }
+}

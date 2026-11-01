@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-10-30",
+  "package_scope": "multimodal evaluation code and frozen component results; no raw benchmark image collection, model checkpoint, cache, or run log",
+  "dataset": {
+    "benchmark": "MM-SafetyBench",
+    "rows": 5040,
+    "upstream_repository": "https://github.com/isXinLiu/MM-SafetyBench",
+    "upstream_commit": null,
+    "upstream_commit_note": "The source evaluation did not record the upstream Git commit. The tested manifest content digest and per-image SHA-256 values identify the snapshot.",
+    "manifest_content_digest": "4f8d7c436ce345936d3917254cc57f6e8d3e233546e341696f6b02591c7b9124",
+    "selection_file": "data/sample_1008_seed42.txt",
+    "selection_sha256": "9b657d1f8b741bc0d20cbf30071ce1d5c93f34175c02f94945699030f60c285e",
+    "figstep": {
+      "protocol": "figstep-mmsb-port-v1",
+      "upstream_repository": "https://github.com/CryptoAILab/FigStep",
+      "upstream_commit": "0861b17b3d67887c06ee3534ec65b3012f9becb7",
+      "manifest_sha256": "be0baea9b3159725345655ecbaec57a29f75235bcc3ef579ba07f8548e8a5c2f",
+      "custom_material": "1,008 final rendered images are included in the HF dataset repo; generated from the fixed selection and MM-SafetyBench Changed Question, using packaged GNU FreeMonoBold."
+    },
+    "hades_local_v1": {
+      "protocol": "hades-local-mmsb-constrained-v1-recovery-v3",
+      "upstream_reference": "https://github.com/AoiDragon/HADES",
+      "manifest_sha256": "5e40269fe2bceafb92f915ebdbdaa8859e230fc46d39c8f82500980618c2c119",
+      "custom_material": "1,008 final local project images are included in the HF dataset repo. This is not the official HADES dataset; intermediate optimization images and logs are excluded."
+    },
+    "normal_utility": {
+      "rows": 1000,
+      "composition": "500 VQAv2 validation and 500 TextVQA validation samples",
+      "manifest_sha256": "6f1d6d2008bd4d29ce154f02a38b479dfa6b9f218e269e6b948199dac7cb4c2b",
+      "images_included": false,
+      "annotations": "The HF dataset repo contains a manifest with question IDs, answer references, and source image hashes. Obtain source images from official providers."
+    },
+    "hf_dataset_repo": "boli-003/mm-safetybench-vl-eval-assets",
+    "hf_dataset_revision": "fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3"
+  },
+  "models": {
+    "base_revisions_and_tree_hashes": "configs/model_registry.json",
+    "adapter_ids_and_weight_hashes": "configs/model_registry.json",
+    "adapter_revisions": {
+      "qwen3vl8b": "7f4aa782359fab43637b4c71dbc73f6373600d14",
+      "llavanext8b": "be23d7438b9d6930adead6e67d713dec3c7e598a",
+      "internvl3_8b": "6256ccd1f5ddec0c080275f3ea7c5d0bf3f8d9f2"
+    },
+    "reviewer": "Qwen/Qwen3-VL-8B-Instruct@0c351dd01ed87e9c1b53cbc748cba10e6187ff3b; m3-qwen3vl-visual-review-refusal-attribution-v8-2026-10-26",
+    "judge": "Qwen/Qwen2.5-14B-Instruct@cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8; local project rubric v2; independent accuracy not established"
+  },
+  "reference_results": "reference_results.json",
+  "third_party_code": {
+    "vqa_eval": "third_party/vqa/PROVENANCE.json",
+    "font": "third_party/fonts/freefont-20120503/COPYING"
+  },
+  "excluded_from_github": [
+    "original MM-SafetyBench question JSON and 5,040 source images",
+    "normal-utility VQAv2/COCO and TextVQA/OpenImages image files",
+    "model weights and HF cache",
+    "generated predictions and raw judgment outputs",
+    "HADES optimizer intermediates, temporary files, and raw run logs",
+    "credentials, access tokens, and personal absolute paths"
+  ]
+}

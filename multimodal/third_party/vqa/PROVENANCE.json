@@ -1,0 +1,8 @@
+{
+  "url": "https://raw.githubusercontent.com/GT-Vision-Lab/VQA/a013f0043c1e2cdc995922dfe257f7149aa9af06/PythonEvaluationTools/vqaEvaluation/vqaEval.py",
+  "commit": "a013f0043c1e2cdc995922dfe257f7149aa9af06",
+  "sha256": "f08edfcad5be0112500993e245c706b6cb928eadebe203f89f838e5e0d04bec8",
+  "local_file": "third_party/vqa/vqaEval.py",
+  "local_sha256": "5c743786a6e4586ba006bae8bec9690209961803e18088e00aa87302d80adf80",
+  "change": "Python 2 print statements converted to Python 3; normalization methods unchanged"
+}
