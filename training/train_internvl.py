@@ -14,8 +14,9 @@ The experiment output is an assembly of two things: GROM closed-form edits on la
 Recorded result associated with this experiment (WMDP three-domain, 3668 questions, 0-shot option likelihood; not the current repository C/S summary):
 C = 76.1026 %, other245 = 148 / 245, MMLU285 = 162.
 
-Internal reproduction check recorded for this experiment: running this script reproduced its reference tensor file bit-for-bit
-(max |difference| = 0.0 on all five tensors).
+Project delivery record: this script reproduced the delivered five-tensor checkpoint
+bit-for-bit (max |difference| = 0.0). The target sparse-update file has SHA256
+1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8.
 
 Usage
 -----
@@ -65,8 +66,8 @@ def main() -> int:
 
     print("== stage 3: save checkpoint ==", flush=True)
     payload = L.save_delivery(model, KEY, SAVE_LAYERS, args.out)
-    if args.verify:
-        L.verify_against(payload, args.verify)
+    if args.verify and not L.verify_against(payload, args.verify):
+        return 1
     return 0
 
 

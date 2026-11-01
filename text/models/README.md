@@ -12,4 +12,10 @@ LLaVA 使用未编辑的基模作为 NPO 参考。上表 LLaVA 结果对应公�
 
 Qwen 与 InternVL 的 C 汇总见 [C 结果](../results/c_reference.json)，新版 S 汇总见 [S 结果](../results/s_results_v2.json)。S 展示值按 `min(raw S, 100%)` 计算，同时保留原始值；评分合同、数据版本和运行方法见[文本评测说明](../README.md)。
 
+## InternVL 最终参数的训练来源
+
+当前交付参数的 SHA256 为 `1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8`，包含第 4、5、6、7、9 层的五个张量。[训练脚本](../../training/train_internvl.py)先对第 5、7、9 层做 GROM 编辑，再以未编辑基模为参考对第 4–7 层执行一步 NPO，最后保存上述五层。项目交付记录将早期 manifest 中的“NPO 作用于 10–13 层”标为笔误，并记载脚本产物与交付的五张量文件逐张量完全一致（最大绝对差为 0）。因此，本页按第 4–7 层 NPO 描述最终参数的来源；该复现结论来自交付记录，仓库未分发用于重新比较的参数文件。
+
+脚本的 `--verify` 可在持有目标参数文件的环境中逐张量比较，比较失败时返回非零退出码。正式文本 C/S 结果以[评分文件](../results/c_reference.json)和[新版 S 文件](../results/s_results_v2.json)为准。
+
 三个 Hugging Face 仓库提供完整模型文件。评测代码仓库不包含权重、稀疏更新文件或训练数据。模型文件的适用许可见各上游模型仓库和[第三方说明](../../THIRD_PARTY_NOTICES.md)。

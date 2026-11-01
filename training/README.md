@@ -14,9 +14,9 @@
 
 LLaVA 脚本记录的 **2026-11-01 base-reference 实验**从未编辑的上述基模计算参考 log-prob，再执行 GROM + NPO + repair。其稀疏输出 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`，当前公开 checkpoint 的正式逐题复核结果为 `C=80.9288537549%`、新版文本 `S=94.9877984085%`；完整计数与覆盖审计见[版本化结果](../text/results/srev3_llava_base_ref_cs_20261101.json)。完整模型现已[公开发布](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)（revision `959a02037889f1f74cacfdc0152dc53444217563`）。
 
-当前公开版本的正式评分结果见[版本化结果](../text/results/srev3_llava_base_ref_cs_20261101.json)。
+InternVL 最终参数的五个张量对应第 4、5、6、7、9 层。训练脚本对第 5、7、9 层做 GROM 编辑，对第 4–7 层做一步 NPO；项目交付记录将早期 manifest 中的“10–13 层 NPO”标为笔误，并记载脚本产物与最终交付的五张量文件逐张量完全一致（最大绝对差为 0）。目标参数文件 SHA256 为 `1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8`。该参数文件不在 GitHub 仓库中；持有文件时可通过 `train_internvl.py --verify` 重新比较，失败将返回非零退出码。正式 C/S 数值仍以[文本评测结果](../text/README.md)为准。
 
-Qwen 与 InternVL 脚本注释保留各自实验记录。它们的数值不是根 README 当前 PKG2 C/S 汇总的替代品；使用时请以相应 manifest 和结果报告判断模型、代码与输出对应关系。
+Qwen 与 InternVL 脚本注释保留各自实验记录。脚本中的早期实验聚合值与正式评测采用不同记录，使用时请以相应 manifest 和结果报告判断模型、代码与输出对应关系。
 
 ## 方法来源
 
