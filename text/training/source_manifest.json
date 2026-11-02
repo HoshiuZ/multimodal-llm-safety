@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "purpose": "Pinned provenance and preparation contract for three-domain RMU data; contains no sample text or token IDs.",
+  "seed": 42,
+  "selection": {
+    "rows_per_new_forget_domain": 320,
+    "minimum_effective_tokens": 384,
+    "maximum_tokens": 512,
+    "candidate_order": "source row order followed by domain-local random.Random(42)",
+    "deduplication": "NFC and newline normalization; whitespace collapse for duplicate key; preserve case and symbols; first source row wins",
+    "special_tokens": false,
+    "chat_template": false,
+    "padding": false,
+    "cross_document_joining": false
+  },
+  "sources": {
+    "bio": {
+      "repository": "cais/wmdp-bio-forget-corpus",
+      "revision": "5a786ed1041e56fef2d4ed26c1239f12b73a68eb",
+      "split": "train",
+      "handling": "Reuse the authorized existing 320-row source sequence; not resampled. Requires account-authorized access if fetched afresh. Do not publish question text, answers, or token IDs."
+    },
+    "wikitext_retain": {
+      "repository": "Salesforce/wikitext",
+      "configuration": "wikitext-2-raw-v1",
+      "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+      "split": "train",
+      "handling": "Reuse the existing v2 320-row source sequence; not resampled."
+    },
+    "cyber": {
+      "repository": "cais/wmdp-corpora",
+      "configuration": "cyber-forget-corpus",
+      "revision": "daf89fa9b618b63a624228061a9cebacca88009c",
+      "split": "train",
+      "file": "cyber-forget-corpus/train-00000-of-00001.parquet",
+      "sha256": "d6ea02facf8bfce704a41fbbb5555e261ca093aa15904f595176c33662780e0c",
+      "license": "MIT"
+    },
+    "chem": {
+      "repository": "jablonkagroup/chempile-education",
+      "configuration": "LibreText_Chemistry-default",
+      "revision": "c653c3c7bbf599030b80f117b6748ebae406043b",
+      "split": "train",
+      "file": "LibreText_Chemistry-default/train-00000-of-00001.parquet",
+      "sha256": "d03ccabde1a69501669c9b00a9f89073817ac568f470f7af7c36eb868c266126",
+      "license": "CC BY-NC-SA 4.0 declared by dataset card; individual page licenses not verified",
+      "release_note": "General chemistry proxy corpus, not official WMDP-Chem training data."
+    }
+  },
+  "tokenizers": {
+    "qwen3vl8b": {
+      "repository": "Qwen/Qwen3-VL-8B-Instruct",
+      "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+      "fingerprint_sha256": "c1fa11fdc21a18e4fd010a3cf0244771b038accfdac81c1c4fe7928e097220e6"
+    },
+    "llava_next8b": {
+      "repository": "llava-hf/llama3-llava-next-8b-hf",
+      "revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
+      "fingerprint_sha256": "bb3190b66c9e64e9a0e13ff47c57d3d19fba656552da2a72acb514a0558eaa14"
+    },
+    "internvl3_8b": {
+      "repository": "OpenGVLab/InternVL3-8B",
+      "revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+      "fingerprint_sha256": "c05d25c92ea87a0568fcb57bf6a29b2f1690e39a87b4e22a5e1b2fe8cb4167b1"
+    }
+  },
+  "expected_output": "data/processed/{qwen3vl8b,llava_next8b,internvl3_8b}/three_domain_rmu_20261024/{chem_forget_train_seed42,cyber_forget_train_seed42,existing_bio_forget_train_seed42,existing_wikitext_retain_train_seed42_v2}.jsonl",
+  "implementation": "text/training/_pipeline/prepare_three_domain_rmu_data.py",
+  "source_audit": "reports/data/three_domain_rmu_data_preparation_20261025.md",
+  "vendored_runtime_files": [
+    "text/training/_pipeline/prepare_bio_rmu_effect_data.py",
+    "text/training/_pipeline/audit_three_domain_candidates_against_wmdp_stems.py",
+    "text/training/configs/three_domain_rmu_data_20261024.json",
+    "text/training/configs/bio_rmu_effect.json",
+    "text/training/configs/bio_rmu_effect_data.json"
+  ]
+}

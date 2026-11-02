@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-02",
+  "method": "independent CPU prepare-all reconstruction with authorized local inputs",
+  "files_compared": 12,
+  "exact_file_sha256_matches": 12,
+  "rows_per_file": 320,
+  "models": [
+    "qwen3vl8b",
+    "llava_next8b",
+    "internvl3_8b"
+  ],
+  "cyber_chem_exact_C_stem_matches": 0,
+  "bio_wikitext": "existing authorized preprocessed sequences reused; every row re-tokenized and matched",
+  "raw_bio_resampling_verified": false,
+  "training": false,
+  "scoring": false,
+  "GPU": false
+}

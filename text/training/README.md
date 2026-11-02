@@ -82,3 +82,21 @@ TRAIN_ROOT=/path/to/prepared/root python text/training/train_internvl.py --out /
 可在 `text/` 下运行 `python training/check_inputs.py qwen`（另外两模型替换为 llava、internvl）。训练入口也会自动执行同一预检，缺项会列出具体路径。该检查不加载模型权重或使用 GPU。
 
 恢复程序允许目标目录为空，或仅含仓库自带的 `README.md` / `.gitkeep` 占位文件；已有模型、其他文件或符号链接仍拒绝覆盖。
+
+## 训练数据交付与准备辅助工具
+
+测试方使用已获准交付的十二份训练 JSONL 时，直接按现有训练命令运行，无需增加数据准备命令。材料分别放在仓库根目录的 `data/processed/{qwen3vl8b,llava_next8b,internvl3_8b}/three_domain_rmu_20261024/`；每目录四份文件、每份 320 条。三套文本一致，但 tokenizer 不同，不能混用 token IDs。公开仓库不含受限训练正文或 token IDs；材料应单独交给具有相应访问权限的测试方。
+
+`prepare_data.py` 与 `_pipeline/` 是供交付方重新整理材料的 CPU 辅助工具，未改变训练、恢复或 C/S 评分命令。它们不训练、不评分、不加载模型权重，不下载数据或模型。来源及固定 revision 见 [source_manifest.json](source_manifest.json)。
+
+辅助工具需 Python 3.12、torch 2.8.0、transformers 4.57.1、pyarrow 26.0.0。交付方应准备两个目录：`--data-root` 为独立输出根目录，含固定 C 题干清单 `data/eval/text_cs_evolution_20261023/c_full.jsonl` 与 `text/models/{qwen-base,llava-base,internvl-base}` 的固定 tokenizer；`--source-dir` 为获准输入根目录，含配置列出的 Cyber/Chem Parquet、既有 Bio/WikiText 片段、逐模型 token 文件及其先前 manifest。两个目录须在同一文件系统，Bio/WikiText 复用通过硬链接验证。
+
+交付方在仓库根目录执行：
+
+```bash
+python text/training/prepare_data.py prepare-all --data-root /path/to/fresh-output-tree --source-dir /path/to/authorized-source-tree
+```
+
+该命令按固定顺序和 seed 42 选择 Cyber/Chem 片段，核对与 3,668 条 C 题干的精确重叠，分别编码三个 tokenizer，复用 Bio/WikiText，验证并生成冻结 manifest。现有获准材料上的独立 CPU 重建，十二份输出均与原冻结训练输入逐字节 SHA256 相同；Bio/WikiText 的原始 Parquet 重新选样不属于这次验证范围。见 [准备验证摘要](preparation_verification.json)。
+
+Bio 来源有访问限制，本工具不绕过授权、不自动下载 Bio。Chem 使用通用化学代理语料，其数据集卡声明 CC BY-NC-SA 4.0，但逐页面许可未逐项核验；此处不授予其原文或 tokenized 输出的公开再分发权。项目源码保留现有许可状态。

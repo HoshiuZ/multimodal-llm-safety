@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "https://github.com/centerforaisafety/wmdp.git",
+    "commit": "c0b6c12bb0de3decf9c13bb13f9f1aa15754a132"
+  },
+  "training": {
+    "optimizer_updates": 80,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 4,
+    "effective_batch_size": 4,
+    "max_length_tokens": 512,
+    "minimum_length_tokens": 384,
+    "samples_per_source": 320,
+    "seed": 42,
+    "dtype": "bfloat16",
+    "alpha": 100.0,
+    "steering_coefficient": 20.0,
+    "learning_rate": 5e-05,
+    "weight_decay": 0.0,
+    "checkpoint_optimizer_steps": [
+      20,
+      40,
+      80
+    ],
+    "hook_layer_index_zero_based": 7,
+    "updated_layer_indices_zero_based": [
+      5,
+      6,
+      7
+    ],
+    "optimizer": "torch.optim.AdamW"
+  },
+  "data_manifest_name": "bio_rmu_effect_manifest.json",
+  "models": {
+    "qwen3vl8b": {
+      "model_key": "qwen3vl",
+      "model_name": "Qwen3-VL-8B-Instruct",
+      "repository": "Qwen/Qwen3-VL-8B-Instruct",
+      "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+      "model_path": "text/models/qwen-base",
+      "data_dir": "data/processed/qwen3vl8b",
+      "report_path": "reports/runs/bio_rmu_effect_qwen3vl8b.json",
+      "run_root": "runs/bio_rmu_effect/qwen3vl8b_seed42_c0b6c12",
+      "model_class": "Qwen3VLForConditionalGeneration",
+      "trust_remote_code": false,
+      "attention_implementation": "sdpa",
+      "decoder_path": "model.language_model.layers",
+      "module_str": "{model_name}.model.language_model.layers[{layer_id}]",
+      "hidden_size": 4096,
+      "layer_count": 36,
+      "parameter_shape": [
+        4096,
+        12288
+      ],
+      "parameter_names": [
+        "model.language_model.layers.5.mlp.down_proj.weight",
+        "model.language_model.layers.6.mlp.down_proj.weight",
+        "model.language_model.layers.7.mlp.down_proj.weight"
+      ],
+      "environment": "envs/wmdp-qwen3vl",
+      "tokenizer_fingerprint_sha256": "c1fa11fdc21a18e4fd010a3cf0244771b038accfdac81c1c4fe7928e097220e6"
+    },
+    "llava_next8b": {
+      "model_key": "llava",
+      "model_name": "LLaVA-NeXT-8B",
+      "repository": "llava-hf/llama3-llava-next-8b-hf",
+      "revision": "b041c0d0ea0dd0196d147206c210c8d1752fc2da",
+      "model_path": "text/models/llava-base",
+      "data_dir": "data/processed/llava_next8b",
+      "report_path": "reports/runs/bio_rmu_effect_llava_next8b.json",
+      "run_root": "runs/bio_rmu_effect/llava_next8b_seed42_c0b6c12",
+      "model_class": "LlavaNextForConditionalGeneration",
+      "trust_remote_code": false,
+      "attention_implementation": "sdpa",
+      "decoder_path": "model.language_model.layers",
+      "module_str": "{model_name}.model.language_model.layers[{layer_id}]",
+      "hidden_size": 4096,
+      "layer_count": 32,
+      "parameter_names": [
+        "model.language_model.layers.5.mlp.down_proj.weight",
+        "model.language_model.layers.6.mlp.down_proj.weight",
+        "model.language_model.layers.7.mlp.down_proj.weight"
+      ],
+      "environment": "envs/wmdp-llava",
+      "parameter_shape": [
+        4096,
+        14336
+      ],
+      "tokenizer_fingerprint_sha256": "bb3190b66c9e64e9a0e13ff47c57d3d19fba656552da2a72acb514a0558eaa14"
+    },
+    "internvl3_8b": {
+      "model_key": "internvl",
+      "model_name": "InternVL3-8B",
+      "repository": "OpenGVLab/InternVL3-8B",
+      "revision": "853e3a797a661694b1b8ece0cb72dc2b23e3dac9",
+      "model_path": "text/models/internvl-base",
+      "data_dir": "data/processed/internvl3_8b",
+      "report_path": "reports/runs/bio_rmu_effect_internvl3_8b.json",
+      "run_root": "runs/bio_rmu_effect/internvl3_8b_seed42_c0b6c12",
+      "model_class": "InternVLChatModel",
+      "trust_remote_code": true,
+      "use_flash_attn": false,
+      "attention_implementation": "eager",
+      "decoder_path": "language_model.model.layers",
+      "module_str": "{model_name}.language_model.model.layers[{layer_id}]",
+      "hidden_size": 3584,
+      "layer_count": 28,
+      "parameter_names": [
+        "language_model.model.layers.5.mlp.down_proj.weight",
+        "language_model.model.layers.6.mlp.down_proj.weight",
+        "language_model.model.layers.7.mlp.down_proj.weight"
+      ],
+      "environment": "envs/wmdp-internvl",
+      "parameter_shape": [
+        3584,
+        18944
+      ],
+      "tokenizer_fingerprint_sha256": "c05d25c92ea87a0568fcb57bf6a29b2f1690e39a87b4e22a5e1b2fe8cb4167b1"
+    }
+  }
+}

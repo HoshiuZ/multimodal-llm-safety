@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "experiment_scope": "three-domain RMU data preparation only; no training or scoring",
+  "seed": 42,
+  "training_samples_per_forget_domain": 320,
+  "existing_retain_samples": 320,
+  "minimum_effective_tokens": 384,
+  "maximum_tokens": 512,
+  "add_special_tokens": false,
+  "chat_template": false,
+  "padding": false,
+  "existing_forget": {
+    "repository": "cais/wmdp-bio-forget-corpus",
+    "revision": "5a786ed1041e56fef2d4ed26c1239f12b73a68eb",
+    "split": "train",
+    "shared_originals": "data/processed/bio_rmu_effect_shared/source_snippets_seed42_v2.jsonl",
+    "per_model_manifest": "bio_rmu_effect_manifest.json",
+    "per_model_file": "bio_rmu_effect_forget_train_seed42.jsonl"
+  },
+  "existing_retain": {
+    "repository": "Salesforce/wikitext",
+    "configuration": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "split": "train",
+    "shared_originals": "data/processed/bio_rmu_effect_shared/source_snippets_seed42_v2.jsonl",
+    "per_model_manifest": "bio_rmu_effect_manifest.json",
+    "per_model_file": "bio_rmu_effect_retain_train_seed42_v2.jsonl"
+  },
+  "new_sources": {
+    "cyber": {
+      "repository": "cais/wmdp-corpora",
+      "configuration": "cyber-forget-corpus",
+      "revision": "daf89fa9b618b63a624228061a9cebacca88009c",
+      "split": "train",
+      "file": "cyber-forget-corpus/train-00000-of-00001.parquet",
+      "size_bytes": 10762190,
+      "upstream_lfs_sha256": "d6ea02facf8bfce704a41fbbb5555e261ca093aa15904f595176c33662780e0c",
+      "license": "MIT",
+      "local_dir": "data/source_import/wmdp_corpora_cyber_train_daf89fa9b618"
+    },
+    "chem": {
+      "repository": "jablonkagroup/chempile-education",
+      "configuration": "LibreText_Chemistry-default",
+      "revision": "c653c3c7bbf599030b80f117b6748ebae406043b",
+      "split": "train",
+      "file": "LibreText_Chemistry-default/train-00000-of-00001.parquet",
+      "size_bytes": 201390739,
+      "sha256": "d03ccabde1a69501669c9b00a9f89073817ac568f470f7af7c36eb868c266126",
+      "license": "CC BY-NC-SA 4.0 (dataset-card declaration; per-page licenses not individually verified)",
+      "local_dir": "data/source_import/chempile_education_cand_20261024",
+      "bookshelf_categories": [
+        "Organic Chemistry",
+        "Physical and Theoretical Chemistry Textbook Maps",
+        "General Chemistry",
+        "Introductory Chemistry",
+        "Inorganic Chemistry",
+        "Analytical Chemistry",
+        "Environmental Chemistry",
+        "Biological Chemistry"
+      ]
+    }
+  },
+  "assessment_overlap_audit": {
+    "list": "data/eval/text_cs_evolution_20261023/c_full.jsonl",
+    "revision": "7125571f22f032c56415e7980f48d877dd830ff8",
+    "expected_rows": 3668,
+    "field": "question",
+    "method": "independent exact substring check after NFC, newline normalization and whitespace collapse; no answer, choices, IDs or scores passed to corpus selection"
+  },
+  "output_dir": "data/processed/three_domain_rmu_20261024",
+  "selection_rules": {
+    "candidate_order": "fixed source row order before a domain-local random.Random(42) traversal",
+    "deduplication": "NFC; CRLF/CR to LF; collapse whitespace only for duplicate key; preserve case, formulas, symbols, digits and units; first source row represents a duplicate group",
+    "document_limit": "at most one snippet per source document or normalized duplicate group",
+    "snippet": "one contiguous span from one source document; no cross-document concatenation or repeated padding",
+    "tokenizer_order": ["qwen3vl8b", "llava_next8b", "internvl3_8b"]
+  }
+}

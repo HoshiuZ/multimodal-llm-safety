@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "input_dir": "data/source_import/bio_rmu_effect_20261023",
+  "transfer_manifest": "training_sources_20261023_114251.sha256",
+  "seed": 42,
+  "training_samples_per_source": 320,
+  "diagnostic_samples_per_source": 64,
+  "max_length_tokens": 512,
+  "minimum_length_tokens": 384,
+  "sources": {
+    "forget": {
+      "repository": "cais/wmdp-bio-forget-corpus",
+      "revision": "5a786ed1041e56fef2d4ed26c1239f12b73a68eb",
+      "split": "train",
+      "text_field": "text",
+      "files": [
+        "train-00000-of-00002.parquet",
+        "train-00001-of-00002.parquet"
+      ]
+    },
+    "retain": {
+      "repository": "Salesforce/wikitext",
+      "configuration": "wikitext-2-raw-v1",
+      "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+      "split": "train",
+      "text_field": "text",
+      "files": ["train-00000-of-00001.parquet"],
+      "article_header_rule": "Count balanced leading and trailing '=' delimiters while allowing whitespace between delimiter characters: one pair starts an article; two or more pairs are section/subsection headings retained inside the current article. Do not count only contiguous '=' characters. No text is joined across level-one article boundaries."
+    }
+  },
+  "shared_output_dir": "data/processed/bio_rmu_effect_shared",
+  "shared_originals_file": "source_snippets_seed42.jsonl",
+  "shared_sample_manifest_file": "sample_manifest_seed42.json",
+  "model_manifest_name": "bio_rmu_effect_manifest.json"
+}
