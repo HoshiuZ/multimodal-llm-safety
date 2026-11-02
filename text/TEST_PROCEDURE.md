@@ -36,6 +36,6 @@ python score_internvl_s_aggregate.py
 
 完整训练入口位于`text/training/`，运行方式见 [训练说明](training/README.md)。在 `text` 目录分别运行 `python training/train_qwen.py`、`python training/train_llava.py` 和 `python training/train_internvl.py`。运行前需准备说明中列出的基模、训练数据和 GROM basis。InternVL 的 NPO 更新第 4–7 层，最终保存第 4、5、6、7、9 层；交付记录及核验范围见 [模型说明](models/README.md)。`text/train_*.py` 是历史阶段入口，不作为当前完整训练流程。
 
-`python restore_qwen.py`、`python restore_llava.py` 和 `python restore_internvl.py` 使用 `restore_paths.json` 指定的完整基模和**已冻结的选定清除参数**恢复完整模型。入口校验选定参数的 SHA256，保存后重新加载并逐张量比较，并核对权重文件与发布记录；已有输出目录不会覆盖。自行训练的中间参数不一定是选定参数，不能直接当作发布版本恢复。
+`python restore_qwen.py`、`python restore_llava.py` 和 `python restore_internvl.py` 默认读取训练脚本输出的参数，恢复为完整模型。程序检查参数键、形状、dtype 和有限值，保存后重新加载并逐张量核对；生成的 restoration_record.json 记录实际输入参数与完整模型文件哈希，后续 C/S 评分据此核验本地模型。自行训练产物无需与发布模型哈希相同；已有输出目录不会覆盖。需要核对冻结发布参数时，可在 restore_paths.json 中将 identity_mode 设置为 selected。
 
 上述入口支持 `--dry-run` 仅查看执行计划；dry-run 不进行模型推理或训练。需要下载材料、实际运行模型或修改配置时，应按真实环境分别准备和核验。

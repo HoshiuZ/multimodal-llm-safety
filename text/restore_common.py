@@ -16,13 +16,14 @@ def main(family):
     cfg=json.loads((ROOT/'configs'/f'{family}.json').read_text())
     paths=json.loads((ROOT/'restore_paths.json').read_text())['models'][family]
     score_paths=json.loads((ROOT/'score_paths.json').read_text())['models'][family]
-    if paths['identity_mode']!='selected':raise ValueError('仅支持恢复项目冻结的选定参数')
+    mode=paths.get('identity_mode','trained')
+    if mode not in ('trained','selected'):raise ValueError('unknown restore identity mode')
     if cfg['repository']!=score_paths['base_repo'] or cfg['base_revision']!=score_paths['base_revision']:
         raise ValueError('基模身份配置不一致')
     plan={'family':family,'base':paths['base_dir'],'overlay':paths['overlay'],
-          'output':paths['output_dir'],'overlay_sha256':cfg['update']['sha256'],
-          'steps':['verify base and selected overlay','restore complete wrapper','save full model',
-                   'reload and compare every state tensor','verify released weight-file identity']}
+          'output':paths['output_dir'],'identity_mode':mode,
+          'steps':['verify base and overlay tensor structure','restore complete wrapper','save full model',
+                   'reload and compare every state tensor','record restored model file hashes']}
     if args.dry_run:
         print(json.dumps(plan,ensure_ascii=False,indent=2));return
     base=ROOT/paths['base_dir'];overlay=ROOT/paths['overlay'];output=ROOT/paths['output_dir']
@@ -35,8 +36,9 @@ def main(family):
     from eval import models
     from eval.overlay import read_overlay,restore_overlay
     models.check_environment(cfg)
-    selected=read_overlay(overlay,cfg)
-    print('已核对冻结清除参数；加载完整基模。',flush=True)
+    overlay_hash=sha(overlay)
+    selected=read_overlay(overlay,cfg,require_frozen=(mode=='selected'))
+    print('已核对清除参数结构；加载完整基模。',flush=True)
     model=models.load_full(base,cfg,'cpu')
     proof=restore_overlay(model,selected,cfg);del selected
     model.config._name_or_path=cfg['repository']
@@ -66,17 +68,23 @@ def main(family):
         other=right[name]
         if value.shape!=other.shape or value.dtype!=other.dtype or not torch.equal(value,other):
             raise ValueError('恢复后张量不一致：'+name)
-    expected=json.loads((ROOT/'score_model_identity.json').read_text())[family]['files']
+    index=json.loads((output/'model.safetensors.index.json').read_text())
+    names=set(index['weight_map'].values())|{'model.safetensors.index.json','config.json'}
     actual={}
-    for name,ref in expected.items():
+    for name in sorted(names):
+        if Path(name).name!=name:raise ValueError('unsafe restored filename')
         p=output/name
         if not p.is_file():raise ValueError('恢复模型缺少文件：'+name)
         actual[name]={'bytes':p.stat().st_size,'sha256':sha(p)}
-        if actual[name]!=ref:raise ValueError('恢复权重文件与已发布版本身份不一致：'+name)
-    record={'family':family,'base_repository':cfg['repository'],'base_revision':cfg['base_revision'],
-            'selected_overlay_sha256':cfg['update']['sha256'],'overlay_restore':proof,
+    if mode=='selected':
+        expected=json.loads((ROOT/'score_model_identity.json').read_text())[family]['files']
+        if any(actual.get(n)!=v for n,v in expected.items()):
+            raise ValueError('恢复权重文件与选定发布版本身份不一致')
+    record={'schema':'local-restored-model-v1','family':family,
+            'base_repository':cfg['repository'],'base_revision':cfg['base_revision'],
+            'identity_mode':mode,'overlay_sha256':overlay_hash,'overlay_restore':proof,
             'full_state_bitwise_equal':True,'state_tensor_count':len(left),
-            'released_weight_files_match':True,'files':actual}
+            'files':actual}
     (output/'restoration_record.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
-    print('恢复完成：完整模型及已发布权重身份核验通过。',flush=True)
+    print('恢复完成：完整模型保存及重载核验通过。',flush=True)
     print('模型目录:',output,flush=True)

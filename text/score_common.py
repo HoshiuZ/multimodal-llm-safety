@@ -42,6 +42,17 @@ def verify_model_files(family, info):
     """Check pinned base sidecars and every released cleared weight shard."""
     cfg = json.loads((ROOT / info['config']).read_text(encoding='utf-8'))
     reference = json.loads(MODEL_IDENTITY.read_text(encoding='utf-8'))[family]
+    restored = ROOT / info['cleared_dir'] / 'restoration_record.json'
+    if restored.is_file():
+        record = json.loads(restored.read_text(encoding='utf-8'))
+        if (record.get('schema') != 'local-restored-model-v1' or record.get('family') != family or
+                record.get('base_repository') != cfg['repository'] or
+                record.get('base_revision') != cfg['base_revision'] or
+                record.get('full_state_bitwise_equal') is not True or
+                not record.get('files')):
+            raise ValueError('invalid local restoration record')
+        reference = dict(reference, cleared_repo=info['cleared_repo'],
+                         cleared_revision=info['cleared_revision'], files=record['files'])
     if (reference['cleared_repo'] != info['cleared_repo'] or
             reference['cleared_revision'] != info['cleared_revision']):
         raise ValueError('cleared model identity metadata does not match settings')
@@ -157,6 +168,9 @@ def main(family, kind='C', action='score'):
              'entry_sha256': file_hash(ROOT / scorer_name(family, kind)),
              'runner_sha256': file_hash(Path(__file__).resolve()),
              'model_identity_sha256': file_hash(MODEL_IDENTITY)}
+    restored_record = ROOT / info['cleared_dir'] / 'restoration_record.json'
+    if restored_record.is_file():
+        ident['restoration_record_sha256'] = file_hash(restored_record)
     marker = out / 'entrypoint_identity.json'
     complete = out / 'scoring_complete.json'
     if action == 'aggregate':

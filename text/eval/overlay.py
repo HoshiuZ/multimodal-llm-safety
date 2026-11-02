@@ -6,17 +6,17 @@ import io
 from pathlib import Path
 
 
-def read_overlay(path, config):
+def read_overlay(path, config, *, require_frozen=True):
     """Hash and deserialize the same retained bytes using PyTorch weights_only."""
     import torch
 
     path = Path(path)
     spec = config['update']
-    if not path.is_file() or path.stat().st_size != spec['bytes']:
+    if not path.is_file() or (require_frozen and path.stat().st_size != spec['bytes']):
         raise ValueError('sparse update file missing or byte size differs from the frozen config')
     payload = path.read_bytes()
     actual = hashlib.sha256(payload).hexdigest()
-    if actual != spec['sha256']:
+    if require_frozen and actual != spec['sha256']:
         raise ValueError('sparse update SHA256 differs from the frozen config')
     state = torch.load(io.BytesIO(payload), map_location='cpu', weights_only=True)
     if not isinstance(state, dict) or set(state) != set(spec['parameters']):

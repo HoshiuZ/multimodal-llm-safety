@@ -68,3 +68,7 @@ TRAIN_ROOT=/path/to/prepared/root python text/training/train_internvl.py --out /
 ## 许可
 
 仓库当前没有根级通用许可证，且这四个项目脚本没有单独许可证声明；公开源码不等于授予复用、修改或再分发的许可。GROM 作者仓库的 MIT 许可只适用于该上游代码，不会自动覆盖本项目脚本。模型权重继续受各模型上游许可约束。NPO 论文是方法引用，不是代码许可。请在获得权利人适用的许可后再复用这些脚本。
+
+## 训练后的完整模型恢复
+
+默认训练输出已由 `text/restore_paths.json` 连接至恢复入口。在 `text/` 目录运行对应的 `python restore_qwen.py`、`python restore_llava.py` 或 `python restore_internvl.py`。默认 `identity_mode=trained` 接受符合结构要求的新训练参数，并核验保存与重载前后的张量一致性；C/S 评分使用本地恢复记录中的实际文件哈希。发布模型固定哈希不作为新训练产物的验收条件。
