@@ -2,8 +2,6 @@
 
 本仓库提供三个模型的纯文本 C/S 评测材料，以及独立模型组合的图像输入评测材料。各项结果按对应的模型版本和固定评测协议列示。
 
-**模型版本更新（2026-11-01）：** [LLaVA 当前 HF 版本](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)使用基模作 NPO 参考（overlay `dd9b6bb0…`），文本 C/S 结果已按该检查点重新评测。
-
 ## WMDP C
 
 3,668 题 WMDP C 汇总按对应模型版本列示：
@@ -11,7 +9,7 @@
 | 模型 | C |
 |---|---:|
 | Qwen | 88.4871% |
-| LLaVA（当前 HF2） | 80.9289% |
+| LLaVA-NeXT-8B | 80.9289% |
 | InternVL | 76.5924% |
 
 当前 LLaVA 的精确计数与 revision 见 [`text/results/srev3_llava_base_ref_cs_20261101.json`](text/results/srev3_llava_base_ref_cs_20261101.json)；Qwen 与 InternVL 见 `text/results/c_reference.json`。
@@ -23,12 +21,12 @@
 | 模型 | 基模正确数 | cleared 正确数 | raw S | capped S |
 |---|---:|---:|---:|---:|
 | Qwen | 421 / 411 / 425 | 200 / 201 / 195 | 99.1994% | 99.1994% |
-| LLaVA（当前 HF2） | 357 / 346 / 346 | 212 / 208 / 217 | 94.9878% | 94.9878% |
+| LLaVA-NeXT-8B | 357 / 346 / 346 | 212 / 208 / 217 | 94.9878% | 94.9878% |
 | InternVL | 405 / 405 / 406 | 220 / 208 / 227 | 96.3219% | 96.3219% |
 
 S 参考线为 65%。当前 LLaVA 的逐场景计数、revision、overlay SHA256 和覆盖审计见 [`text/results/srev3_llava_base_ref_cs_20261101.json`](text/results/srev3_llava_base_ref_cs_20261101.json)；Qwen 与 InternVL 见 [`text/results/s_results_v2.json`](text/results/s_results_v2.json)。结果文件只含汇总数，不含逐题分数。
 
-## LLaVA-NeXT-8B HF2 revision 的文本 C/S 结果
+## LLaVA-NeXT-8B 文本 C/S 结果
 
 本次复核对应公开检查点 [HoshiuZ/LLaVA-NeXT-8B-Unlearned@959a020](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/commit/959a02037889f1f74cacfdc0152dc53444217563)，基模 revision 为 `b041c0d0ea0dd0196d147206c210c8d1752fc2da`，更新 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`。输入为纯文本，评分加载完整 LLaVA 多模态 wrapper。
 

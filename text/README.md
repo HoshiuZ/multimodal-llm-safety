@@ -1,6 +1,6 @@
 # 文本 C/S 评测
 
-评测输入为纯文本，模型使用完整多模态 wrapper。当前 HF LLaVA `main` 为 2026-11-01 基模参考版（overlay `dd9b6bb0…`）；本页 LLaVA C/S 汇总对应该检查点。当前 HF 版本已完成新版 S 与正式 C 评测。完整 HF checkpoint 入口为 `scripts/text_eval.py`；`scripts/sparse_eval.py` 可在完整基模上应用本地、哈希固定的稀疏更新。图像和其他多模态任务不在这里评测。
+评测输入为纯文本，模型使用完整多模态 wrapper。完整 HF checkpoint 入口为 `scripts/text_eval.py`；`scripts/sparse_eval.py` 可在完整基模上应用本地、哈希固定的稀疏更新。图像和其他多模态任务不在这里评测。
 
 ## C 与当前 S 汇总
 
@@ -9,7 +9,7 @@ WMDP C（3,668 题）按对应模型版本列示：
 | 模型 | C |
 |---|---:|
 | Qwen | 88.4871% |
-| LLaVA（当前 HF2） | 80.9289% |
+| LLaVA-NeXT-8B | 80.9289% |
 | InternVL | 76.5924% |
 
 当前 LLaVA 的身份与精确计数见 [results/srev3_llava_base_ref_cs_20261101.json](results/srev3_llava_base_ref_cs_20261101.json)；Qwen 与 InternVL 见 [results/c_reference.json](results/c_reference.json)。
@@ -19,12 +19,12 @@ WMDP C（3,668 题）按对应模型版本列示：
 | 模型 | 基模正确数 | cleared 正确数 | raw S | capped S |
 |---|---:|---:|---:|---:|
 | Qwen | 421 / 411 / 425 | 200 / 201 / 195 | 99.1994% | 99.1994% |
-| LLaVA（当前 HF2） | 357 / 346 / 346 | 212 / 208 / 217 | 94.9878% | 94.9878% |
+| LLaVA-NeXT-8B | 357 / 346 / 346 | 212 / 208 / 217 | 94.9878% | 94.9878% |
 | InternVL | 405 / 405 / 406 | 220 / 208 / 227 | 96.3219% | 96.3219% |
 
 当前 LLaVA 的逐场景 C、revision、overlay SHA256、精确分数和覆盖审计见 [results/srev3_llava_base_ref_cs_20261101.json](results/srev3_llava_base_ref_cs_20261101.json)；Qwen 与 InternVL 见 [results/s_results_v2.json](results/s_results_v2.json)。旧版 PKG3 数据可用 `pkg3_s2_v1` 重建。
 
-## LLaVA HF2 revision 的 C/S 结果
+## LLaVA-NeXT-8B C/S 结果
 
 本节记录公开检查点 `HoshiuZ/LLaVA-NeXT-8B-Unlearned` revision `959a02037889f1f74cacfdc0152dc53444217563` 的文本复核。基模为 `llava-hf/llama3-llava-next-8b-hf` revision `b041c0d0ea0dd0196d147206c210c8d1752fc2da`，更新 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`。HF 发布记录显示，公开完整模型与基模加稀疏更新恢复出的 687 个张量逐位一致，完整 wrapper 严格重载成功。本次评分使用完整 `LlavaNextForConditionalGeneration` wrapper，输入为纯文本。
 
