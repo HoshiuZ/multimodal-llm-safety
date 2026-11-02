@@ -1,0 +1,10 @@
+{
+  "models_root": "$HOME/models",
+  "internvl_python": ".venv-mm-internvl/bin/python",
+  "official_manifest": "external/eval-assets/manifest_mm.csv",
+  "official_root": "external/MM-SafetyBench/data",
+  "asset_root": "external/eval-assets",
+  "input_root": "multimodal/data/input",
+  "output_root": "multimodal/outputs",
+  "reports_root": "multimodal/outputs/metrics"
+}

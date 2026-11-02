@@ -6,6 +6,7 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 
 - [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md): step-by-step download, inference, judging, supplement, and aggregation instructions.
 - [`SINGLE_GPU.md`](SINGLE_GPU.md): one-GPU method and baseline inference for an independent evaluator.
+- [`DOCUMENT_STEPS.md`](DOCUMENT_STEPS.md): short commands for environment/model/data checks, single-GPU local judging, and C/S recomputation from completed judgments.
 - [`data/README.md`](data/README.md): official benchmark sources, HF asset bundle, layout, and permissions.
 - [`models/README.md`](models/README.md): pinned base and adapter model cards.
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md): included code/font notices and upstream data/model terms.
