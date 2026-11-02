@@ -1,0 +1,2 @@
+multimodal/data/figstep/images/*.png filter=lfs diff=lfs merge=lfs -text
+multimodal/data/hades_local_v1/images/*.png filter=lfs diff=lfs merge=lfs -text

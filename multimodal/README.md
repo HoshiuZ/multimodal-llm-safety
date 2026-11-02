@@ -7,7 +7,7 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 - [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md): step-by-step download, inference, judging, supplement, and aggregation instructions.
 - [`SINGLE_GPU.md`](SINGLE_GPU.md): one-GPU method and baseline inference for an independent evaluator.
 - [`DOCUMENT_STEPS.md`](DOCUMENT_STEPS.md): short commands for environment/model/data checks, single-GPU local judging, and C/S recomputation from completed judgments.
-- [`data/README.md`](data/README.md): official benchmark sources, HF asset bundle, layout, and permissions.
+- [`data/README.md`](data/README.md): GitHub data paths, official benchmark sources, and permissions.
 - [`models/README.md`](models/README.md): pinned base and adapter model cards.
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md): included code/font notices and upstream data/model terms.
 - [`configs/`](configs/): frozen model registry, inference settings, judge settings, protocol, and aggregate template.
@@ -18,13 +18,15 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 
 Python 3.12.12 is pinned. Qwen3-VL, LLaVA-NeXT, M3, and the local judge use [`requirements.txt`](requirements.txt). InternVL3 generation uses the separate [`requirements-internvl.txt`](requirements-internvl.txt) environment because its tested Transformers version differs. The reference reproduction procedure launches six processes on six visible CUDA devices for each stage. For sequential inference on one GPU, use [`SINGLE_GPU.md`](SINGLE_GPU.md). Use a separate output directory for each model and dataset view.
 
+The FigStep and HADES evaluation images are stored with Git LFS. Install Git LFS before cloning the project so these images are available locally.
+
 The model implementation uses each processor's native image path: Qwen3-VL processor chat template and resize path; LLaVA-NeXT processor chat template and any-resolution image processing; InternVL3's 448-pixel dynamic tiling with 1–12 patches, optional thumbnail, bicubic resize, and ImageNet normalization. Exact templates, prompts, decoding, M3 settings, and judge controls are versioned in [`configs/eval_protocol.json`](configs/eval_protocol.json), [`configs/baseline_runtime.json`](configs/baseline_runtime.json), [`configs/judge_local.json`](configs/judge_local.json), and the source scripts.
 
 ## Models and data
 
-Download the three base checkpoints and the local judge at the immutable revisions in [`models/README.md`](models/README.md). Download the matching M1 adapter from the same page and verify its file hashes; no retraining is needed. Download evaluation assets at the dataset commit recorded in [`data/README.md`](data/README.md). The official MM-SafetyBench full set remains hosted by its authors; the project does not mirror its original 5,040 images or question JSON.
+Download the three base checkpoints and the local judge at the immutable revisions in [`models/README.md`](models/README.md). Download the matching M1 adapter from the same page and verify its file hashes; no retraining is needed. The GitHub repository supplies the FigStep and HADES images in `multimodal/data/figstep/` and `multimodal/data/hades_local_v1/`. The official MM-SafetyBench full set remains hosted by its authors; the project does not mirror its original 5,040 images or question JSON.
 
-The shared dataset repository contains final project-derived FigStep-port and local HADES-style images, plus the normal-utility manifest. The normal VQAv2/TextVQA image files are not redistributed and must be obtained from their official sources. License and attribution instructions are in [`data/README.md`](data/README.md) and the HF dataset card.
+The fixed 1,008-ID selection is in `multimodal/data/sample_1008_seed42.txt`. The normal-utility manifest is available from the pinned Hugging Face dataset; its VQAv2/TextVQA image files are not redistributed and must be obtained from their official sources. License and attribution instructions are in [`data/README.md`](data/README.md).
 
 ## Quick start
 
@@ -33,7 +35,7 @@ The shared dataset repository contains final project-derived FigStep-port and lo
 3. For LLaVA-NeXT and InternVL3 stability views, reproduce the separately versioned evidence-first retry for unresolved v2 judge rows. This supplements unresolved labels only; it never replaces resolved v2 labels. Qwen3-VL uses frozen v2 labels for its recorded S result.
 4. Fill a copy of [`configs/aggregate_template.json`](configs/aggregate_template.json) with the output paths for one model and run `scripts/aggregate.py`. The aggregator verifies completion markers, file hashes, sample coverage, paired stability IDs, and target thresholds before writing metrics.
 
-For all arguments, environment separation, output layout, and commands, use [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md). This is a large multi-GPU evaluation; estimate storage for model checkpoints and generated outputs before running. Do not commit downloaded models, dataset images, or evaluation output files to GitHub.
+For all arguments, environment separation, output layout, and commands, use [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md). This is a large evaluation; estimate storage for model checkpoints and generated outputs before running. The released FigStep and HADES images are tracked with Git LFS; do not commit model downloads, official MM-SafetyBench originals, or evaluation outputs.
 
 ## Metric scope
 

@@ -236,7 +236,19 @@ def verify_images(source_rows, data_root):
 
 
 def prepare_data(cfg):
-    official = rows(path(cfg['official_manifest']))
+    official_manifest = path(cfg['official_manifest'])
+    if not official_manifest.is_file():
+        official_root = path(cfg['official_root'])
+        questions_dir = official_root / 'processed_questions'
+        if not questions_dir.is_dir():
+            raise FileNotFoundError(f'official MM-SafetyBench questions not found: {questions_dir}')
+        print('Official manifest is missing; building it from the downloaded MM-SafetyBench data.', flush=True)
+        subprocess.run([
+            sys.executable, '-B', str(ROOT / 'scripts/build_manifest.py'),
+            '--root', str(official_root), '--questions-dir', str(questions_dir),
+            '--out', str(official_manifest),
+        ], check=True)
+    official = rows(official_manifest)
     if len(official) != 5040:
         raise ValueError('the frozen full dataset requires 5,040 unique examples')
     selected = (ROOT / 'data/sample_1008_seed42.txt').read_text().split()
@@ -258,7 +270,7 @@ def prepare_data(cfg):
     for view, folder, key in [('figstep', 'figstep', 'figstep_manifest_sha256'), ('hades', 'hades_local_v1', 'hades_local_v1_manifest_sha256')]:
         manifest = assets / folder / 'manifest.jsonl'
         if digest(manifest) != protocol[key]:
-            raise ValueError(f'{view} manifest differs from the published HF revision')
+            raise ValueError(f'{view} manifest differs from the frozen project asset release')
         variants[view] = rows(manifest)
         if {r['sample_id'] for r in variants[view]} != set(selected):
             raise ValueError(f'{view} IDs do not match the fixed base subset')

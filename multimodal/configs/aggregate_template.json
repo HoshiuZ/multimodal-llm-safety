@@ -9,7 +9,7 @@
     "normal_utility_manifest_sha256": "6f1d6d2008bd4d29ce154f02a38b479dfa6b9f218e269e6b948199dac7cb4c2b"
   },
   "full_c": {
-    "manifest": "../../external/eval-assets/manifest_mm.csv",
+    "manifest": "../../multimodal/data/manifest_mm.csv",
     "orig": "../../outputs/qwen3vl8b/full/manifest_mm.orig.judgments.jsonl",
     "m1": "../../outputs/qwen3vl8b/full/manifest_mm.m1.judgments.jsonl",
     "m1_m3_v8": "../../outputs/qwen3vl8b/full/manifest_mm.m1_m3_v8.judgments.jsonl"
@@ -22,13 +22,13 @@
       "m1_m3_v8": "../../outputs/qwen3vl8b/base/base_1008.m1_m3_v8.judgments.jsonl"
     },
     "figstep": {
-      "manifest": "../../external/eval-assets/figstep/manifest.jsonl",
+      "manifest": "../../multimodal/data/figstep/manifest.jsonl",
       "orig": "../../outputs/qwen3vl8b/figstep/manifest.orig.judgments.jsonl",
       "m1": "../../outputs/qwen3vl8b/figstep/manifest.m1.judgments.jsonl",
       "m1_m3_v8": "../../outputs/qwen3vl8b/figstep/manifest.m1_m3_v8.judgments.jsonl"
     },
     "hades": {
-      "manifest": "../../external/eval-assets/hades_local_v1/manifest.jsonl",
+      "manifest": "../../multimodal/data/hades_local_v1/manifest.jsonl",
       "orig": "../../outputs/qwen3vl8b/hades/manifest.orig.judgments.jsonl",
       "m1": "../../outputs/qwen3vl8b/hades/manifest.m1.judgments.jsonl",
       "m1_m3_v8": "../../outputs/qwen3vl8b/hades/manifest.m1_m3_v8.judgments.jsonl"

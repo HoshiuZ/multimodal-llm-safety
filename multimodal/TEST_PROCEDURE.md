@@ -51,24 +51,26 @@ git clone https://github.com/isXinLiu/MM-SafetyBench external/MM-SafetyBench
 python -B multimodal/scripts/build_manifest.py \
   --root external/MM-SafetyBench/data \
   --questions-dir external/MM-SafetyBench/data/processed_questions \
-  --out external/eval-assets/manifest_mm.csv
+  --out multimodal/data/manifest_mm.csv
 python -B multimodal/scripts/verify_assets.py \
-  --manifest external/eval-assets/manifest_mm.csv \
+  --manifest multimodal/data/manifest_mm.csv \
   --data-root external/MM-SafetyBench/data --expected-rows 5040
 ```
 
-Download the frozen derived-asset dataset at the exact revision in [`data/README.md`](data/README.md):
+The GitHub repository provides the frozen FigStep and HADES images and manifests through Git LFS. Install Git LFS before cloning the project; if the image files were not fetched automatically, run `git lfs pull` from the repository root. The files are located at `multimodal/data/figstep/` and `multimodal/data/hades_local_v1/`. Verify them against their manifest hashes:
 
 ```bash
-hf download boli-003/mm-safetybench-vl-eval-assets --repo-type dataset \
-  --revision fcffbe1c5389ce9bdbeb44ca45a2e4093adf62b3 --local-dir external/eval-assets
+python -B multimodal/scripts/verify_assets.py \
+  --manifest multimodal/data/figstep/manifest.jsonl --data-root multimodal/data/figstep
+python -B multimodal/scripts/verify_assets.py \
+  --manifest multimodal/data/hades_local_v1/manifest.jsonl --data-root multimodal/data/hades_local_v1
 ```
 
-The dataset includes `figstep/`, `hades_local_v1/`, and `normal_utility/`. Check each manifest against its image hashes using the commands in [`data/README.md`](data/README.md). Build the fixed base subset from the upstream manifest and the checked-in ID-only selection file:
+Download the normal-utility manifest separately when reproducing the normal-capability measure. It contains no images; obtain the VQAv2 and TextVQA images from their official sources as described in [`data/README.md`](data/README.md). Build the fixed base subset from the official manifest and the checked-in ID-only selection file:
 
 ```bash
 python -B multimodal/scripts/prepare_eval_data.py \
-  --manifest external/eval-assets/manifest_mm.csv \
+  --manifest multimodal/data/manifest_mm.csv \
   --selection multimodal/data/sample_1008_seed42.txt \
   --output external/eval-assets/base_1008.jsonl
 ```
@@ -99,10 +101,10 @@ run_view() {
     "$MODEL_ROOT/Qwen2.5-14B-Instruct" \
     "outputs/qwen3vl8b/$view" "$COMMON/torchrun" "$COMMON/torchrun" "$COMMON/python"
 }
-run_view full external/eval-assets/manifest_mm.csv external/MM-SafetyBench/data
+run_view full multimodal/data/manifest_mm.csv external/MM-SafetyBench/data
 run_view base external/eval-assets/base_1008.jsonl external/MM-SafetyBench/data
-run_view figstep external/eval-assets/figstep/manifest.jsonl external/eval-assets/figstep
-run_view hades external/eval-assets/hades_local_v1/manifest.jsonl external/eval-assets/hades_local_v1
+run_view figstep multimodal/data/figstep/manifest.jsonl multimodal/data/figstep
+run_view hades multimodal/data/hades_local_v1/manifest.jsonl multimodal/data/hades_local_v1
 run_view normal external/eval-assets/normal_utility/manifest.jsonl external/eval-assets/normal_utility
 ```
 

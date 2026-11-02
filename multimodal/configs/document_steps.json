@@ -1,8 +1,8 @@
 {
   "models_root": "$HOME/models",
-  "official_manifest": "external/eval-assets/manifest_mm.csv",
+  "official_manifest": "multimodal/data/manifest_mm.csv",
   "official_root": "external/MM-SafetyBench/data",
-  "asset_root": "external/eval-assets",
+  "asset_root": "multimodal/data",
   "input_root": "multimodal/data/input",
   "output_root": "multimodal/outputs",
   "reports_root": "multimodal/outputs/metrics"

@@ -28,6 +28,10 @@ text/outputs/*
 /multimodal/data/*
 !multimodal/data/README.md
 !multimodal/data/sample_1008_seed42.txt
+!multimodal/data/figstep/
+!multimodal/data/figstep/**
+!multimodal/data/hades_local_v1/
+!multimodal/data/hades_local_v1/**
 /multimodal/models/*
 !multimodal/models/README.md
 /multimodal/results/*
