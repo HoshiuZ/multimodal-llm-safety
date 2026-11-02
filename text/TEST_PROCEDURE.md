@@ -34,7 +34,7 @@ python score_internvl_s_aggregate.py
 
 ## 训练与恢复
 
-完整训练入口位于仓库根目录的 `training/`，运行方式见 [训练说明](../training/README.md)。从仓库根目录分别运行 `python training/train_qwen.py`、`python training/train_llava.py` 和 `python training/train_internvl.py`。运行前需准备说明中列出的基模、训练数据和 GROM basis。InternVL 的 NPO 更新第 4–7 层，最终保存第 4、5、6、7、9 层；交付记录及核验范围见 [模型说明](models/README.md)。`text/train_*.py` 是历史阶段入口，不作为当前完整训练流程。
+完整训练入口位于`text/training/`，运行方式见 [训练说明](training/README.md)。在 `text` 目录分别运行 `python training/train_qwen.py`、`python training/train_llava.py` 和 `python training/train_internvl.py`。运行前需准备说明中列出的基模、训练数据和 GROM basis。InternVL 的 NPO 更新第 4–7 层，最终保存第 4、5、6、7、9 层；交付记录及核验范围见 [模型说明](models/README.md)。`text/train_*.py` 是历史阶段入口，不作为当前完整训练流程。
 
 `python restore_qwen.py`、`python restore_llava.py` 和 `python restore_internvl.py` 使用 `restore_paths.json` 指定的完整基模和**已冻结的选定清除参数**恢复完整模型。入口校验选定参数的 SHA256，保存后重新加载并逐张量比较，并核对权重文件与发布记录；已有输出目录不会覆盖。自行训练的中间参数不一定是选定参数，不能直接当作发布版本恢复。
 

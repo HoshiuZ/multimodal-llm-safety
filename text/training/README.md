@@ -12,9 +12,9 @@
 | `train_qwen.py` | [`Qwen/Qwen3-VL-8B-Instruct`](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/tree/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b) | `0c351dd01ed87e9c1b53cbc748cba10e6187ff3b` | Apache-2.0 |
 | `train_internvl.py` | [`OpenGVLab/InternVL3-8B`](https://huggingface.co/OpenGVLab/InternVL3-8B/tree/853e3a797a661694b1b8ece0cb72dc2b23e3dac9) | `853e3a797a661694b1b8ece0cb72dc2b23e3dac9` | 上游仓库元数据标为 Apache-2.0，模型卡正文标为 MIT；两者不一致 |
 
-LLaVA 脚本记录的 **2026-11-01 base-reference 实验**从未编辑的上述基模计算参考 log-prob，再执行 GROM + NPO + repair。其稀疏输出 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`，当前公开 checkpoint 的正式逐题复核结果为 `C=80.9288537549%`、新版文本 `S=94.9877984085%`；完整计数与覆盖审计见[版本化结果](../text/results/srev3_llava_base_ref_cs_20261101.json)。完整模型现已[公开发布](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)（revision `959a02037889f1f74cacfdc0152dc53444217563`）。
+LLaVA 脚本记录的 **2026-11-01 base-reference 实验**从未编辑的上述基模计算参考 log-prob，再执行 GROM + NPO + repair。其稀疏输出 SHA256 为 `dd9b6bb0c01c2a40437c89c127540e83c7bd6554b1892984e2273ed946ddd1da`，当前公开 checkpoint 的正式逐题复核结果为 `C=80.9288537549%`、新版文本 `S=94.9877984085%`；完整计数与覆盖审计见[版本化结果](../results/srev3_llava_base_ref_cs_20261101.json)。完整模型现已[公开发布](https://huggingface.co/HoshiuZ/LLaVA-NeXT-8B-Unlearned/tree/959a02037889f1f74cacfdc0152dc53444217563)（revision `959a02037889f1f74cacfdc0152dc53444217563`）。
 
-InternVL 最终参数的五个张量对应第 4、5、6、7、9 层。训练脚本对第 5、7、9 层做 GROM 编辑，对第 4–7 层做一步 NPO；项目交付记录将早期 manifest 中的“10–13 层 NPO”标为笔误，并记载脚本产物与最终交付的五张量文件逐张量完全一致（最大绝对差为 0）。目标参数文件 SHA256 为 `1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8`。该参数文件不在 GitHub 仓库中；持有文件时可通过 `train_internvl.py --verify` 重新比较，失败将返回非零退出码。正式 C/S 数值仍以[文本评测结果](../text/README.md)为准。
+InternVL 最终参数的五个张量对应第 4、5、6、7、9 层。训练脚本对第 5、7、9 层做 GROM 编辑，对第 4–7 层做一步 NPO；项目交付记录将早期 manifest 中的“10–13 层 NPO”标为笔误，并记载脚本产物与最终交付的五张量文件逐张量完全一致（最大绝对差为 0）。目标参数文件 SHA256 为 `1cb064d13f6370babc154197480a06705c38ebaf26a3baae8a89850419e287e8`。该参数文件不在 GitHub 仓库中；持有文件时可通过 `train_internvl.py --verify` 重新比较，失败将返回非零退出码。正式 C/S 数值仍以[文本评测结果](../README.md)为准。
 
 Qwen 与 InternVL 脚本注释保留各自实验记录。脚本中的早期实验聚合值与正式评测采用不同记录，使用时请以相应 manifest 和结果报告判断模型、代码与输出对应关系。
 
@@ -36,20 +36,20 @@ Qwen 与 InternVL 脚本注释保留各自实验记录。脚本中的早期实�
 
 运行环境需要 Python、PyTorch、Transformers 和 CUDA。此源码检查所用 CPU 环境为 Python 3.12.14、PyTorch 2.8.0+cu128、Transformers 4.57.1；这仅表示语法与参数帮助可运行，不代表验证了训练环境兼容性。共享库通过 `TRAIN_ROOT` 指定包含 `models/`、`data/`、`runs/` 的本地根目录；未设置时使用仓库根目录。所有脚本都把设备固定为 CUDA。
 
-只查看参数：
+以下命令在仓库根目录执行。只查看参数：
 
 ```bash
-python training/train_llava.py --help
-python training/train_qwen.py --help
-python training/train_internvl.py --help
+python text/training/train_llava.py --help
+python text/training/train_qwen.py --help
+python text/training/train_internvl.py --help
 ```
 
 训练入口如下。实际执行前须由使用者准备与对应 manifest 一致的全部本地输入，并通过所在环境获批的 GPU 调度方式运行：
 
 ```bash
-TRAIN_ROOT=/path/to/prepared/root python training/train_llava.py --out /path/to/output.pt
-TRAIN_ROOT=/path/to/prepared/root python training/train_qwen.py --out /path/to/output.pt
-TRAIN_ROOT=/path/to/prepared/root python training/train_internvl.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python text/training/train_llava.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python text/training/train_qwen.py --out /path/to/output.pt
+TRAIN_ROOT=/path/to/prepared/root python text/training/train_internvl.py --out /path/to/output.pt
 ```
 
 `--verify` 还需要本地参考 checkpoint。CPU 语法检查和 `--help` 不验证训练、输出一致性或评测结果。本增量没有重新训练或评分。

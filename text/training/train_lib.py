@@ -22,7 +22,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer
 
-ROOT = pathlib.Path(os.environ.get("TRAIN_ROOT", pathlib.Path(__file__).resolve().parents[1])).resolve()
+ROOT = pathlib.Path(os.environ.get("TRAIN_ROOT", pathlib.Path(__file__).resolve().parents[2])).resolve()
 
 SPECS = {
     "llava": {

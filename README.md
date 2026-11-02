@@ -58,11 +58,11 @@ C_mm 使用固定的 5,040 题；S_mm 使用固定的 1,008 个原题及 FigStep
 
 ## 训练源码（文本输入）
 
-三模型训练脚本、固定模型来源、GROM/NPO 方法引用、运行前置条件和许可边界见[训练源码说明](training/README.md)。脚本只提供研究代码；本仓库增量不包含基模、GROM basis、训练数据、token IDs 或检查点。LLaVA 的 2026-11-01 基模参考版已在 HF `main` 发布，当前 C/S 汇总对应该版本。
+三模型训练脚本、固定模型来源、GROM/NPO 方法引用、运行前置条件和许可边界见[训练源码说明](text/training/README.md)。脚本只提供研究代码；本仓库增量不包含基模、GROM basis、训练数据、token IDs 或检查点。LLaVA 的 2026-11-01 基模参考版已在 HF `main` 发布，当前 C/S 汇总对应该版本。
 
 ## 导航
 
-- [三模型文本训练源码与运行条件](training/README.md)
+- [三模型文本训练源码与运行条件](text/training/README.md)
 - [完整 HF 评测命令、评分合同与 C/S 汇总](text/README.md)
 - [外部数据获取、冻结改写和审核局限](text/data/README.md)
 - [实际模型身份、revision 与稀疏更新 SHA256](text/models/README.md)
