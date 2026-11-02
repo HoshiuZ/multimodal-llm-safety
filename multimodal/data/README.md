@@ -20,16 +20,17 @@ hades_local_v1 是本项目自建的 HADES 风格恢复版，不是官方 HADES 
 
 ## MM-SafetyBench 官方题目和图像
 
-GitHub 仓库不包含 MM-SafetyBench 官方 5,040 组题目和原始图像。请从[官方项目](https://github.com/isXinLiu/MM-SafetyBench.git)获取问题 JSON，并按其 README 链接下载图像压缩包，解压到项目根目录下的 external/MM-SafetyBench/data/，保留官方目录结构。
+官方原始数据已放在本 GitHub 仓库的 `multimodal/data/mm-safetybench/`：题目 JSON 在 `processed_questions/`，图像在 `imgs/`。固定评测清单为 `multimodal/data/manifest_mm.csv`。克隆仓库后如图像未下载完整，在仓库根目录运行 `git lfs pull`。
 
-    git clone https://github.com/isXinLiu/MM-SafetyBench.git external/MM-SafetyBench
+数据保留官方目录结构，包含 13 个题目 JSON 和原图压缩包中的 5,055 张 JPG。评测清单索引其中 5,040 组图文样本、1,680 个问题和 39 个“场景×图像类型”分层单元；原包中另有 15 张不对应题目 JSON 的图片，保留在仓库中但不进入评测清单。清单 digest 为 `4f8d7c436ce345936d3917254cc57f6e8d3e233546e341696f6b02591c7b9124`。
 
-在项目根目录生成并校验官方数据清单：
+来源版本：题目 JSON 来自官方仓库 commit `b80eedea3db312c09ded2082813390f68e750ef3`；图像来自官方 `MM-SafetyBench(imgs).zip`，SHA-256 为 `7e1a9f08212038ceaa74801964d2b97c219509663bbd017ab77abb1b063cc23e`。压缩包本身未重复放入仓库。
 
-    python -B multimodal/scripts/build_manifest.py --root external/MM-SafetyBench/data --questions-dir external/MM-SafetyBench/data/processed_questions --out multimodal/data/manifest_mm.csv
-    python -B multimodal/scripts/verify_assets.py --manifest multimodal/data/manifest_mm.csv --data-root external/MM-SafetyBench/data --expected-rows 5040
+在项目根目录检查已上传的数据和清单：
 
-该清单应有 5,040 行、13 个场景、39 个“场景×图像类型”分层单元，manifest digest 为 4f8d7c436ce345936d3917254cc57f6e8d3e233546e341696f6b02591c7b9124。原始上游 Git commit 未由研究运行记录保留，因此不伪造上游 commit。上游数据按 CC BY-NC 4.0 许可用于非商业研究；请保留作者归属与引用。
+    python -B multimodal/scripts/verify_assets.py --manifest multimodal/data/manifest_mm.csv --data-root multimodal/data/mm-safetybench --expected-rows 5040
+
+上游说明数据按 CC BY-NC 4.0 用于非商业研究，并受 GPT-4、Stable Diffusion 相关许可约束；请保留作者归属，不得用于商业用途。[官方数据说明与许可](https://github.com/isXinLiu/MM-SafetyBench#license)。使用数据时请引用论文：[Query-Relevant Images Jailbreak Large Multi-Modal Models](https://arxiv.org/abs/2311.17600)，Xin Liu、Yichen Zhu、Yunshi Lan、Chao Yang、Yu Qiao，2023。
 
 固定稳定性子集的 1,008 个 sample ID 位于 multimodal/data/sample_1008_seed42.txt。该文件只包含编号，不包含题目或答案。运行本项目的数据检查命令后，会校验官方数据与 GitHub 中的 FigStep、HADES 图像并生成推理清单。
 
@@ -47,7 +48,7 @@ VQA 标注按 CC BY 4.0 条款署名；COCO 和 OpenImages 图片遵循各自原
 
 | 材料 | 固定身份 | 说明 |
 |---|---|---|
-| MM-SafetyBench 官方输入 | 5,040 行 manifest digest 4f8d7c…9124，逐图哈希 | 上游 CC BY-NC 4.0；不由本项目重新分发 |
+| MM-SafetyBench 官方输入 | `multimodal/data/mm-safetybench/`；5,040 行 manifest digest 4f8d7c…9124，逐图哈希 | Git LFS 提供；保留 CC BY-NC 4.0 归属与非商业研究限制 |
 | 稳定性基础子集 | sample_1008_seed42.txt | 1,008 个编号，不含题目文本 |
 | FigStep 移植图像 | FigStep manifest + 1,008 张成品图；上游 revision 0861b17b3d67887c06ee3534ec65b3012f9becb7 | 项目移植；保留 MM-SafetyBench 归属和许可 |
 | HADES 风格图像 | HADES manifest + 1,008 张成品图；协议 hades-local-mmsb-constrained-v1-recovery-v3 | 项目自建素材；不声称为官方 HADES |

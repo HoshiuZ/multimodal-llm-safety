@@ -32,6 +32,9 @@ text/outputs/*
 !multimodal/data/figstep/**
 !multimodal/data/hades_local_v1/
 !multimodal/data/hades_local_v1/**
+!multimodal/data/mm-safetybench/
+!multimodal/data/mm-safetybench/**
+!multimodal/data/manifest_mm.csv
 /multimodal/models/*
 !multimodal/models/README.md
 /multimodal/results/*

@@ -6,9 +6,9 @@
 问题文本必须随图像类型匹配，不能只扫图片后留空。
 
 用法：
-    python scripts/build_manifest.py --root ~/data/MM-SafetyBench/data \
-        --questions-dir ~/data/MM-SafetyBench/data/processed_questions \
-        --out ~/hkc/data/manifest_mm.csv --dry-run
+    python -B multimodal/scripts/build_manifest.py --root multimodal/data/mm-safetybench \
+        --questions-dir multimodal/data/mm-safetybench/processed_questions \
+        --out multimodal/data/manifest_mm.csv --dry-run
     # dry-run 完整通过后，去掉 --dry-run 正式生成（会计算图像 SHA-256）
 """
 from __future__ import annotations

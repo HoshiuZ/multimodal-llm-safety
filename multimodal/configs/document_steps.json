@@ -1,7 +1,7 @@
 {
   "models_root": "$HOME/models",
   "official_manifest": "multimodal/data/manifest_mm.csv",
-  "official_root": "external/MM-SafetyBench/data",
+  "official_root": "multimodal/data/mm-safetybench",
   "asset_root": "multimodal/data",
   "input_root": "multimodal/data/input",
   "output_root": "multimodal/outputs",

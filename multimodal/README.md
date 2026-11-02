@@ -24,13 +24,13 @@ The model implementation uses each processor's native image path: Qwen3-VL proce
 
 ## Models and data
 
-Download the three base checkpoints and the local judge at the immutable revisions in [`models/README.md`](models/README.md). Download the matching M1 adapter from the same page and verify its file hashes; no retraining is needed. The GitHub repository supplies the FigStep and HADES images in `multimodal/data/figstep/` and `multimodal/data/hades_local_v1/`. The official MM-SafetyBench full set remains hosted by its authors; the project does not mirror its original 5,040 images or question JSON.
+Download the three base checkpoints and the local judge at the immutable revisions in [`models/README.md`](models/README.md). Download the matching M1 adapter from the same page and verify its file hashes; no retraining is needed. GitHub supplies the official MM-SafetyBench input files in `multimodal/data/mm-safetybench/` and the project-made FigStep/HADES images in `multimodal/data/figstep/` and `multimodal/data/hades_local_v1/`. Install Git LFS and run `git lfs pull` if the images are missing after cloning. Dataset source and license details are in [`data/README.md`](data/README.md).
 
 The fixed 1,008-ID selection is in `multimodal/data/sample_1008_seed42.txt`. The normal-utility manifest is available from the pinned Hugging Face dataset; its VQAv2/TextVQA image files are not redistributed and must be obtained from their official sources. License and attribution instructions are in [`data/README.md`](data/README.md).
 
 ## Quick start
 
-1. Follow [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md) to prepare environments, download pinned models/assets, and build the MM-SafetyBench manifest.
+1. Follow [`TEST_PROCEDURE.md`](TEST_PROCEDURE.md) to prepare environments, download pinned models, and verify the GitHub-provided MM-SafetyBench data and manifest.
 2. Run `scripts/run_dataset.sh` separately for the 5,040-row full set, the fixed 1,008-row base subset, FigStep, HADES-style assets, and normal utility set.
 3. For LLaVA-NeXT and InternVL3 stability views, reproduce the separately versioned evidence-first retry for unresolved v2 judge rows. This supplements unresolved labels only; it never replaces resolved v2 labels. Qwen3-VL uses frozen v2 labels for its recorded S result.
 4. Fill a copy of [`configs/aggregate_template.json`](configs/aggregate_template.json) with the output paths for one model and run `scripts/aggregate.py`. The aggregator verifies completion markers, file hashes, sample coverage, paired stability IDs, and target thresholds before writing metrics.

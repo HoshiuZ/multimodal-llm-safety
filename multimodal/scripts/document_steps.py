@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import sys
+import warnings
 
 ROOT = Path(__file__).absolute().parents[1]
 REPO = ROOT.parent
@@ -242,7 +243,7 @@ def prepare_data(cfg):
         questions_dir = official_root / 'processed_questions'
         if not questions_dir.is_dir():
             raise FileNotFoundError(f'official MM-SafetyBench questions not found: {questions_dir}')
-        print('Official manifest is missing; building it from the downloaded MM-SafetyBench data.', flush=True)
+        print('Official manifest is missing; building it from the repository-provided MM-SafetyBench data.', flush=True)
         subprocess.run([
             sys.executable, '-B', str(ROOT / 'scripts/build_manifest.py'),
             '--root', str(official_root), '--questions-dir', str(questions_dir),

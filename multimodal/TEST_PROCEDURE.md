@@ -42,22 +42,15 @@ Use the LLaVA adapter at `be23d7438b9d6930adead6e67d713dec3c7e598a` and InternVL
 
 ## 3. Get official and project evaluation data
 
-Follow [`data/README.md`](data/README.md) for the MM-SafetyBench download and licenses. The upstream repository provides question JSON; download the image archive from the official README and keep its original directory structure. Then build and verify the full manifest:
+The official MM-SafetyBench question JSON, images, and frozen manifest are included in this GitHub repository. After cloning, run `git lfs pull` at the repository root if the images are missing. The data is under `multimodal/data/mm-safetybench/`; source, version, license, and attribution details are in [`data/README.md`](data/README.md). From the repository root, verify the data and prepare evaluation indexes with:
 
 ```bash
-git clone https://github.com/isXinLiu/MM-SafetyBench external/MM-SafetyBench
-# Download the official MM-SafetyBench(imgs).zip from the upstream README and unpack it under:
-# external/MM-SafetyBench/data/imgs/
-python -B multimodal/scripts/build_manifest.py \
-  --root external/MM-SafetyBench/data \
-  --questions-dir external/MM-SafetyBench/data/processed_questions \
-  --out multimodal/data/manifest_mm.csv
-python -B multimodal/scripts/verify_assets.py \
-  --manifest multimodal/data/manifest_mm.csv \
-  --data-root external/MM-SafetyBench/data --expected-rows 5040
+python -B multimodal/scripts/document_steps.py data
 ```
 
-The GitHub repository provides the frozen FigStep and HADES images and manifests through Git LFS. Install Git LFS before cloning the project; if the image files were not fetched automatically, run `git lfs pull` from the repository root. The files are located at `multimodal/data/figstep/` and `multimodal/data/hades_local_v1/`. Verify them against their manifest hashes:
+This command verifies the 5,040 official pairs and FigStep/HADES files, then prepares `full/`, `base/`, `figstep/`, and `hades/` indexes under `multimodal/data/input/`. The original question JSON and images remain in `multimodal/data/mm-safetybench/`, FigStep images are in `multimodal/data/figstep/`, and HADES-style images are in `multimodal/data/hades_local_v1/`.
+
+To check each project-made image set independently against its manifest hashes:
 
 ```bash
 python -B multimodal/scripts/verify_assets.py \
@@ -66,14 +59,8 @@ python -B multimodal/scripts/verify_assets.py \
   --manifest multimodal/data/hades_local_v1/manifest.jsonl --data-root multimodal/data/hades_local_v1
 ```
 
-Download the normal-utility manifest separately when reproducing the normal-capability measure. It contains no images; obtain the VQAv2 and TextVQA images from their official sources as described in [`data/README.md`](data/README.md). Build the fixed base subset from the official manifest and the checked-in ID-only selection file:
+Download the normal-utility manifest separately when reproducing the normal-capability measure. It contains no images; obtain the VQAv2 and TextVQA images from their official sources as described in [`data/README.md`](data/README.md).
 
-```bash
-python -B multimodal/scripts/prepare_eval_data.py \
-  --manifest multimodal/data/manifest_mm.csv \
-  --selection multimodal/data/sample_1008_seed42.txt \
-  --output external/eval-assets/base_1008.jsonl
-```
 
 For normal utility, download the official VQAv2 and TextVQA annotations and images as described in [`data/README.md`](data/README.md). Do not fetch the restricted images from a third-party mirror.
 
@@ -101,10 +88,10 @@ run_view() {
     "$MODEL_ROOT/Qwen2.5-14B-Instruct" \
     "outputs/qwen3vl8b/$view" "$COMMON/torchrun" "$COMMON/torchrun" "$COMMON/python"
 }
-run_view full multimodal/data/manifest_mm.csv external/MM-SafetyBench/data
-run_view base external/eval-assets/base_1008.jsonl external/MM-SafetyBench/data
-run_view figstep multimodal/data/figstep/manifest.jsonl multimodal/data/figstep
-run_view hades multimodal/data/hades_local_v1/manifest.jsonl multimodal/data/hades_local_v1
+run_view full multimodal/data/input/full/manifest.jsonl multimodal/data/input/full
+run_view base multimodal/data/input/base/manifest.jsonl multimodal/data/input/base
+run_view figstep multimodal/data/input/figstep/manifest.jsonl multimodal/data/input/figstep
+run_view hades multimodal/data/input/hades/manifest.jsonl multimodal/data/input/hades
 run_view normal external/eval-assets/normal_utility/manifest.jsonl external/eval-assets/normal_utility
 ```
 

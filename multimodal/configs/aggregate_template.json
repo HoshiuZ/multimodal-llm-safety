@@ -16,7 +16,7 @@
   },
   "stability": {
     "base": {
-      "manifest": "../../external/eval-assets/base_1008.jsonl",
+      "manifest": "../../multimodal/data/input/base/manifest.jsonl",
       "orig": "../../outputs/qwen3vl8b/base/base_1008.orig.judgments.jsonl",
       "m1": "../../outputs/qwen3vl8b/base/base_1008.m1.judgments.jsonl",
       "m1_m3_v8": "../../outputs/qwen3vl8b/base/base_1008.m1_m3_v8.judgments.jsonl"
