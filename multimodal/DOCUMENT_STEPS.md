@@ -2,7 +2,7 @@
 
 本页对应测试方案中的跨模态运行步骤，使用已发布的基模、各自对应的 M1 文件及共用 M3 v8，不需要训练。环境安装、官方数据下载及准确模型版本分别见 `TEST_PROCEDURE.md`、`data/README.md`、`models/README.md`。运行方法仍使用 `SINGLE_GPU.md` 的单 GPU 入口。
 
-以下命令均在仓库根目录、共同 Python 环境中执行。路径默认来自 `configs/document_steps.json`；已有安装可复制为本地配置，并通过 `MM_DOCUMENT_CONFIG` 指定。原始图像与模型保持原目录，不上传 Git。
+以下命令均在仓库根目录、共同 Python 环境中执行。环境检查会自动查找两套 Python 环境；数据、模型等路径默认来自 `configs/document_steps.json`，已有安装可复制为本地配置，并通过 `MM_DOCUMENT_CONFIG` 指定。原始图像与模型保持原目录，不上传 Git。
 
 ```bash
 python multimodal/scripts/document_steps.py environment
@@ -12,7 +12,7 @@ python multimodal/scripts/document_steps.py models internvl3_8b
 python multimodal/scripts/document_steps.py data
 ```
 
-`environment` 检查共同环境和 InternVL3 环境；`models` 核对完整基模内容树、已发布适配器权重及配置的 SHA-256，属于 CPU 文件核验，不声称已加载 GPU。`data` 在官方 5,040 条清单和已发布 FigStep/HADES 资产到位后，验证官方快照、演化清单哈希、每张图像内容与解码、固定 1,008 个配对 ID，生成 `multimodal/data/input/{full,base,figstep,hades}/manifest.jsonl`。图像通过 `source/` 软链接引用，不复制原图；已有不同清单不会覆盖。
+`environment` 自动定位共同环境和 InternVL3 环境，并逐项核对两个 requirements 文件中固定的 Python 与依赖版本；支持仓库虚拟环境、文档中的 Conda 环境名，以及项目使用的 `hkc`、`hkc_internvl`。运行时不需要额外指定解释器路径。`models` 核对完整基模内容树、已发布适配器权重及配置的 SHA-256，属于 CPU 文件核验，不声称已加载 GPU。`data` 在官方 5,040 条清单和已发布 FigStep/HADES 资产到位后，验证官方快照、演化清单哈希、每张图像内容与解码、固定 1,008 个配对 ID，生成 `multimodal/data/input/{full,base,figstep,hades}/manifest.jsonl`。图像通过 `source/` 软链接引用，不复制原图；已有不同清单不会覆盖。
 
 运行方法，保存原模型及方法回答：
 

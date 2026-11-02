@@ -12,9 +12,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
-import warnings
 
 ROOT = Path(__file__).absolute().parents[1]
 REPO = ROOT.parent
@@ -61,16 +62,130 @@ def rows(source):
     return result
 
 
-def environment(cfg):
-    query = "import sys,json,importlib.metadata as m; print(json.dumps(dict(python=sys.version.split()[0], **{p:m.version(p) for p in ['torch','transformers','peft','Pillow']})))"
-    for label, exe, version in [('common', sys.executable, '5.16.1'), ('InternVL3', str(path(cfg['internvl_python'])), '4.57.6')]:
-        result = subprocess.run([exe, '-c', query], text=True, check=True, capture_output=True)
-        info = json.loads(result.stdout)
-        if not info['python'].startswith('3.12.') or info['transformers'] != version or info['torch'].split('+')[0] != '2.8.0' or info['peft'] != '0.19.1':
-            raise ValueError(f'{label} dependency versions differ: {info}')
-        print(f"{label}: Python={info['python']} torch={info['torch']}", flush=True)
-        print(f"  transformers={info['transformers']} peft={info['peft']} Pillow={info['Pillow']}", flush=True)
-    print('PASS: common and InternVL3 environments checked', flush=True)
+def requirement_pins(filename):
+    expected_python = None
+    pins = []
+    for raw in filename.read_text(encoding='utf-8').splitlines():
+        line = raw.strip()
+        match = re.search(r'Python\s+(\d+\.\d+\.\d+)', line, re.I)
+        if match:
+            expected_python = match.group(1)
+        if not line or line.startswith('#'):
+            continue
+        package, sep, version = line.partition('==')
+        if not sep or not package.strip() or not version.strip():
+            raise ValueError(f'{filename.name} must contain pinned package versions')
+        pins.append((package.strip(), version.strip()))
+    if not expected_python or not pins:
+        raise ValueError(f'{filename.name} has no Python version or package pins')
+    return expected_python, pins
+
+
+def python_in(environment):
+    for candidate in (environment / 'bin/python', environment / 'Scripts/python.exe'):
+        if candidate.is_file():
+            return candidate
+
+
+def environment_candidates(label):
+    names = {
+        'common': ('.venv-mm-common', 'qwen_and_llava', 'hkc'),
+        'InternVL3': ('.venv-mm-internvl', 'intern', 'hkc_internvl'),
+    }[label]
+    found = []
+
+    def add(executable):
+        executable = Path(executable).expanduser()
+        try:
+            key = str(executable.resolve())
+        except OSError:
+            key = str(executable)
+        if executable.is_file() and all(old[1] != key for old in found):
+            found.append((executable.parent.parent.name, key, executable))
+
+    for env_name in names:
+        if env_name.startswith('.venv-'):
+            add(python_in(REPO / env_name) or (REPO / env_name / 'bin/python'))
+
+    active_prefixes = [Path(sys.prefix)]
+    for value in (os.environ.get('CONDA_PREFIX'),):
+        if value:
+            active_prefixes.append(Path(value).expanduser())
+    roots = set()
+    for prefix in active_prefixes:
+        if prefix.parent.name == 'envs':
+            roots.add(prefix.parent)
+        if (prefix / 'envs').is_dir():
+            roots.add(prefix / 'envs')
+    conda = shutil.which('conda')
+    if conda:
+        try:
+            result = subprocess.run([conda, 'env', 'list', '--json'], text=True, capture_output=True, check=True, timeout=20)
+            for value in json.loads(result.stdout).get('envs', []):
+                env = Path(value).expanduser()
+                if env.name in names:
+                    add(python_in(env) or (env / 'bin/python'))
+                if env.name == 'envs':
+                    roots.add(env)
+        except (OSError, subprocess.SubprocessError, json.JSONDecodeError):
+            pass
+    for root in roots:
+        for env_name in names:
+            if not env_name.startswith('.venv-'):
+                add(python_in(root / env_name) or (root / env_name / 'bin/python'))
+    add(sys.executable)
+    return [(label, exe) for label, _, exe in found]
+
+
+def check_environment(label, requirements):
+    expected_python, pins = requirement_pins(requirements)
+    query = (
+        'import importlib.metadata as m,json,sys\n'
+        'names=json.loads(sys.argv[1])\n'
+        'def version(name):\n'
+        ' try: return m.version(name)\n'
+        ' except m.PackageNotFoundError: return None\n'
+        'print(json.dumps({"python":".".join(map(str,sys.version_info[:3])),"versions":{n:version(n) for n in names}}))'
+    )
+    missing = []
+    for env_name, exe in environment_candidates(label):
+        try:
+            result = subprocess.run([str(exe), '-c', query, json.dumps([name for name, _ in pins])], text=True, capture_output=True, check=True, timeout=30)
+            info = json.loads(result.stdout)
+        except (OSError, subprocess.SubprocessError, json.JSONDecodeError):
+            continue
+        if info['python'] != expected_python:
+            continue
+        differences = []
+        for name, expected in pins:
+            actual = info['versions'].get(name)
+            if actual is None:
+                differences.append(f'{name} missing')
+            elif actual.split('+', 1)[0] != expected:
+                differences.append(f'{name} {actual} (need {expected})')
+        if not differences:
+            return env_name, len(pins)
+        missing.extend(differences)
+    if missing:
+        details = ', '.join(dict.fromkeys(missing))
+        print(f'FAIL {label}: installed package versions differ: {details}', flush=True)
+    else:
+        print(f'FAIL {label}: no environment matching {requirements.name} was found', flush=True)
+    return None
+
+
+def environment():
+    common = check_environment('common', ROOT / 'requirements.txt')
+    internvl = check_environment('InternVL3', ROOT / 'requirements-internvl.txt')
+    for label, result in (('common', common), ('InternVL3', internvl)):
+        if result:
+            name, count = result
+            print(f'PASS {label}: Python 3.12.12; {count} pinned packages', flush=True)
+    if common and internvl:
+        print('PASS: both model environments match the published requirements', flush=True)
+        return True
+    print('Install each requirements file in its own Python 3.12.12 environment, then run this command again.', flush=True)
+    return False
 
 
 def models(cfg, model):
@@ -272,9 +387,10 @@ def main():
     a = p.parse_args()
     if a.step in ('models', 'judge', 'c', 's') and not a.model:
         p.error('this step requires a model key')
+    if a.step == 'environment':
+        return 0 if environment() else 1
     cfg = settings()
-    if a.step == 'environment': environment(cfg)
-    elif a.step == 'models': models(cfg, a.model)
+    if a.step == 'models': models(cfg, a.model)
     elif a.step == 'data': prepare_data(cfg)
     elif a.step == 'judge': judge(cfg, a.model)
     else: metrics(cfg, a.model, a.step)
