@@ -1,7 +1,22 @@
 {
   "models": {
-    "qwen": {"base_dir": "models/qwen-base", "overlay": "models/qwen-overlay.pt", "output_dir": "models/qwen-cleared", "identity_mode": "selected"},
-    "llava": {"base_dir": "models/llava-base", "overlay": "models/llava-overlay.pt", "output_dir": "models/llava-cleared", "identity_mode": "selected"},
-    "internvl": {"base_dir": "models/internvl-base", "overlay": "models/internvl-overlay.pt", "output_dir": "models/internvl-cleared", "identity_mode": "selected"}
+    "qwen": {
+      "base_dir": "models/qwen-base",
+      "overlay": "../runs/output/qwen/updated_parameters.pt",
+      "output_dir": "models/qwen-cleared",
+      "identity_mode": "selected"
+    },
+    "llava": {
+      "base_dir": "models/llava-base",
+      "overlay": "../runs/output/llava/updated_parameters.pt",
+      "output_dir": "models/llava-cleared",
+      "identity_mode": "selected"
+    },
+    "internvl": {
+      "base_dir": "models/internvl-base",
+      "overlay": "../runs/output/internvl/updated_parameters.pt",
+      "output_dir": "models/internvl-cleared",
+      "identity_mode": "selected"
+    }
   }
 }
