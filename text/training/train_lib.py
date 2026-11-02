@@ -27,19 +27,19 @@ ROOT = pathlib.Path(os.environ.get("TRAIN_ROOT", pathlib.Path(__file__).resolve(
 SPECS = {
     "llava": {
         "loader": "llava",
-        "dir": "models/llava_next8b",
+        "dir": "text/models/llava-base",
         "fmt": "model.language_model.layers.{i}.mlp.down_proj",
         "data": "data/processed/llava_next8b/three_domain_rmu_20261024",
     },
     "qwen": {
         "loader": "auto",
-        "dir": "models/qwen3vl8b",
+        "dir": "text/models/qwen-base",
         "fmt": "model.language_model.layers.{i}.mlp.down_proj",
         "data": "data/processed/qwen3vl8b/three_domain_rmu_20261024",
     },
     "internvl": {
         "loader": "auto",
-        "dir": "models/internvl3_8b",
+        "dir": "text/models/internvl-base",
         "fmt": "language_model.model.layers.{i}.mlp.down_proj",
         "data": "data/processed/internvl3_8b/three_domain_rmu_20261024",
     },
@@ -128,6 +128,8 @@ def apply_grom(model, key: str, basis_path: str, edits) -> None:
 
 # ---------------------------------------------------------------- data + logp
 def load_rows(key: str):
+    from check_inputs import check
+    check(key, ROOT)
     data = ROOT / SPECS[key]["data"]
     forget = [json.loads(line) for name in ("bio", "cyber", "chem")
               for line in open(data / FILES[name])]

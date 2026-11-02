@@ -10,6 +10,17 @@ def sha(path):
         for part in iter(lambda:f.read(8*1024*1024),b''):h.update(part)
     return h.hexdigest()
 
+def check_output_directory(output):
+    """Permit empty/scaffold directories, but never overwrite model artifacts."""
+    if output.is_symlink():
+        raise ValueError('输出目录不能是符号链接')
+    if output.exists():
+        if not output.is_dir():
+            raise ValueError('输出路径不是目录')
+        entries=list(output.iterdir())
+        if any(p.name not in ('README.md','.gitkeep') or not p.is_file() or p.is_symlink() for p in entries):
+            raise ValueError('输出目录已有模型或其他文件，拒绝覆盖')
+
 def main(family):
     parser=argparse.ArgumentParser(description=f'restore selected {family} checkpoint')
     parser.add_argument('--dry-run',action='store_true');args=parser.parse_args()
@@ -27,7 +38,7 @@ def main(family):
     if args.dry_run:
         print(json.dumps(plan,ensure_ascii=False,indent=2));return
     base=ROOT/paths['base_dir'];overlay=ROOT/paths['overlay'];output=ROOT/paths['output_dir']
-    if output.exists() or output.is_symlink():raise ValueError('输出目录已存在，拒绝覆盖')
+    check_output_directory(output)
     if not base.is_dir() or not overlay.is_file():raise FileNotFoundError('缺少完整基模或冻结清除参数')
     for name,expect in cfg.get('base_small_files',{}).items():
         p=base/name
@@ -42,7 +53,8 @@ def main(family):
     model=models.load_full(base,cfg,'cpu')
     proof=restore_overlay(model,selected,cfg);del selected
     model.config._name_or_path=cfg['repository']
-    output.mkdir(parents=True,exist_ok=False)
+    check_output_directory(output)
+    output.mkdir(parents=True,exist_ok=True)
     model.save_pretrained(str(output),safe_serialization=True,max_shard_size='5GB')
     generation=getattr(model,'generation_config',None)
     if generation is not None:generation.save_pretrained(str(output))

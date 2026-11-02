@@ -72,3 +72,13 @@ TRAIN_ROOT=/path/to/prepared/root python text/training/train_internvl.py --out /
 ## 训练后的完整模型恢复
 
 默认训练输出已由 `text/restore_paths.json` 连接至恢复入口。在 `text/` 目录运行对应的 `python restore_qwen.py`、`python restore_llava.py` 或 `python restore_internvl.py`。默认 `identity_mode=trained` 接受符合结构要求的新训练参数，并核验保存与重载前后的张量一致性；C/S 评分使用本地恢复记录中的实际文件哈希。发布模型固定哈希不作为新训练产物的验收条件。
+
+## 默认输入路径与预检
+
+训练和评分共用仓库下的 `text/models/qwen-base/`、`text/models/llava-base/`、`text/models/internvl-base/`，无需复制第二份基模。basis 位于 `text/runs/bases/`。
+
+训练数据位于仓库根目录下的 `data/processed/<模型标识>/three_domain_rmu_20261024/`，模型标识分别为 `qwen3vl8b`、`llava_next8b`、`internvl3_8b`。每个目录需包含 `existing_bio_forget_train_seed42.jsonl`、`cyber_forget_train_seed42.jsonl`、`chem_forget_train_seed42.jsonl`、`existing_wikitext_retain_train_seed42_v2.jsonl`，每行须有对应模型的 `token_ids`。这些训练文件尚未包含在公开仓库或 basis Release 中，不能以 C/S 评测数据替代。仅克隆仓库并下载基模、basis 仍不足以启动训练；持有获准训练材料后才可运行。
+
+可在 `text/` 下运行 `python training/check_inputs.py qwen`（另外两模型替换为 llava、internvl）。训练入口也会自动执行同一预检，缺项会列出具体路径。该检查不加载模型权重或使用 GPU。
+
+恢复程序允许目标目录为空，或仅含仓库自带的 `README.md` / `.gitkeep` 占位文件；已有模型、其他文件或符号链接仍拒绝覆盖。
