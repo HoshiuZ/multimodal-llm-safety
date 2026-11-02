@@ -25,12 +25,16 @@ Qwen 与 InternVL 脚本注释保留各自实验记录。脚本中的早期实�
 
 这些引用说明方法来源，不表示本项目脚本是作者代码的官方实现或完整复现。实际算法参数、数据版本和模型输出应以各实验报告及 manifest 为准。
 
+## basis 下载与放置
+
+从 [GitHub Release](https://github.com/HoshiuZ/multimodal-llm-safety/releases/tag/text-training-bases-20261102) 下载四个 `.pt` 文件，保持文件名不变，统一放入仓库的 `text/runs/bases/` 目录。以下默认路径相对于仓库根目录；训练脚本可在 `text/` 中运行，路径由脚本定位。
+
 ## 输入与运行条件
 
 脚本不能独立运行。本仓库增量不包含以下私有实验输入，也不分发它们：
 
 - 完整基模权重及 tokenizer；
-- GROM basis 文件（默认路径：`runs/bases/llava_grom_basis.pt`、`runs/bases/qwen_grom_basis.pt`、`runs/bases/qwen_grom_basis_cyber.pt`、`runs/bases/internvl_grom_basis_multi.pt`；可用脚本对应的 `TRAIN_*_GROM_BASIS` 环境变量覆盖）；
+- GROM basis 文件（默认路径：`text/runs/bases/llava_grom_basis.pt`、`text/runs/bases/qwen_grom_basis.pt`、`text/runs/bases/qwen_grom_basis_cyber.pt`、`text/runs/bases/internvl_grom_basis_multi.pt`；可用脚本对应的 `TRAIN_*_GROM_BASIS` 环境变量覆盖）；
 - 训练 JSONL、文本正文或 token IDs；
 - 任何训练后检查点。
 
