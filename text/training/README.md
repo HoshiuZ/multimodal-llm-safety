@@ -27,7 +27,14 @@ Qwen 与 InternVL 脚本注释保留各自实验记录。脚本中的早期实�
 
 ## basis 下载与放置
 
-从 [GitHub Release](https://github.com/HoshiuZ/multimodal-llm-safety/releases/tag/text-training-bases-20261102) 下载四个 `.pt` 文件，保持文件名不变，统一放入仓库的 `text/runs/bases/` 目录。以下默认路径相对于仓库根目录；训练脚本可在 `text/` 中运行，路径由脚本定位。
+从 [GitHub Release](https://github.com/HoshiuZ/multimodal-llm-safety/releases/tag/text-training-bases-20261102) 下载 `text-training-bases.zip.001` 和 `text-training-bases.zip.002`，两卷均小于 2 GiB。在仓库根目录按顺序合并并解压：
+
+```bash
+cat text-training-bases.zip.001 text-training-bases.zip.002 > text-training-bases.zip
+unzip -n text-training-bases.zip -d .
+```
+
+拼接 ZIP 的 SHA256 为 `22fbcc48316c84e56c63db814c864d33e90f96810c60547531e065b48ef32b80`。各分卷及解压后文件的校验值见 Release 正文。归档内只有四个 `.pt`，解压后位于仓库的 `text/runs/bases/`，文件名与训练脚本默认路径一致。
 
 ## 输入与运行条件
 
