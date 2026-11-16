@@ -1,5 +1,7 @@
 # Reproduction procedure
 
+For the Word six-step procedure, follow [`DOCUMENT_STEPS.md`](DOCUMENT_STEPS.md). Its preparation command downloads the pinned models, adapters, local judge and missing images together; its single-GPU entry detects the two Conda environments, and its judge automatically runs a separately versioned six-replica supplement sequentially on one GPU when needed. The six-GPU historical procedure below remains available for comparison. The public judge fingerprint now excludes local `SHA256SUMS` and generated caches; this does not change checkpoint weights.
+
 This procedure regenerates the recorded multimodal component metrics without retraining the target models. A six-GPU CUDA host is required for the frozen six-rank commands. Expect large downloads: three 8B base models, a 14B local judge, and evaluation assets. Keep all downloaded models, input data, and outputs outside Git tracking.
 
 ## 1. Clone and install environments

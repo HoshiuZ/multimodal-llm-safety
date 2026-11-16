@@ -1,5 +1,5 @@
 {
-  "models_root": "$HOME/models",
+  "models_root": "multimodal/models",
   "official_manifest": "multimodal/data/manifest_mm.csv",
   "official_root": "multimodal/data/mm-safetybench",
   "asset_root": "multimodal/data",

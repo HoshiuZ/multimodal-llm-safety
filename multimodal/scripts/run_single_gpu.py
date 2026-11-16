@@ -16,6 +16,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+import document_steps as D
 MODEL_DIRS = {
     "qwen3vl8b": ("Qwen3-VL-8B-Instruct", "qwen3vl8b-m1-vlguard-v1"),
     "llavanext8b": ("llama3-llava-next-8b-hf", "llavanext8b-m1-vlguard-v1"),
@@ -40,14 +42,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("model", choices=MODEL_DIRS, help="target model")
     args = parser.parse_args()
-    models = Path(os.environ.get("MM_MODELS_ROOT", str(Path.home() / "models"))).expanduser().resolve()
-    input_root = Path(os.environ.get("MM_INPUT_ROOT", str(ROOT / "data" / "input"))).expanduser().resolve()
-    output_root = Path(os.environ.get("MM_OUTPUT_ROOT", str(ROOT / "outputs"))).expanduser().resolve()
+    cfg = D.settings()
+    models = D.path(cfg['models_root'])
+    input_root = D.path(cfg['input_root'])
+    output_root = D.path(cfg['output_root'])
     # Keep the virtualenv executable path: resolving its symlink can escape the environment.
-    common_python = Path(sys.executable).absolute()
+    common_python = D.runtime_python('common')
+    if common_python.absolute() != Path(sys.executable).absolute():
+        return subprocess.run([str(common_python), '-B', str(Path(__file__).absolute()), *sys.argv[1:]]).returncode
     target_python = common_python
     if args.model == "internvl3_8b":
-        target_python = Path(os.environ.get("MM_INTERNVL_PYTHON", str(ROOT.parent / ".venv-mm-internvl" / "bin" / "python"))).expanduser().absolute()
+        target_python = D.runtime_python('InternVL3')
     base_name, adapter_name = MODEL_DIRS[args.model]
     base = models / base_name
     adapter = models / "adapters" / adapter_name

@@ -1,6 +1,6 @@
 # Multimodal M1 + M3 v8 evaluation
 
-This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-8B-Instruct, LLaVA-NeXT-8B, and InternVL3-8B. It loads the published M1 LoRA adapters and applies the frozen Qwen3-VL visual reviewer (M3 v8); it does not train or optimize models. The local Qwen2.5-14B-Instruct judge is included as code and must be downloaded separately. The reported C/S values are project-proposed component metrics, not a certification against a scheme-wide acceptance rule. See [`results/reference_results.json`](results/reference_results.json) for exact model revisions, run IDs, limits, and numbers.
+This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-8B-Instruct, LLaVA-NeXT-8B, and InternVL3-8B. It loads the published M1 LoRA adapters and applies the frozen Qwen3-VL visual reviewer (M3 v8); it does not train or optimize models. The Word procedure's `document_steps.py environment` command prepares the local Qwen2.5 judge together with the other pinned runtime downloads. The reported C/S values are project-proposed component metrics, not a certification against a scheme-wide acceptance rule. See [`results/reference_results.json`](results/reference_results.json) for exact model revisions, run IDs, limits, and numbers.
 
 ## Contents
 
@@ -18,7 +18,7 @@ This package reproduces the project's frozen multimodal evaluation for Qwen3-VL-
 
 Python 3.12.12 is pinned. Qwen3-VL, LLaVA-NeXT, M3, and the local judge use [`requirements.txt`](requirements.txt). InternVL3 generation uses the separate [`requirements-internvl.txt`](requirements-internvl.txt) environment because its tested Transformers version differs. The reference reproduction procedure launches six processes on six visible CUDA devices for each stage. For sequential inference on one GPU, use [`SINGLE_GPU.md`](SINGLE_GPU.md). Use a separate output directory for each model and dataset view.
 
-The FigStep and HADES evaluation images are stored with Git LFS. Install Git LFS before cloning the project so these images are available locally.
+The evaluation images are stored with Git LFS. Git LFS can populate them at clone time; the Word preparation command also restores missing images/LFS pointers from a fixed public source, including for source ZIP downloads.
 
 The model implementation uses each processor's native image path: Qwen3-VL processor chat template and resize path; LLaVA-NeXT processor chat template and any-resolution image processing; InternVL3's 448-pixel dynamic tiling with 1–12 patches, optional thumbnail, bicubic resize, and ImageNet normalization. Exact templates, prompts, decoding, M3 settings, and judge controls are versioned in [`configs/eval_protocol.json`](configs/eval_protocol.json), [`configs/baseline_runtime.json`](configs/baseline_runtime.json), [`configs/judge_local.json`](configs/judge_local.json), and the source scripts.
 
