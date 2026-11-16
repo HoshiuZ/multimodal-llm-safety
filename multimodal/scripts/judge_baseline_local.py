@@ -45,8 +45,11 @@ def sha256_text(value: str) -> str:
 def fingerprint_model_tree(model_path: str) -> tuple[str, list[dict]]:
     entries = []
     for current, dirs, filenames in os.walk(model_path, followlinks=False):
-        dirs[:] = sorted(name for name in dirs if name != ".cache")
+        dirs[:] = sorted(name for name in dirs if name not in {'.cache', '.git', '__pycache__'})
         for filename in sorted(filenames):
+            # Local checksum manifests and Python caches are not HF checkpoint content.
+            if filename.endswith(('.pyc', '.pyo')) or (current == model_path and filename == 'SHA256SUMS'):
+                continue
             path = os.path.join(current, filename)
             if not os.path.isfile(path):
                 continue

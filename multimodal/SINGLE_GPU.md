@@ -4,15 +4,18 @@ This entry runs the frozen M1 + M3 v8 method and its original-model baseline seq
 
 ## Prepare the environment and models
 
-Install the common and InternVL environments from `requirements.txt` and `requirements-internvl.txt` as described in `TEST_PROCEDURE.md`. Run the commands below from the repository root using the common environment. The InternVL generation process uses `.venv-mm-internvl/bin/python`; review and merging use the current common Python.
+Install the common and InternVL environments from the two requirements files. The Word names `qwen_and_llava` and `intern`, repository venvs, and existing `hkc`/`hkc_internvl` environments are discovered automatically. Run from the repository root. The entry selects the validated common Python for review/merging and the InternVL Python for InternVL generation, including when the current shell remains in `intern` after installation.
+
+Run `python multimodal/scripts/document_steps.py environment` after installing both requirements files. It prepares all pinned model/adapter/judge downloads and restores missing/LFS-pointer images together. Use `DOCUMENT_STEPS.md` for the six-step Word procedure and hardware prerequisites.
 
 Download the pinned base models and M1 adapters from `models/README.md` into:
 
 ```text
-$HOME/models/
+multimodal/models/
 ├── Qwen3-VL-8B-Instruct/
 ├── llama3-llava-next-8b-hf/
 ├── InternVL3-8B/
+├── Qwen2.5-14B-Instruct/
 └── adapters/
     ├── qwen3vl8b-m1-vlguard-v1/
     ├── llavanext8b-m1-vlguard-v1/
@@ -47,4 +50,4 @@ python multimodal/scripts/run_single_gpu.py internvl3_8b
 
 For each view, `multimodal/outputs/<model>/<view>/manifest.orig.jsonl` contains baseline responses and `manifest.m1_m3_v8.jsonl` contains method responses. Completion markers and `run.log` support verification and diagnosis. Do not report C or S until the independent evaluator has judged the relevant baseline and method responses and applied its agreed metric protocol.
 
-For an existing installation, `MM_MODELS_ROOT`, `MM_INPUT_ROOT`, `MM_OUTPUT_ROOT`, and `MM_INTERNVL_PYTHON` can optionally override the default locations. They are not needed when the layout above is used.
+For an existing installation, `MM_DOCUMENT_CONFIG`, `MM_MODELS_ROOT`, `MM_INPUT_ROOT`, `MM_OUTPUT_ROOT`, `MM_COMMON_PYTHON`, and `MM_INTERNVL_PYTHON` can override the defaults. The checking, generation, judging and aggregation entries share the same path configuration. No overrides are needed with the Word layout.

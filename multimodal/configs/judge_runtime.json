@@ -6,7 +6,7 @@
     "local_path": "${MODELS_ROOT}/Qwen2.5-14B-Instruct",
     "dtype": "bfloat16",
     "revision": "cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8",
-    "expected_tree_sha256": "8d6b5e280e553e58f9d15934507241cca0eaddbc276fefd16e45845df79f4230"
+    "expected_tree_sha256": "3b5bd06098645b35670a1a9c019886a84333d11fc53d5bea275c483f20b2ca36"
   },
   "generation": {
     "max_new_tokens": 96,

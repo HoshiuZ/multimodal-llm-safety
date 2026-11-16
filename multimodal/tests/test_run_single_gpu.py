@@ -26,7 +26,7 @@ class SingleGpuRunnerTest(unittest.TestCase):
             target = root / "internvl-python"
             target.symlink_to(Path(sys.executable))
             env = {"MM_MODELS_ROOT": str(models), "MM_INPUT_ROOT": str(root / "input"), "MM_OUTPUT_ROOT": str(root / "out"), "MM_INTERNVL_PYTHON": str(target)}
-            with patch.dict(os.environ, env), patch.object(sys, "argv", ["run_single_gpu.py", "internvl3_8b"]), patch.object(runner, "device_description", return_value="mock GPU"), patch.object(runner.subprocess, "run") as call:
+            with patch.dict(os.environ, env), patch.object(sys, "argv", ["run_single_gpu.py", "internvl3_8b"]), patch.object(runner.D, 'runtime_python', side_effect=lambda label: target.absolute() if label == 'InternVL3' else Path(sys.executable).absolute()), patch.object(runner, "device_description", return_value="mock GPU"), patch.object(runner.subprocess, "run") as call:
                 self.assertEqual(runner.main(), 0)
             self.assertEqual(call.call_count, 5)
             calls = [x.args[0] for x in call.call_args_list]
@@ -48,7 +48,7 @@ class SingleGpuRunnerTest(unittest.TestCase):
             root = Path(td)
             for name in ("Qwen3-VL-8B-Instruct", "adapters/qwen3vl8b-m1-vlguard-v1"):
                 (root / "models" / name).mkdir(parents=True)
-            with patch.dict(os.environ, {"MM_MODELS_ROOT": str(root / "models"), "MM_INPUT_ROOT": str(root / "empty")}), patch.object(sys, "argv", ["run_single_gpu.py", "qwen3vl8b"]), patch.object(runner.subprocess, "run") as call:
+            with patch.dict(os.environ, {"MM_MODELS_ROOT": str(root / "models"), "MM_INPUT_ROOT": str(root / "empty")}), patch.object(sys, "argv", ["run_single_gpu.py", "qwen3vl8b"]), patch.object(runner.D, 'runtime_python', return_value=Path(sys.executable).absolute()), patch.object(runner.subprocess, "run") as call:
                 with self.assertRaises(FileNotFoundError):
                     runner.main()
                 call.assert_not_called()
